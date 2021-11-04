@@ -10,4 +10,8 @@ export const StyledCard = styled(Card)`
   border-left: 1px solid #ccc;
   border-radius: 0;
   cursor: pointer;
+  transition: background 300ms;
+  :hover {
+    background: #eee;
+  }
 `
