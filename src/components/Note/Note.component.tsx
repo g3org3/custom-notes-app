@@ -24,15 +24,18 @@ const Code = ({ isArray, data, label }: CodeProps) => {
 
   return (isArray && !!data && data.length > 0) || (!isArray && !!data) ? (
     <div style={{ marginTop: '20px' }}>
-      <b>
-        {label}:{' '}
-        <span onClick={() => setIM(!isMarkdown)}>
-          [markdown: {`${isMarkdown}`}]
-        </span>
-      </b>
-
+      {label}:{' '}
+      <span onClick={() => setIM(!isMarkdown)} style={{ cursor: 'pointer' }}>
+        {isMarkdown ? <b>(markdown)</b> : '(markdown)'}
+      </span>
       {isArray || !isMarkdown ? (
-        <pre style={{ border: '1px solid #ccc', padding: '10px' }}>
+        <pre
+          style={{
+            border: '1px solid #ccc',
+            background: '#f8f8f8',
+            padding: '10px',
+          }}
+        >
           {isArray ? JSON.stringify(data, null, 2) : data}
         </pre>
       ) : (
@@ -91,17 +94,16 @@ const Note = (props: Props) => {
     return (
       <>
         <Card
-          sx={{ minWidth: 275, padding: '2px', margin: '4px' }}
+          sx={{
+            minWidth: 275,
+            padding: '2px',
+            margin: '4px',
+            cursor: 'pointer',
+          }}
           onClick={() => setOpen(true)}
         >
-          <Chip
-            label=""
-            size="small"
-            sx={{ marginRight: '10px', display: 'inline-block' }}
-            onClick={() => setOpen(true)}
-          />
           <Typography
-            sx={{ fontSize: 20, display: 'inline-block' }}
+            sx={{ fontSize: 20, display: 'inline-block', paddingLeft: '10px' }}
             color="text.primary"
           >
             {subject || 'No Subject'}
@@ -131,7 +133,7 @@ const Note = (props: Props) => {
   }
 
   if (yamlVersion) {
-    const yamlversionstr = yaml.dump(props)
+    const yamlversionstr = '---\n' + yaml.dump(props) + '\n'
 
     return (
       <>
@@ -144,7 +146,13 @@ const Note = (props: Props) => {
               sx={{ marginRight: '10px' }}
               onClick={() => setOpen(false)}
             />
-            <span onClick={() => setYV(!yamlVersion)}>yaml{'  '}</span>
+            <span
+              style={{ cursor: 'pointer' }}
+              onClick={() => setYV(!yamlVersion)}
+            >
+              <b>(source)</b>
+            </span>
+            <hr />
             <Typography
               sx={{ fontSize: 20, display: 'inline-block' }}
               color="text.primary"
@@ -152,7 +160,9 @@ const Note = (props: Props) => {
             >
               {subject || 'No Subject'}
             </Typography>
-            <pre>{yamlversionstr}</pre>
+            <pre style={{ border: '1px solid #ccc', background: '#f8f8f8' }}>
+              {yamlversionstr}
+            </pre>
           </CardContent>
         </Card>
       </>
@@ -169,7 +179,12 @@ const Note = (props: Props) => {
             sx={{ marginRight: '10px' }}
             onClick={() => setOpen(false)}
           />
-          <span onClick={() => setYV(!yamlVersion)}>(source){'  '}</span>
+          <span
+            style={{ cursor: 'pointer' }}
+            onClick={() => setYV(!yamlVersion)}
+          >
+            (source){'  '}
+          </span>
           <hr />
           <Typography
             sx={{ fontSize: 20, display: 'inline-block' }}
