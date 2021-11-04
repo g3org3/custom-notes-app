@@ -29,6 +29,7 @@ const Code = ({ isArray, data, label }: CodeProps) =>
           {isArray ? JSON.stringify(data, null, 2) : data}
         </pre>
       ) : (
+        <div style={{border: "1px solid #ccc", padding: '4px'}}>
         <ReactMarkdown
           children={data}
           components={{
@@ -38,6 +39,7 @@ const Code = ({ isArray, data, label }: CodeProps) =>
           }}
           remarkPlugins={[remarkGfm]}
         />
+        </div>
       )}
     </div>
   ) : null

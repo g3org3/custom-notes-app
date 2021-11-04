@@ -50,6 +50,7 @@ const Home = () => {
         search={search}
         onSearchChange={onSearchChange}
         areNotesOpen={globalOpen}
+        /*@ts-ignore*/
         onGlobalOpenClick={onGlobalOpenClick}
       />
       <Container maxWidth="md" sx={{ marginTop: '80px' }}>
