@@ -16,23 +16,12 @@ const SimpleNote = (props: Props) => {
   const { subject, people, date } = note
 
   return (
-    <StyledCard onClick={onClick}>
+    <StyledCard onClick={onClick} elevation={3}>
+      <pre style={{ margin: 0, width: '90px' }}>{dateToPretty(date)}</pre>
       <Typography
         sx={{
-          fontSize: 16,
-          display: 'inline-block',
-          marginLeft: '10px',
-          width: '90px',
-        }}
-        color="text.secondary"
-      >
-        <pre>{dateToPretty(date)}</pre>
-      </Typography>
-      <Typography
-        sx={{
-          marginLeft: '10px',
           borderLeft: '1px solid #ccc',
-          fontSize: 20,
+          fontSize: 16,
           display: 'inline-block',
           paddingLeft: '10px',
           flexGrow: 1,
@@ -43,14 +32,10 @@ const SimpleNote = (props: Props) => {
       </Typography>
 
       <Typography
-        sx={{ fontSize: 16, display: 'inline-block', marginLeft: '10px' }}
+        sx={{ fontSize: 13, display: 'inline-block' }}
         color="text.primary"
       >
-        {people && (
-          <Typography sx={{ display: 'inline-block' }}>
-            {people.map(capitalize).map(removeVocals).join(', ')}
-          </Typography>
-        )}
+        {people && people.map(capitalize).map(removeVocals).join(', ')}
       </Typography>
     </StyledCard>
   )

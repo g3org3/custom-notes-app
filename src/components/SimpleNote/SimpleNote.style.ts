@@ -1,8 +1,9 @@
 // @ts-ignore
 import styled from 'styled-components'
 import Card from '@mui/material/Card'
+import Paper from '@mui/material/Paper'
 
-export const StyledCard = styled(Card)`
+export const StyledCard = styled(Paper)`
   display: flex;
   min-width: 275;
   padding: 4px 10px 4px 4px;
@@ -10,8 +11,10 @@ export const StyledCard = styled(Card)`
   border-left: 1px solid #ccc;
   border-radius: 0;
   cursor: pointer;
+  margin: 0;
   transition: background 300ms;
+
   :hover {
-    background: #eee;
+    background: #f6f6f6;
   }
 `

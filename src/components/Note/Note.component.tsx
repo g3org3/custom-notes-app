@@ -2,7 +2,9 @@ import React, { useEffect, useState, useContext } from 'react'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 // @ts-ignore
@@ -89,21 +91,59 @@ const Note = (props: Props) => {
 
     return (
       <>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ minWidth: 275, marginTop: '20px' }}>
           <CardContent>
-            {' '}
-            <Chip
-              label="X"
-              size="small"
-              sx={{ marginRight: '10px' }}
-              onClick={() => setOpen(false)}
-            />
-            <span
-              style={{ cursor: 'pointer' }}
-              onClick={() => setYV(!yamlVersion)}
-            >
-              <b>(source)</b>
-            </span>
+            <div style={{ display: 'flex' }}>
+              <div style={{ display: 'flex', marginRight: '10px' }}>
+                <div>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => setOpen(!open)}
+                    size="small"
+                  >
+                    <KeyboardBackspaceIcon />
+                  </Button>
+                </div>
+                <pre
+                  style={{
+                    cursor: 'pointer',
+                    display: 'inline-block',
+                    margin: 0,
+                    marginLeft: '5px',
+                  }}
+                  onClick={() => setYV(!yamlVersion)}
+                >
+                  <Button
+                    variant="contained"
+                    disableElevation
+                    color="primary"
+                    size="small"
+                  >
+                    {'</>'}
+                  </Button>
+                </pre>
+              </div>
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  display: 'inline-block',
+                  borderLeft: '1px solid #ccc',
+                  padding: '0 0 0 10px',
+                }}
+                color="text.primary"
+                gutterBottom
+              >
+                {people &&
+                  people.map((people) => (
+                    <Chip
+                      label={people}
+                      size="small"
+                      sx={{ margin: '0 10px 10px 0' }}
+                    />
+                  ))}
+              </Typography>
+            </div>
             <hr />
             <Typography
               sx={{ fontSize: 20, display: 'inline-block' }}
@@ -125,38 +165,54 @@ const Note = (props: Props) => {
     <>
       <Card sx={{ minWidth: 275, marginTop: '20px' }}>
         <CardContent>
-          <Chip
-            label="X"
-            size="small"
-            sx={{ marginRight: '10px' }}
-            onClick={() => setOpen(false)}
-          />
-          <span
-            style={{ cursor: 'pointer', display: 'inline-block' }}
-            onClick={() => setYV(!yamlVersion)}
-          >
-            (source){'  '}
-          </span>
-          <Typography
-            sx={{
-              fontSize: 16,
-              display: 'inline-block',
-              borderLeft: '1px solid #ccc',
-              marginLeft: '10px',
-              padding: '0 0 0 10px',
-            }}
-            color="text.primary"
-            gutterBottom
-          >
-            {people &&
-              people.map((people) => (
-                <Chip
-                  label={people}
+          <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', marginRight: '10px' }}>
+              <div>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => setOpen(!open)}
                   size="small"
-                  sx={{ marginRight: '10px' }}
-                />
-              ))}
-          </Typography>
+                >
+                  <KeyboardBackspaceIcon />
+                </Button>
+              </div>
+              <pre
+                style={{
+                  cursor: 'pointer',
+                  display: 'inline-block',
+                  margin: 0,
+                  marginLeft: '5px',
+                }}
+                onClick={() => setYV(!yamlVersion)}
+              >
+                <Button variant="outlined" color="primary" size="small">
+                  {'</>'}
+                </Button>
+              </pre>
+            </div>
+            <div style={{ flexGrow: 1 }}>
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  display: 'inline-block',
+                  borderLeft: '1px solid #ccc',
+                  padding: '0 0 0 10px',
+                }}
+                color="text.primary"
+                gutterBottom
+              >
+                {people &&
+                  people.map((people) => (
+                    <Chip
+                      label={people}
+                      size="small"
+                      sx={{ margin: '0 10px 10px 0' }}
+                    />
+                  ))}
+              </Typography>
+            </div>
+          </div>
           <hr />
           {subject && (
             <Typography
@@ -168,7 +224,7 @@ const Note = (props: Props) => {
             </Typography>
           )}
           <Typography
-            sx={{ fontSize: 16, display: 'inline-block', marginLeft: '10px' }}
+            sx={{ fontSize: 16, display: 'inline-block', margin: '0 10px' }}
             color="text.secondary"
             gutterBottom
           >
@@ -186,7 +242,9 @@ const Note = (props: Props) => {
                       marginRight: '10px',
                     }}
                   >
-                    <i>#{tag}</i>
+                    <b>
+                      <i>#{tag}</i>
+                    </b>
                   </Typography>
                 </span>
               ))}

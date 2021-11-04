@@ -7,7 +7,7 @@ export const theme = createTheme({
       main: indigo[500],
     },
     secondary: {
-      main: orange[500],
+      main: orange[700],
     },
   },
 })
