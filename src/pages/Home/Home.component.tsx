@@ -11,7 +11,9 @@ import type { NoteType } from '../../components/Note'
 import { searchNotes } from '../../components/Note/Note.service'
 import HomeContext from './Home.context'
 
-const Home = () => {
+interface Props {}
+
+const Home = (props: Props) => {
   const [notes, setNotes] = useState<Array<NoteType>>([])
   const [text, setText] = useState<string>('')
   const [search, setSearch] = useState<string>('')
@@ -40,6 +42,12 @@ const Home = () => {
     }
   }
 
+  const resetState = () => {
+    setText('')
+    setNotes([])
+    setFN([])
+  }
+
   useEffect(() => {
     setFN(searchNotes(search, notes))
   }, [search, notes])
@@ -50,6 +58,7 @@ const Home = () => {
         search={search}
         onSearchChange={onSearchChange}
         areNotesOpen={globalOpen}
+        resetState={resetState}
         /*@ts-ignore*/
         onGlobalOpenClick={onGlobalOpenClick}
       />
@@ -59,9 +68,9 @@ const Home = () => {
         ) : null}
         {fileteredNotes.length === 0 && search === '' ? (
           <TextField
-            id="outlined-multiline-flexible"
             multiline
-            rows={20}
+            placeholder="paste your YAML notes"
+            rows={1}
             value={text}
             onChange={handleChange}
           />

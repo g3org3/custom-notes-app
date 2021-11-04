@@ -14,17 +14,24 @@ interface Props {
   onGlobalOpenClick: (event: React.MouseEventHandler<HTMLInputElement>) => void
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   search: string
+  resetState: () => void
 }
 
 const Navbar = (props: Props) => {
-  const { areNotesOpen, onSearchChange, search, onGlobalOpenClick } = props
+  const {
+    areNotesOpen,
+    onSearchChange,
+    search,
+    onGlobalOpenClick,
+    resetState,
+  } = props
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
         <Toolbar>
           <Container sx={{ display: 'flex' }}>
-            <Typography variant="h6" component="div">
+            <Typography onClick={resetState} variant="h6" component="div">
               Notes
             </Typography>
             <Search>
