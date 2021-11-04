@@ -13,6 +13,8 @@ import HomeContext from './Home.context'
 
 interface Props {}
 
+const appVersion = process.env['REACT_APP_VERSION'] || -1
+
 const Home = (props: Props) => {
   const [notes, setNotes] = useState<Array<NoteType>>([])
   const [text, setText] = useState<string>('')
@@ -69,8 +71,8 @@ const Home = (props: Props) => {
         {fileteredNotes.length === 0 && search === '' ? (
           <TextField
             multiline
-            placeholder="paste your YAML notes"
-            rows={1}
+            placeholder={`paste your YAML notes version: ${appVersion}`}
+            rows={2}
             value={text}
             onChange={handleChange}
           />
