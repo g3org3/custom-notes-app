@@ -3,6 +3,8 @@ import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 // @ts-ignore
 import yaml from 'js-yaml'
 // @ts-ignore
@@ -21,9 +23,22 @@ const Code = ({ isArray, data, label }: CodeProps) =>
   (isArray && !!data && data.length > 0) || (!isArray && !!data) ? (
     <div style={{ marginTop: '20px' }}>
       <b>{label}:</b>
-      <pre style={{ border: '1px solid #ccc', padding: '10px' }}>
-        {isArray ? JSON.stringify(data, null, 2) : data}
-      </pre>
+
+      {isArray ? (
+        <pre style={{ border: '1px solid #ccc', padding: '10px' }}>
+          {isArray ? JSON.stringify(data, null, 2) : data}
+        </pre>
+      ) : (
+        <ReactMarkdown
+          children={data}
+          components={{
+            table: ({ node, ...props }) => (
+              <table {...props} className="table" />
+            ),
+          }}
+          remarkPlugins={[remarkGfm]}
+        />
+      )}
     </div>
   ) : null
 
@@ -145,6 +160,7 @@ const Note = (props: Props) => {
             onClick={() => setOpen(false)}
           />
           <span onClick={() => setYV(!yamlVersion)}>(source){'  '}</span>
+          <hr />
           <Typography
             sx={{ fontSize: 20, display: 'inline-block' }}
             color="text.primary"
