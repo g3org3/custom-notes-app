@@ -65,23 +65,12 @@ export interface NoteType {
   tags?: Array<string>
   doubts?: Array<string>
   time?: string
-  tasks?: Array<string>
 }
 interface Props extends NoteType {}
 
 const Note = (props: Props) => {
   const { globalOpen } = useContext(HomeContext)
-  const {
-    date,
-    people,
-    subject,
-    notes,
-    next_steps,
-    tags,
-    doubts,
-    time,
-    tasks,
-  } = props
+  const { date, people, subject, notes, next_steps, tags, doubts, time } = props
 
   const [open, setOpen] = useState(false)
   const [yamlVersion, setYV] = useState(false)
