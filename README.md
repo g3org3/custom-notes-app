@@ -13,3 +13,11 @@ export interface NoteType {
   tasks?: Array<string>
 }
 ```
+
+```yml
+date: 2021-11-01
+people:
+  - Bob
+  - Kevin
+subject: Bla bla
+```

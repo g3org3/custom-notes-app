@@ -8,36 +8,45 @@ import Checkbox from '@mui/material/Checkbox'
 
 interface Props {
   items: Array<string>
+  onItemClick?: (value: string, index: number) => void
 }
 
-const CheckboxList = ({ items }: Props) => {
-  const [checked, setChecked] = React.useState([0])
+interface PlainObject {
+  [key: string]: boolean
+}
 
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
+const CheckboxList = ({ items, onItemClick }: Props) => {
+  const [checked, setChecked] = React.useState<PlainObject>({})
 
-    if (currentIndex === -1) {
-      newChecked.push(value)
-    } else {
-      newChecked.splice(currentIndex, 1)
-    }
-
-    setChecked(newChecked)
+  const handleToggle = (
+    value: string,
+    isChecked: boolean,
+    index: number
+  ) => () => {
+    setChecked({ ...checked, [value]: !isChecked })
+    if (!!onItemClick) onItemClick(value, index)
   }
 
   return (
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      {items.map((value) => {
+    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      {items.map((value, index) => {
         const labelId = `checkbox-list-label-${value}`
+        const isChecked =
+          checked[value] === undefined
+            ? value.indexOf('(done)') !== -1
+            : checked[value]
 
         return (
           <ListItem key={value} disablePadding>
-            <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+            <ListItemButton
+              role={undefined}
+              onClick={handleToggle(value, isChecked, index)}
+              dense
+            >
               <ListItemIcon>
                 <Checkbox
                   edge="start"
-                  checked={checked.indexOf(value) !== -1 || value.indexOf('(done)') !== -1}
+                  checked={isChecked}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}

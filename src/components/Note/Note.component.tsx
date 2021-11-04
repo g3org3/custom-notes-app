@@ -3,13 +3,21 @@ import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
+// @ts-ignore
 import yaml from 'js-yaml'
+// @ts-ignore
 import { DateTime } from 'luxon'
 
 import CheckboxList from '../../components/CheckboxList'
 import { HomeContext } from '../../pages/Home'
 
-const Code = ({ isArray, data, label }) =>
+interface CodeProps {
+  data: any
+  isArray?: boolean
+  label: string
+}
+
+const Code = ({ isArray, data, label }: CodeProps) =>
   (isArray && !!data && data.length > 0) || (!isArray && !!data) ? (
     <div style={{ marginTop: '20px' }}>
       <b>{label}:</b>
@@ -34,7 +42,17 @@ interface Props extends NoteType {}
 
 const Note = (props: Props) => {
   const { globalOpen } = useContext(HomeContext)
-  const { date, people, subject, notes, next_steps, tags, doubts, time, tasks } = props
+  const {
+    date,
+    people,
+    subject,
+    notes,
+    next_steps,
+    tags,
+    doubts,
+    time,
+    tasks,
+  } = props
 
   const lxdate = date ? DateTime.fromJSDate(date) : null
   const [open, setOpen] = useState(false)
@@ -47,14 +65,20 @@ const Note = (props: Props) => {
   if (!open) {
     return (
       <>
-        <Card sx={{ minWidth: 275, padding: '2px', margin: '4px' }} onClick={() => setOpen(true)}>
+        <Card
+          sx={{ minWidth: 275, padding: '2px', margin: '4px' }}
+          onClick={() => setOpen(true)}
+        >
           <Chip
             label=""
             size="small"
             sx={{ marginRight: '10px', display: 'inline-block' }}
             onClick={() => setOpen(true)}
           />
-          <Typography sx={{ fontSize: 20, display: 'inline-block' }} color="text.primary">
+          <Typography
+            sx={{ fontSize: 20, display: 'inline-block' }}
+            color="text.primary"
+          >
             {subject || 'No Subject'}
           </Typography>
           <Typography
@@ -69,7 +93,11 @@ const Note = (props: Props) => {
           >
             {people &&
               people.map((people) => (
-                <Chip label={people} size="small" sx={{ marginRight: '10px' }} />
+                <Chip
+                  label={people}
+                  size="small"
+                  sx={{ marginRight: '10px' }}
+                />
               ))}
           </Typography>
         </Card>
@@ -116,7 +144,7 @@ const Note = (props: Props) => {
             sx={{ marginRight: '10px' }}
             onClick={() => setOpen(false)}
           />
-          <span onClick={() => setYV(!yamlVersion)}>yaml{'  '}</span>
+          <span onClick={() => setYV(!yamlVersion)}>(source){'  '}</span>
           <Typography
             sx={{ fontSize: 20, display: 'inline-block' }}
             color="text.primary"
@@ -134,7 +162,11 @@ const Note = (props: Props) => {
           <Typography sx={{ fontSize: 16 }} color="text.primary" gutterBottom>
             {people &&
               people.map((people) => (
-                <Chip label={people} size="small" sx={{ marginRight: '10px' }} />
+                <Chip
+                  label={people}
+                  size="small"
+                  sx={{ marginRight: '10px' }}
+                />
               ))}
           </Typography>
           {tags && (
