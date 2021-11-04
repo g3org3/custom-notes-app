@@ -7,11 +7,12 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 // @ts-ignore
 import yaml from 'js-yaml'
-// @ts-ignore
-import { DateTime } from 'luxon'
 
 import CheckboxList from '../../components/CheckboxList'
+import SimpleNote from '../../components/SimpleNote'
 import { HomeContext } from '../../pages/Home'
+import { dateToISO } from '../../services/date'
+import { capitalize } from '../../services/string'
 
 interface CodeProps {
   data: any
@@ -20,7 +21,7 @@ interface CodeProps {
 }
 
 const Code = ({ isArray, data, label }: CodeProps) => {
-  const [isMarkdown, setIM] = useState(false)
+  const [isMarkdown, setIM] = useState(true)
 
   return (isArray && !!data && data.length > 0) || (!isArray && !!data) ? (
     <div style={{ marginTop: '20px' }}>
@@ -82,54 +83,16 @@ const Note = (props: Props) => {
     tasks,
   } = props
 
-  const lxdate = date ? DateTime.fromJSDate(date) : null
   const [open, setOpen] = useState(false)
   const [yamlVersion, setYV] = useState(false)
+  const lxdate = dateToISO(date)
 
   useEffect(() => {
     setOpen(globalOpen)
   }, [globalOpen])
 
   if (!open) {
-    return (
-      <>
-        <Card
-          sx={{
-            minWidth: 275,
-            padding: '2px',
-            margin: '4px',
-            cursor: 'pointer',
-          }}
-          onClick={() => setOpen(true)}
-        >
-          <Typography
-            sx={{ fontSize: 20, display: 'inline-block', paddingLeft: '10px' }}
-            color="text.primary"
-          >
-            {subject || 'No Subject'}
-          </Typography>
-          <Typography
-            sx={{ fontSize: 16, display: 'inline-block', marginLeft: '10px' }}
-            color="text.secondary"
-          >
-            {lxdate && lxdate.toISODate()} {time}
-          </Typography>
-          <Typography
-            sx={{ fontSize: 16, display: 'inline-block', marginLeft: '10px' }}
-            color="text.primary"
-          >
-            {people &&
-              people.map((people) => (
-                <Chip
-                  label={people}
-                  size="small"
-                  sx={{ marginRight: '10px' }}
-                />
-              ))}
-          </Typography>
-        </Card>
-      </>
-    )
+    return <SimpleNote note={props} onClick={() => setOpen(true)} />
   }
 
   if (yamlVersion) {
@@ -171,7 +134,7 @@ const Note = (props: Props) => {
 
   return (
     <>
-      <Card sx={{ minWidth: 275 }}>
+      <Card sx={{ minWidth: 275, marginTop: '20px' }}>
         <CardContent>
           <Chip
             label="X"
@@ -180,27 +143,22 @@ const Note = (props: Props) => {
             onClick={() => setOpen(false)}
           />
           <span
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', display: 'inline-block' }}
             onClick={() => setYV(!yamlVersion)}
           >
             (source){'  '}
           </span>
-          <hr />
           <Typography
-            sx={{ fontSize: 20, display: 'inline-block' }}
+            sx={{
+              fontSize: 16,
+              display: 'inline-block',
+              borderLeft: '1px solid #ccc',
+              marginLeft: '10px',
+              padding: '0 0 0 10px',
+            }}
             color="text.primary"
             gutterBottom
           >
-            {subject || 'No Subject'}
-          </Typography>
-          <Typography
-            sx={{ fontSize: 16, display: 'inline-block', marginLeft: '10px' }}
-            color="text.secondary"
-            gutterBottom
-          >
-            {lxdate && lxdate.toISODate()} {time}
-          </Typography>
-          <Typography sx={{ fontSize: 16 }} color="text.primary" gutterBottom>
             {people &&
               people.map((people) => (
                 <Chip
@@ -210,6 +168,24 @@ const Note = (props: Props) => {
                 />
               ))}
           </Typography>
+          <hr />
+          {subject && (
+            <Typography
+              sx={{ fontSize: 30, display: 'inline-block' }}
+              color="text.primary"
+              gutterBottom
+            >
+              {capitalize(subject) || 'No Subject'}
+            </Typography>
+          )}
+          <Typography
+            sx={{ fontSize: 16, display: 'inline-block', marginLeft: '10px' }}
+            color="text.secondary"
+            gutterBottom
+          >
+            {lxdate} {time}
+          </Typography>
+
           {tags && (
             <>
               {tags.map((tag) => (
@@ -243,8 +219,20 @@ const Note = (props: Props) => {
               <CheckboxList items={next_steps} />
             </>
           )}
-          <Code isArray data={tasks} label="Tasks" />
-          <Code isArray data={doubts} label="Questions" />
+          {doubts && (
+            <>
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  marginTop: '20px',
+                }}
+              >
+                Doubts:
+              </Typography>
+              <CheckboxList items={doubts} />
+            </>
+          )}
         </CardContent>
       </Card>
       <br />
