@@ -19,30 +19,38 @@ interface CodeProps {
   label: string
 }
 
-const Code = ({ isArray, data, label }: CodeProps) =>
-  (isArray && !!data && data.length > 0) || (!isArray && !!data) ? (
-    <div style={{ marginTop: '20px' }}>
-      <b>{label}:</b>
+const Code = ({ isArray, data, label }: CodeProps) => {
+  const [isMarkdown, setIM] = useState(false)
 
-      {isArray ? (
+  return (isArray && !!data && data.length > 0) || (!isArray && !!data) ? (
+    <div style={{ marginTop: '20px' }}>
+      <b>
+        {label}:{' '}
+        <span onClick={() => setIM(!isMarkdown)}>
+          [markdown: {`${isMarkdown}`}]
+        </span>
+      </b>
+
+      {isArray || !isMarkdown ? (
         <pre style={{ border: '1px solid #ccc', padding: '10px' }}>
           {isArray ? JSON.stringify(data, null, 2) : data}
         </pre>
       ) : (
-        <div style={{border: "1px solid #ccc", padding: '4px'}}>
-        <ReactMarkdown
-          children={data}
-          components={{
-            table: ({ node, ...props }) => (
-              <table {...props} className="table" />
-            ),
-          }}
-          remarkPlugins={[remarkGfm]}
-        />
+        <div style={{ border: '1px solid #ccc', padding: '4px' }}>
+          <ReactMarkdown
+            children={data}
+            components={{
+              table: ({ node, ...props }) => (
+                <table {...props} className="table" />
+              ),
+            }}
+            remarkPlugins={[remarkGfm]}
+          />
         </div>
       )}
     </div>
   ) : null
+}
 
 export interface NoteType {
   date?: Date
