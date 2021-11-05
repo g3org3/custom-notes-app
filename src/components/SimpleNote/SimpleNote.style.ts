@@ -1,6 +1,5 @@
 // @ts-ignore
 import styled from 'styled-components'
-import Card from '@mui/material/Card'
 import Paper from '@mui/material/Paper'
 
 export const StyledCard = styled(Paper)`

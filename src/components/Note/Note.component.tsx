@@ -1,11 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Typography from '@mui/material/Typography'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Button from '@mui/material/Button'
-import Avatar from '@mui/material/Avatar'
-import Chip from '@mui/material/Chip'
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 // @ts-ignore
 import yaml from 'js-yaml'
 
