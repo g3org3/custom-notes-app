@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Container from '@mui/material/Container'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -8,9 +8,10 @@ import SearchIcon from '@mui/icons-material/Search'
 import Button from '@mui/material/Button'
 
 import { Search, SearchIconWrapper, StyledInputBase } from './Navbar.style'
+import HomeContext from 'pages/Home/Home.context'
+import RootContext from 'pages/Root/Root.context'
 
 interface Props {
-  areNotesOpen: boolean
   onGlobalOpenClick: (event: React.MouseEventHandler<HTMLInputElement>) => void
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   search: string
@@ -18,21 +19,17 @@ interface Props {
 }
 
 const Navbar = (props: Props) => {
-  const {
-    areNotesOpen,
-    onSearchChange,
-    search,
-    onGlobalOpenClick,
-    resetState,
-  } = props
+  const { onSearchChange, search, onGlobalOpenClick, resetState } = props
+  const { globalOpen } = useContext(HomeContext)
+  const { appVersion, isDarkTheme, setIsDarkTheme } = useContext(RootContext)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
-        <Toolbar>
+        <Toolbar variant="dense">
           <Container sx={{ display: 'flex' }}>
             <Typography onClick={resetState} variant="h6" component="div">
-              Notes
+              Notes {appVersion}
             </Typography>
             <Search>
               <SearchIconWrapper>
@@ -45,9 +42,15 @@ const Navbar = (props: Props) => {
                 value={search}
               />
             </Search>
+            <Button
+              onClick={() => setIsDarkTheme(!isDarkTheme)}
+              color="inherit"
+            >
+              {isDarkTheme ? 'light' : 'dark'}
+            </Button>
             {/*@ts-ignore*/}
             <Button color="inherit" onClick={onGlobalOpenClick}>
-              {areNotesOpen ? 'collapse' : 'open'}
+              {globalOpen ? 'collapse' : 'open'}
             </Button>
           </Container>
         </Toolbar>

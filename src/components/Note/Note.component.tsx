@@ -3,11 +3,12 @@ import Typography from '@mui/material/Typography'
 // @ts-ignore
 import yaml from 'js-yaml'
 
-import CheckboxList from '../../components/CheckboxList'
-import SimpleNote from '../../components/SimpleNote'
-import { HomeContext } from '../../pages/Home'
-import { dateToISO } from '../../services/date'
-import { capitalize } from '../../services/string'
+import CheckboxList from 'components/CheckboxList'
+import SimpleNote from 'components/SimpleNote'
+import { HomeContext } from 'pages/Home'
+import { dateToISO } from 'services/date'
+import { capitalize } from 'services/string'
+import Pre from 'components/Pre'
 import NoteHeader from './components/NoteHeader'
 import Code from './components/Code'
 
@@ -56,9 +57,7 @@ const Note = (props: Props) => {
         >
           {subject || 'No Subject'}
         </Typography>
-        <pre style={{ border: '1px solid #ccc', background: '#f8f8f8' }}>
-          {yamlversionstr}
-        </pre>
+        <Pre>{yamlversionstr}</Pre>
       </NoteHeader>
     )
   }

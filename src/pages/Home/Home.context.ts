@@ -4,6 +4,4 @@ interface Props {
   globalOpen: boolean
 }
 
-const HomeContext = React.createContext<Props>({ globalOpen: false })
-
-export default HomeContext
+export default React.createContext<Props>({ globalOpen: false })

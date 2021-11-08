@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
+import Pre from 'components/Pre'
+
 interface Props {
   data: any
   isArray?: boolean
@@ -18,15 +20,7 @@ const Code = ({ isArray, data, label }: Props) => {
         {isMarkdown ? <b>(markdown)</b> : '(markdown)'}
       </span>
       {isArray || !isMarkdown ? (
-        <pre
-          style={{
-            border: '1px solid #ccc',
-            background: '#f8f8f8',
-            padding: '10px',
-          }}
-        >
-          {isArray ? JSON.stringify(data, null, 2) : data}
-        </pre>
+        <Pre>{isArray ? JSON.stringify(data, null, 2) : data}</Pre>
       ) : (
         <div style={{ border: '1px solid #ccc', padding: '4px' }}>
           <ReactMarkdown

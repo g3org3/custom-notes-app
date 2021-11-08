@@ -1,5 +1,6 @@
 import React from 'react'
 import Typography from '@mui/material/Typography'
+import Avatar from '@mui/material/Avatar'
 
 import { dateToPretty } from '../../services/date'
 import type { NoteType } from '../../components/Note'
