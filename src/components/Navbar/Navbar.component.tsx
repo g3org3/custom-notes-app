@@ -8,7 +8,6 @@ import SearchIcon from '@mui/icons-material/Search'
 import Button from '@mui/material/Button'
 
 import { Search, SearchIconWrapper, StyledInputBase } from './Navbar.style'
-import HomeContext from 'pages/Home/Home.context'
 import RootContext from 'pages/Root/Root.context'
 
 interface Props {
@@ -19,8 +18,7 @@ interface Props {
 }
 
 const Navbar = (props: Props) => {
-  const { onSearchChange, search, onGlobalOpenClick, resetState } = props
-  const { globalOpen } = useContext(HomeContext)
+  const { onSearchChange, search, resetState } = props
   const { appVersion, isDarkTheme, setIsDarkTheme } = useContext(RootContext)
 
   return (
@@ -47,10 +45,6 @@ const Navbar = (props: Props) => {
               color="inherit"
             >
               {isDarkTheme ? 'light' : 'dark'}
-            </Button>
-            {/*@ts-ignore*/}
-            <Button color="inherit" onClick={onGlobalOpenClick}>
-              {globalOpen ? 'collapse' : 'open'}
             </Button>
           </Container>
         </Toolbar>

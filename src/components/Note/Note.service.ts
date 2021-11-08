@@ -1,10 +1,11 @@
+import { createFTS } from 'services/full-text-search'
 import type { NoteType } from './Note.component'
-import { createFTS } from '../../services/full-text-search'
 
 export const searchNotes = (
   search: string,
-  notes: Array<NoteType>
+  notes: Array<NoteType> | null
 ): Array<NoteType> => {
+  if (!notes) return []
   if (!search || search.trim() === '') return notes
 
   const fts = createFTS(search)

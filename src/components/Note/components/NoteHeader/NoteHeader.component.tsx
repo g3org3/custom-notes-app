@@ -29,7 +29,7 @@ const NoteHeader = (props: Props) => {
   const { people } = note
 
   return (
-    <Card sx={{ minWidth: 275, marginTop: '20px' }}>
+    <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <div style={{ display: 'flex' }}>
           <div style={{ display: 'flex', marginRight: '10px' }}>

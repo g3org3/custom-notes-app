@@ -5,6 +5,8 @@ import { theme, darkTheme } from 'style'
 import RootContext from './Root.context'
 import Home from 'pages/Home'
 
+import { Container } from './Root.style'
+
 const appVersion = process.env['REACT_APP_VERSION'] || '-1'
 
 const Root = () => {
@@ -13,19 +15,9 @@ const Root = () => {
   return (
     <RootContext.Provider value={{ appVersion, isDarkTheme, setIsDarkTheme }}>
       <ThemeProvider theme={isDarkTheme ? darkTheme : theme}>
-        <div
-          style={{
-            padding: '0',
-            margin: 0,
-            paddingTop: '75px',
-            background: isDarkTheme ? '#333' : '#f8f8f8',
-            height: '100vh',
-            width: '100vw',
-            boxSizing: 'border-box',
-          }}
-        >
+        <Container isDarkTheme={isDarkTheme}>
           <Home />
-        </div>
+        </Container>
       </ThemeProvider>
     </RootContext.Provider>
   )

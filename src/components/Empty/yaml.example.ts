@@ -1,4 +1,4 @@
-export const yamlExample = `# example notes
+export const exampleNotesYaml = `# example notes
 ---
 date: 2021-10-14
 subject: Big meeting

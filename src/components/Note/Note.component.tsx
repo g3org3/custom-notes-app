@@ -1,11 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
 // @ts-ignore
 import yaml from 'js-yaml'
 
 import CheckboxList from 'components/CheckboxList'
-import SimpleNote from 'components/SimpleNote'
-import { HomeContext } from 'pages/Home'
 import { dateToISO } from 'services/date'
 import { capitalize } from 'services/string'
 import Pre from 'components/Pre'
@@ -22,31 +20,24 @@ export interface NoteType {
   doubts?: Array<string>
   time?: string
 }
-interface Props extends NoteType {}
+interface Props {
+  note: NoteType
+  onCloseClick: () => void
+}
 
 const Note = (props: Props) => {
-  const { globalOpen } = useContext(HomeContext)
-  const { date, subject, notes, next_steps, tags, doubts, time } = props
-
-  const [isOpen, setIsOpen] = useState(false)
+  const { onCloseClick } = props
+  const { date, subject, notes, next_steps, tags, doubts, time } = props.note
   const [isSourceDisplayed, setIsSourceDisplayed] = useState(false)
   const lxdate = dateToISO(date)
 
-  useEffect(() => {
-    setIsOpen(globalOpen)
-  }, [globalOpen])
-
-  if (!isOpen) {
-    return <SimpleNote note={props} onClick={() => setIsOpen(true)} />
-  }
-
   if (isSourceDisplayed) {
-    const yamlversionstr = '---\n' + yaml.dump(props) + '\n'
+    const yamlversionstr = '---\n' + yaml.dump(props.note) + '\n'
 
     return (
       <NoteHeader
-        note={props}
-        onCloseClick={() => setIsOpen(false)}
+        note={props.note}
+        onCloseClick={onCloseClick}
         onSourceClick={() => setIsSourceDisplayed(false)}
         isSourceDisplayed={isSourceDisplayed}
       >
@@ -64,8 +55,8 @@ const Note = (props: Props) => {
 
   return (
     <NoteHeader
-      note={props}
-      onCloseClick={() => setIsOpen(false)}
+      note={props.note}
+      onCloseClick={onCloseClick}
       onSourceClick={() => setIsSourceDisplayed(true)}
       isSourceDisplayed={isSourceDisplayed}
     >
@@ -105,7 +96,7 @@ const Note = (props: Props) => {
           ))}
         </>
       )}
-      <Code data={notes} label="Notes" />
+      <Code data={notes} />
       {/*<Code isArray data={next_steps} label="Next Steps" />*/}
       {next_steps && (
         <>
