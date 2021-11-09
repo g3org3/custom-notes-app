@@ -11,7 +11,6 @@ import { Search, SearchIconWrapper, StyledInputBase } from './Navbar.style'
 import RootContext from 'pages/Root/Root.context'
 
 interface Props {
-  onGlobalOpenClick: (event: React.MouseEventHandler<HTMLInputElement>) => void
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   search: string
   resetState: () => void
