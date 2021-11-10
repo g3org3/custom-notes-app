@@ -48,8 +48,8 @@ const NoteList = (props: Props) => {
               }}
               onClick={() => setOpenedNote(note)}
             >
-              <TableCell>{dateToPretty(note.date)}</TableCell>
-              <TableCell>{note.subject}</TableCell>
+              <TableCell>{dateToPretty(note.date) || 'N/A'}</TableCell>
+              <TableCell>{note.subject || 'No subject'}</TableCell>
               <TableCell>
                 {note.people &&
                   note.people.map(capitalize).map(removeVocals).join(' ,')}

@@ -55,7 +55,7 @@ const Home = () => {
         resetState={resetState}
         /*@ts-ignore*/
       />
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {(search === '' && !notes) || (search !== '' && notes == null) ? (
           <Empty onChange={handleChange} text={text} />
         ) : (
