@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 // @ts-ignore
 import yaml from 'js-yaml'
 // @ts-ignore
@@ -6,16 +7,17 @@ import { useNavigate } from '@reach/router'
 
 import type { NoteType } from 'components/Note'
 import { searchNotes } from 'components/Note/Note.service'
+import { actions } from 'modules/Note'
 
 export const useHome = (
   notesYaml: string | null,
   setNotesYaml: (text: string | null) => void
 ) => {
-  const [notes, setNotes] = useState<Array<NoteType> | null>(null)
   const [placeHolderText, setPlaceHolderText] = useState<string>('')
   const [search, setSearch] = useState<string>('')
   const [filteredNotes, setFN] = useState<Array<NoteType>>([])
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const onSearchChange = ({
     target: { value },
@@ -23,9 +25,8 @@ export const useHome = (
 
   const readParseAndSetNotes = (value: string) => {
     setPlaceHolderText('done')
-    setNotesYaml(value)
     const notes = yaml.loadAll(value)
-    setNotes(notes.reverse())
+    dispatch(actions.replaceNotes(notes.reverse()))
   }
 
   const onCopyPasteYaml = (event: React.ChangeEvent<HTMLInputElement>) => {

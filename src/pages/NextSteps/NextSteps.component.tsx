@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Paper from '@mui/material/Paper'
 
 import { dateToISO } from 'services/date'
@@ -19,7 +19,7 @@ const NextSteps = (props: Props) => {
       .filter((note) => !!note.next_steps)
       .map((note) =>
         note.next_steps?.map(
-          (x) =>
+          (x: string) =>
             `${x} [${dateToISO(note.date)}] [${
               note.subject || note.tags?.join(',')
             }]`

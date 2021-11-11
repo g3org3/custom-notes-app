@@ -1,53 +1,65 @@
-import { useContext } from 'react'
+import { useCallback } from 'react'
 import Container from '@mui/material/Container'
 /* @ts-ignore */
 import { Router } from '@reach/router'
+// @ts-ignore
+import yaml from 'js-yaml'
+import { useSelector, useDispatch } from 'react-redux'
 
-import Navbar from 'components/Navbar'
 import Empty from 'components/Empty'
+import Navbar from 'components/Navbar'
+import Note from 'components/Note'
 import NoteList from 'components/NoteList'
 import NextSteps from 'pages/NextSteps'
-
-import RootContext from 'pages/Root/Root.context'
-import HomeContext from './Home.context'
-import { useHome } from './Home.hooks'
+import Export from 'pages/Export'
+import { actions } from 'modules/Note'
+import { selectNotes, selectSearch } from 'modules/Note/Note.selectors'
 
 interface Props {
   default?: boolean
 }
 
 const Home = (props: Props) => {
-  const { notesYaml, setNotesYaml } = useContext(RootContext)
+  const dispatch = useDispatch()
+  const notes = useSelector(selectNotes)
+  const search = useSelector(selectSearch)
 
-  const {
-    filteredNotes,
-    notes,
-    onCopyPasteYaml,
-    onSearchChange,
-    placeHolderText,
-    resetAppState,
-    search,
-  } = useHome(notesYaml, setNotesYaml)
+  const onCopyPasteYaml = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      // @ts-ignore
+      if (event.nativeEvent.inputType !== 'insertFromPaste') return
+
+      const { value } = event.target
+      const notes = yaml.loadAll(value)
+      dispatch(actions.replaceNotes({ notes }))
+    },
+    [dispatch]
+  )
+
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(actions.setSearch({ search: event.target.value }))
+  }
 
   return (
-    <HomeContext.Provider value={{ globalOpen: false }}>
+    <>
       <Navbar
         search={search}
         onSearchChange={onSearchChange}
-        onHomeClick={resetAppState}
-        /*@ts-ignore*/
+        onResetClick={() => dispatch(actions.reset())}
       />
       <Container maxWidth="lg">
         <Router>
           {(search === '' && !notes) || (search !== '' && notes == null) ? (
-            <Empty onChange={onCopyPasteYaml} text={placeHolderText} path="/" />
+            <Empty onChange={onCopyPasteYaml} text="" path="/" />
           ) : (
-            <NoteList notes={filteredNotes} path="/" />
+            <NoteList notes={notes} path="/" />
           )}
+          <Note path="/:id" />
           <NextSteps notes={notes} path="/next-steps" />
+          <Export path="/export" />
         </Router>
       </Container>
-    </HomeContext.Provider>
+    </>
   )
 }
 

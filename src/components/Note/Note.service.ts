@@ -1,16 +1,46 @@
 import { createFTS } from 'services/full-text-search'
-import type { NoteType } from './Note.component'
+import type { NoteDBType } from 'modules/Note'
+
+export const isNextStepDone = (nextStep: string) => {
+  return nextStep.indexOf('(done) ') !== -1
+}
+
+export const toggleNextStepDone = (
+  note: NoteDBType,
+  index: number
+): NoteDBType => {
+  if (!note.next_steps) return note
+
+  const nextStep = note.next_steps[index]
+  const isDone = isNextStepDone(nextStep)
+
+  if (!isDone) {
+    note.next_steps[index] = '(done) ' + nextStep
+  } else {
+    note.next_steps[index] = nextStep.split('(done) ').join('')
+  }
+
+  return note
+}
+
+export const getNextStepsStats = (note: NoteDBType) => {
+  const doneCount = note.next_steps?.reduce((doneCount, nextStep) => {
+    return isNextStepDone(nextStep) ? doneCount + 1 : doneCount
+  }, 0)
+
+  return [doneCount, note.next_steps?.length]
+}
 
 export const searchNotes = (
   search: string,
-  notes: Array<NoteType> | null
-): Array<NoteType> => {
+  notes: Array<NoteDBType> | null
+): Array<NoteDBType> => {
   if (!notes) return []
   if (!search || search.trim() === '') return notes
 
   const fts = createFTS(search)
 
-  const isInAnyFields = (note: NoteType) => {
+  const isInAnyFields = (note: NoteDBType) => {
     let blobOfText = ''
 
     if (!!note.notes) {

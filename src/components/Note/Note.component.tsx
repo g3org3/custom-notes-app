@@ -1,42 +1,53 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Typography from '@mui/material/Typography'
+import { useSelector, useDispatch } from 'react-redux'
+// @ts-ignore
+import { useNavigate } from '@reach/router'
 // @ts-ignore
 import yaml from 'js-yaml'
 
 import CheckboxList from 'components/CheckboxList'
 import { dateToISO } from 'services/date'
 import { capitalize } from 'services/string'
+import { actions } from 'modules/Note'
 import Pre from 'components/Pre'
+import { selectNoteById } from 'modules/Note/Note.selectors'
 import NoteHeader from './components/NoteHeader'
 import Code from './components/Code'
 
-export interface NoteType {
-  date?: Date
-  people?: Array<string>
-  subject?: string
-  notes?: string
-  next_steps?: Array<string>
-  tags?: Array<string>
-  doubts?: Array<string>
-  time?: string
-}
 interface Props {
-  note: NoteType
-  onCloseClick: () => void
+  path?: string
+  id?: string
 }
 
 const Note = (props: Props) => {
-  const { onCloseClick } = props
-  const { date, subject, notes, next_steps, tags, doubts, time } = props.note
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [isSourceDisplayed, setIsSourceDisplayed] = useState(false)
+  const note = useSelector(selectNoteById(props.id))
+
+  if (!note) return null
+
+  const { date, subject, notes, next_steps, tags, doubts, time } = note
   const lxdate = dateToISO(date)
 
+  const onCloseClick = () => navigate('/')
+
+  const onNextStepClick = (_: string, index: number) => {
+    dispatch(
+      actions.toggleNextStep({
+        noteId: note.id,
+        nextStepIndex: index,
+      })
+    )
+  }
+
   if (isSourceDisplayed) {
-    const yamlversionstr = '---\n' + yaml.dump(props.note) + '\n'
+    const yamlversionstr = '---\n' + yaml.dump(note) + '\n'
 
     return (
       <NoteHeader
-        note={props.note}
+        note={note}
         onCloseClick={onCloseClick}
         onSourceClick={() => setIsSourceDisplayed(false)}
         isSourceDisplayed={isSourceDisplayed}
@@ -55,7 +66,7 @@ const Note = (props: Props) => {
 
   return (
     <NoteHeader
-      note={props.note}
+      note={note}
       onCloseClick={onCloseClick}
       onSourceClick={() => setIsSourceDisplayed(true)}
       isSourceDisplayed={isSourceDisplayed}
@@ -109,7 +120,7 @@ const Note = (props: Props) => {
           >
             Next Steps:
           </Typography>
-          <CheckboxList items={next_steps} />
+          <CheckboxList items={next_steps} onItemClick={onNextStepClick} />
         </>
       )}
       {doubts && (

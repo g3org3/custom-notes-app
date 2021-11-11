@@ -3,7 +3,6 @@ import Container from '@mui/material/Container'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
 import SearchIcon from '@mui/icons-material/Search'
 import Button from '@mui/material/Button'
 // @ts-ignore
@@ -14,12 +13,12 @@ import RootContext from 'pages/Root/Root.context'
 
 interface Props {
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  search: string
-  onHomeClick: () => void
+  search: string | null
+  onResetClick: () => void
 }
 
 const Navbar = (props: Props) => {
-  const { onSearchChange, search, onHomeClick } = props
+  const { onSearchChange, search, onResetClick } = props
   const { appVersion, isDarkTheme, setIsDarkTheme } = useContext(RootContext)
   const navigate = useNavigate()
 
@@ -28,9 +27,9 @@ const Navbar = (props: Props) => {
       <AppBar position="fixed">
         <Toolbar variant="dense">
           <Container sx={{ display: 'flex' }}>
-            <Typography onClick={onHomeClick} variant="h6" component="div">
+            <Button onClick={() => navigate('/')} color="inherit">
               Notes {appVersion}
-            </Typography>
+            </Button>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -39,15 +38,22 @@ const Navbar = (props: Props) => {
                 placeholder="Search…"
                 inputProps={{ 'aria-label': 'search' }}
                 onChange={onSearchChange}
-                value={search}
+                value={search || ''}
               />
             </Search>
-            <Button color="inherit" onClick={() => navigate('/next-steps')}>
+            <Button size="small" color="inherit" onClick={onResetClick}>
+              X
+            </Button>
+            <Button
+              size="small"
+              color="inherit"
+              onClick={() => navigate('/next-steps')}
+            >
               Next Steps
             </Button>
             <Button
-              onClick={() => setIsDarkTheme(!isDarkTheme)}
               color="inherit"
+              onClick={() => setIsDarkTheme(!isDarkTheme)}
             >
               {isDarkTheme ? 'light' : 'dark'}
             </Button>

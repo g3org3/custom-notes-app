@@ -74,8 +74,9 @@ const NoteHeader = (props: Props) => {
               gutterBottom
             >
               {people &&
-                people.map((people) => (
+                people.map((people: string, id: number) => (
                   <Chip
+                    key={`${id}-${people}`}
                     avatar={<Avatar>{capitalize(people).substr(0, 1)}</Avatar>}
                     color="primary"
                     variant="outlined"

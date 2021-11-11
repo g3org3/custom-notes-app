@@ -8,33 +8,23 @@ import Checkbox from '@mui/material/Checkbox'
 
 interface Props {
   items: Array<string>
-  onItemClick?: (value: string, index: number) => void
-}
-
-interface PlainObject {
-  [key: string]: boolean
+  onItemClick?: (value: string, index: number, isChecked: boolean) => void
 }
 
 const CheckboxList = ({ items, onItemClick }: Props) => {
-  const [checked, setChecked] = React.useState<PlainObject>({})
-
   const handleToggle = (
     value: string,
     isChecked: boolean,
     index: number
   ) => () => {
-    setChecked({ ...checked, [value]: !isChecked })
-    if (!!onItemClick) onItemClick(value, index)
+    if (!!onItemClick) onItemClick(value, index, isChecked)
   }
 
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
       {items.map((value, index) => {
         const labelId = `checkbox-list-label-${value}`
-        const isChecked =
-          checked[value] === undefined
-            ? value.indexOf('(done)') !== -1
-            : checked[value]
+        const isChecked = value.indexOf('(done)') !== -1
 
         return (
           <ListItem key={value} disablePadding>

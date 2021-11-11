@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -7,26 +6,23 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+// @ts-ignore
+import { useNavigate } from '@reach/router'
 
 import type { NoteType } from 'components/Note'
-import Note from 'components/Note'
 import { dateToPretty } from 'services/date'
 import { capitalize, removeVocals } from 'services/string'
 
 interface Props {
   path?: string
-  notes: Array<NoteType>
+  notes: Array<NoteType> | null
 }
 
 const NoteList = (props: Props) => {
-  const [openedNote, setOpenedNote] = useState<NoteType | null>(null)
+  const navigate = useNavigate()
   const { notes } = props
-  if (notes.length === 0) {
+  if (notes === null || notes.length === 0) {
     return <Typography>No notes found</Typography>
-  }
-
-  if (openedNote != null) {
-    return <Note note={openedNote} onCloseClick={() => setOpenedNote(null)} />
   }
 
   return (
@@ -49,7 +45,7 @@ const NoteList = (props: Props) => {
                 cursor: 'pointer',
                 '&:last-child td, &:last-child th': { border: 0 },
               }}
-              onClick={() => setOpenedNote(note)}
+              onClick={() => navigate(`/${note.id}`)}
             >
               <TableCell>{dateToPretty(note.date) || 'N/A'}</TableCell>
               <TableCell>{note.subject || 'No subject'}</TableCell>

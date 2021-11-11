@@ -27,6 +27,7 @@ notes: |
 
 next_steps:
 - create the wire-frame
+- (done) dj mix
 
 ---
 subject: merge?
