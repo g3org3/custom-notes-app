@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import Container from '@mui/material/Container'
 /* @ts-ignore */
 import { Router } from '@reach/router'
