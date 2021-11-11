@@ -12,7 +12,11 @@ import RootContext from 'pages/Root/Root.context'
 import HomeContext from './Home.context'
 import { useHome } from './Home.hooks'
 
-const Home = () => {
+interface Props {
+  default?: boolean
+}
+
+const Home = (props: Props) => {
   const { notesYaml, setNotesYaml } = useContext(RootContext)
 
   const {

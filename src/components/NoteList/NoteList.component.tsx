@@ -37,6 +37,8 @@ const NoteList = (props: Props) => {
             <TableCell>Date</TableCell>
             <TableCell>Subject</TableCell>
             <TableCell>Attendees</TableCell>
+            <TableCell>Questions</TableCell>
+            <TableCell>Next Steps</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -53,8 +55,10 @@ const NoteList = (props: Props) => {
               <TableCell>{note.subject || 'No subject'}</TableCell>
               <TableCell>
                 {note.people &&
-                  note.people.map(capitalize).map(removeVocals).join(' ,')}
+                  note.people.map(capitalize).map(removeVocals).join(', ')}
               </TableCell>
+              <TableCell>{note.doubts?.length}</TableCell>
+              <TableCell>{note.next_steps?.length}</TableCell>
             </TableRow>
           ))}
         </TableBody>

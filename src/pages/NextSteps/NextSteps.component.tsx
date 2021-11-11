@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Paper from '@mui/material/Paper'
 
+import { dateToISO } from 'services/date'
 import type { NoteType } from 'components/Note'
 import CheckboxList from 'components/CheckboxList'
 
@@ -18,7 +19,10 @@ const NextSteps = (props: Props) => {
       .filter((note) => !!note.next_steps)
       .map((note) =>
         note.next_steps?.map(
-          (x) => `${x} [${note.subject || note.tags?.join(',')}]`
+          (x) =>
+            `${x} [${dateToISO(note.date)}] [${
+              note.subject || note.tags?.join(',')
+            }]`
         )
       )
       .flat()
