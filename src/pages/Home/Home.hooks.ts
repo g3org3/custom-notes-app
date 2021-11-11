@@ -42,11 +42,15 @@ export const useHome = (
   }
 
   const resetAppState = () => {
+    if (document.location.pathname !== '/') {
+      navigate('/')
+      return
+    }
+
     setPlaceHolderText('')
     setNotes(null)
     setFN([])
     setNotesYaml(null)
-    navigate('/')
   }
 
   useEffect(() => {
