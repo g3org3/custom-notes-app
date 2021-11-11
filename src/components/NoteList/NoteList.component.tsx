@@ -14,6 +14,7 @@ import { dateToPretty } from 'services/date'
 import { capitalize, removeVocals } from 'services/string'
 
 interface Props {
+  path?: string
   notes: Array<NoteType>
 }
 

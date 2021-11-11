@@ -1,66 +1,47 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import Container from '@mui/material/Container'
-
-// @ts-ignore
-import yaml from 'js-yaml'
+/* @ts-ignore */
+import { Router } from '@reach/router'
 
 import Navbar from 'components/Navbar'
-import type { NoteType } from 'components/Note'
-import { searchNotes } from 'components/Note/Note.service'
 import Empty from 'components/Empty'
 import NoteList from 'components/NoteList'
+import NextSteps from 'pages/NextSteps'
 
+import RootContext from 'pages/Root/Root.context'
 import HomeContext from './Home.context'
+import { useHome } from './Home.hooks'
 
 const Home = () => {
-  const [notes, setNotes] = useState<Array<NoteType> | null>(null)
-  const [text, setText] = useState<string>('')
-  const [search, setSearch] = useState<string>('')
-  const [filteredNotes, setFN] = useState<Array<NoteType>>([])
+  const { notesYaml, setNotesYaml } = useContext(RootContext)
 
-  const onSearchChange = ({
-    target: { value },
-  }: React.ChangeEvent<HTMLInputElement>) => setSearch(value)
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // @ts-ignore
-    const { inputType } = event.nativeEvent
-    const { value } = event.target
-    setText(value)
-    if (inputType === 'insertFromPaste') {
-      setText('loading...')
-      setTimeout(() => {
-        setText('done')
-        const notes = yaml.loadAll(value)
-        setNotes(notes.reverse())
-      }, 1000)
-    }
-  }
-
-  const resetState = () => {
-    setText('')
-    setNotes(null)
-    setFN([])
-  }
-
-  useEffect(() => {
-    setFN(searchNotes(search, notes))
-  }, [search, notes])
+  const {
+    filteredNotes,
+    notes,
+    onCopyPasteYaml,
+    onSearchChange,
+    placeHolderText,
+    resetAppState,
+    search,
+  } = useHome(notesYaml, setNotesYaml)
 
   return (
     <HomeContext.Provider value={{ globalOpen: false }}>
       <Navbar
         search={search}
         onSearchChange={onSearchChange}
-        resetState={resetState}
+        onHomeClick={resetAppState}
         /*@ts-ignore*/
       />
       <Container maxWidth="lg">
-        {(search === '' && !notes) || (search !== '' && notes == null) ? (
-          <Empty onChange={handleChange} text={text} />
-        ) : (
-          <NoteList notes={filteredNotes} />
-        )}
+        <Router>
+          {(search === '' && !notes) || (search !== '' && notes == null) ? (
+            <Empty onChange={onCopyPasteYaml} text={placeHolderText} path="/" />
+          ) : (
+            <NoteList notes={filteredNotes} path="/" />
+          )}
+          <NextSteps notes={notes} path="/next-steps" />
+        </Router>
       </Container>
     </HomeContext.Provider>
   )

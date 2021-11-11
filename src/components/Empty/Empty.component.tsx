@@ -7,6 +7,7 @@ import Pre from '../../components/Pre'
 import { exampleNotesYaml } from './yaml.example'
 
 interface Props {
+  path?: string
   text: string
   onChange: (event: any) => void
 }
