@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'

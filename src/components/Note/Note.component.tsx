@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import { useSelector, useDispatch } from 'react-redux'
-// @ts-ignore
 import { useNavigate } from '@reach/router'
-// @ts-ignore
 import yaml from 'js-yaml'
 
 import CheckboxList from 'components/CheckboxList'

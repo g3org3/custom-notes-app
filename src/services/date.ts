@@ -1,4 +1,3 @@
-// @ts-ignore
 import { DateTime } from 'luxon'
 
 export const dateToISO = (date?: Date) => {

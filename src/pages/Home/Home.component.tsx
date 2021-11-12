@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
 import Container from '@mui/material/Container'
-/* @ts-ignore */
 import { Router } from '@reach/router'
-// @ts-ignore
 import yaml from 'js-yaml'
 import { useSelector, useDispatch } from 'react-redux'
 

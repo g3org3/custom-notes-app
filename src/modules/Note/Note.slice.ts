@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-// @ts-ignore
 import { v4 as uuidv4 } from 'uuid'
 
 import { searchNotes, toggleNextStepDone } from 'components/Note/Note.service'

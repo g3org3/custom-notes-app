@@ -5,9 +5,14 @@ interface Store {
 }
 
 export const selectNotes = (state: Store): Array<NoteDBType> | null => {
-  if (!state.note.byId) return null
+  const { byId, search, filteredIds } = state.note
+  if (!byId) return null
 
-  return Array.from(state.note.byId.values())
+  const notes = Array.from(byId.values())
+
+  if (!search || search === '') return notes
+
+  return notes.filter((n) => filteredIds.includes(n.id))
 }
 
 export const selectSearch = (state: Store): string | null => state.note.search

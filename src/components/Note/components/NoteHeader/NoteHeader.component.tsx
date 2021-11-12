@@ -7,13 +7,13 @@ import Avatar from '@mui/material/Avatar'
 import Chip from '@mui/material/Chip'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 
-import { capitalize } from '../../../../services/string'
-import type { NoteType } from '../../Note.component'
+import { capitalize } from 'services/string'
+import type { NoteDBType } from 'modules/Note'
 
 interface Props {
   children: React.ReactNode
   isSourceDisplayed: boolean
-  note: NoteType
+  note: NoteDBType
   onCloseClick: () => void
   onSourceClick: () => void
 }

@@ -5,7 +5,6 @@ import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import SearchIcon from '@mui/icons-material/Search'
 import Button from '@mui/material/Button'
-// @ts-ignore
 import { useNavigate } from '@reach/router'
 
 import { Search, SearchIconWrapper, StyledInputBase } from './Navbar.style'

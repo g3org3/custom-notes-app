@@ -1,9 +1,8 @@
-import React from 'react'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Paper from '@mui/material/Paper'
 
-import Pre from '../../components/Pre'
+import Pre from 'components/Pre'
 import { exampleNotesYaml } from './yaml.example'
 
 interface Props {
