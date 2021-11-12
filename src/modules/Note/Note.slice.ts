@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { searchNotes, toggleNextStepDone } from 'components/Note/Note.service'
 
 export interface NoteType {
+  id?: string | null
   date?: Date
   people?: Array<string>
   subject?: string
@@ -77,7 +78,7 @@ export default createSlice({
 
       state.byId = notes.reduce((byId, note) => {
         const id = uuidv4()
-        byId.set(id, { id, ...note })
+        byId.set(note.id || id, { id, ...note })
 
         return byId
       }, new Map())

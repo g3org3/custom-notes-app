@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from '@reach/router'
+import { useNavigate, Redirect } from '@reach/router'
 import yaml from 'js-yaml'
 
 import CheckboxList from 'components/CheckboxList'
@@ -25,8 +25,7 @@ const Note = (props: Props) => {
   const note = useSelector(selectNoteById(props.id))
 
   if (!note) {
-    navigate('/')
-    return
+    return <Redirect to="/" />
   }
 
   const { date, subject, notes, next_steps, tags, doubts, time } = note

@@ -11,7 +11,7 @@ interface Props {
 const Export = (props: Props) => {
   const notes = useSelector(selectNotes)
   const str = yaml.dump(notes, {
-    sortKeys: true,
+    // sortKeys: true,
     noArrayIndent: true,
   })
 

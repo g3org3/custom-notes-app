@@ -1,5 +1,6 @@
 export const exampleNotesYaml = `# example notes
 ---
+id: asdfA123232
 date: 2021-10-14
 subject: Big meeting
 people: [Bob, Mike]

@@ -10,7 +10,7 @@ import Note from 'components/Note'
 import NoteList from 'components/NoteList'
 import NextSteps from 'pages/NextSteps'
 import Export from 'pages/Export'
-import { actions } from 'modules/Note'
+import { actions, NoteType } from 'modules/Note'
 import { selectNotes, selectSearch } from 'modules/Note/Note.selectors'
 
 interface Props {
@@ -28,7 +28,8 @@ const Home = (props: Props) => {
       if (event.nativeEvent.inputType !== 'insertFromPaste') return
 
       const { value } = event.target
-      const notes = yaml.loadAll(value)
+      // @ts-ignore
+      const notes: Array<NoteType> = yaml.loadAll(value)
       dispatch(actions.replaceNotes({ notes }))
     },
     [dispatch]
