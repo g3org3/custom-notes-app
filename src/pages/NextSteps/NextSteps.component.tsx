@@ -3,43 +3,45 @@ import { useDispatch } from 'react-redux'
 import Paper from '@mui/material/Paper'
 
 import { dateToISO } from 'services/date'
-import type { NoteType } from 'components/Note'
+import type { NoteDBType } from 'modules/Note'
 import { actions } from 'modules/Note'
 import { isNextStepDone } from 'components/Note/Note.service'
 import CheckboxList from 'components/CheckboxList'
 
 interface Props {
   path?: string
-  notes: Array<NoteType> | null
+  notes: Array<NoteDBType> | null
 }
 
-type NextStepsType = {
-  noteId: string
+type Item = {
+  id?: string | null
   label: string
 }
 
 const NextSteps = (props: Props) => {
   const dispatch = useDispatch()
-  const [nextSteps, setNextSteps] = useState<Array<NextStepsType>>([])
+  const [nextSteps, setNextSteps] = useState<Array<Item>>([])
   const { notes } = props
 
   useEffect(() => {
-    const filteredNextSteps = (notes || [])
+    if (!notes) return
+
+    const filteredNextSteps = notes
       .filter((note) => !!note.next_steps)
       .map((note) =>
         note.next_steps?.map((x: string) => ({
           id: note.id,
-          label: `${x} [${dateToISO(note.date)}] [${
-            note.subject || note.tags?.join(',')
+          label: `${x} [${dateToISO(note.date) || ''}] [${
+            note.subject || note.tags?.join(',') || ''
           }]`,
         }))
       )
       .flat()
-      .filter((x) => Boolean(x.label))
-      .filter((x) => !isNextStepDone(x.label))
+      .filter(Boolean)
+      .filter((x) => !isNextStepDone(x?.label))
       .map((x, i) => ({
         ...x,
-        label: `${i} | ${x.label}`,
+        label: `${i} | ${x?.label}`,
       }))
 
     setNextSteps(filteredNextSteps)
@@ -59,7 +61,11 @@ const NextSteps = (props: Props) => {
 
   return (
     <Paper>
-      <CheckboxList items={nextSteps} onItemClick={handleRemove} />
+      {nextSteps.length === 0 ? (
+        'Nothing left to do'
+      ) : (
+        <CheckboxList items={nextSteps} onItemClick={handleRemove} />
+      )}
     </Paper>
   )
 }

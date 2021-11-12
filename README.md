@@ -10,7 +10,6 @@ export interface NoteType {
   tags?: Array<string>
   doubts?: Array<string>
   time?: string
-  tasks?: Array<string>
 }
 ```
 

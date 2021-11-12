@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper'
 import { useNavigate } from '@reach/router'
 
 import type { NoteDBType } from 'modules/Note'
+import { getNextStepsStats } from 'components/Note/Note.service'
 import { dateToPretty } from 'services/date'
 import { capitalize, removeVocals } from 'services/string'
 
@@ -53,7 +54,7 @@ const NoteList = (props: Props) => {
                   note.people.map(capitalize).map(removeVocals).join(', ')}
               </TableCell>
               <TableCell>{note.doubts?.length}</TableCell>
-              <TableCell>{note.next_steps?.length}</TableCell>
+              <TableCell>{getNextStepsStats(note).join(' / ')}</TableCell>
             </TableRow>
           ))}
         </TableBody>

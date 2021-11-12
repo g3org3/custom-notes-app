@@ -1,7 +1,9 @@
 import { createFTS } from 'services/full-text-search'
 import type { NoteDBType } from 'modules/Note'
 
-export const isNextStepDone = (nextStep: string) => {
+export const isNextStepDone = (nextStep?: string) => {
+  if (!nextStep) return false
+
   return nextStep.indexOf('(done) ') !== -1
 }
 
@@ -23,7 +25,9 @@ export const toggleNextStepDone = (
   return note
 }
 
-export const getNextStepsStats = (note: NoteDBType) => {
+export const getNextStepsStats = (note: NoteDBType): Array<number> => {
+  if (!note.next_steps) return []
+
   const doneCount = note.next_steps?.reduce((doneCount, nextStep) => {
     return isNextStepDone(nextStep) ? doneCount + 1 : doneCount
   }, 0)
