@@ -4,6 +4,8 @@ import note from './Note'
 
 enableMapSet()
 
-export default {
+const reducers = {
   note: note.reducer,
 }
+
+export default reducers
