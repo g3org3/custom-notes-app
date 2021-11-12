@@ -41,9 +41,6 @@ const Navbar = (props: Props) => {
                 value={search || ''}
               />
             </Search>
-            <Button size="small" color="inherit" onClick={onResetClick}>
-              X
-            </Button>
             <Button
               size="small"
               color="inherit"
@@ -56,6 +53,12 @@ const Navbar = (props: Props) => {
               onClick={() => setIsDarkTheme(!isDarkTheme)}
             >
               {isDarkTheme ? 'light' : 'dark'}
+            </Button>
+            <Button color="inherit" onClick={() => navigate('/export')}>
+              export
+            </Button>
+            <Button size="small" color="inherit" onClick={onResetClick}>
+              X
             </Button>
           </Container>
         </Toolbar>

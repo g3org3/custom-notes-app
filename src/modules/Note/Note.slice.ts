@@ -37,11 +37,11 @@ export default createSlice({
       state: State,
       action: {
         type: string
-        payload: { noteId: string; nextStepIndex: number }
+        payload: { noteId: string | null; nextStepIndex: number }
       }
     ): void => {
       const { noteId, nextStepIndex } = action.payload
-      if (!state.byId || !state.byId.get(noteId)) return
+      if (!state.byId || !noteId || !state.byId.get(noteId)) return
 
       const note = state.byId.get(noteId)
 
@@ -78,7 +78,7 @@ export default createSlice({
 
       state.byId = notes.reduce((byId, note) => {
         const id = uuidv4()
-        byId.set(id, { ...note, id })
+        byId.set(id, { id, ...note })
 
         return byId
       }, new Map())

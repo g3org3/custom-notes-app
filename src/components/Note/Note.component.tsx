@@ -26,14 +26,17 @@ const Note = (props: Props) => {
   const [isSourceDisplayed, setIsSourceDisplayed] = useState(false)
   const note = useSelector(selectNoteById(props.id))
 
-  if (!note) return null
+  if (!note) {
+    navigate('/')
+    return
+  }
 
   const { date, subject, notes, next_steps, tags, doubts, time } = note
   const lxdate = dateToISO(date)
 
   const onCloseClick = () => navigate('/')
 
-  const onNextStepClick = (_: string, index: number) => {
+  const onNextStepClick = (index: number) => {
     dispatch(
       actions.toggleNextStep({
         noteId: note.id,
@@ -120,7 +123,10 @@ const Note = (props: Props) => {
           >
             Next Steps:
           </Typography>
-          <CheckboxList items={next_steps} onItemClick={onNextStepClick} />
+          <CheckboxList
+            items={next_steps.map((label) => ({ label }))}
+            onItemClick={onNextStepClick}
+          />
         </>
       )}
       {doubts && (
@@ -134,7 +140,7 @@ const Note = (props: Props) => {
           >
             Doubts:
           </Typography>
-          <CheckboxList items={doubts} />
+          <CheckboxList items={doubts.map((label) => ({ label }))} />
         </>
       )}
     </NoteHeader>

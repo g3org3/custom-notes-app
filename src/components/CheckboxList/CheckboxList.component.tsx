@@ -6,31 +6,32 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
 
+interface Item {
+  id?: string | null
+  label: string
+}
+
 interface Props {
-  items: Array<string>
-  onItemClick?: (value: string, index: number, isChecked: boolean) => void
+  items: Array<Item>
+  onItemClick?: (index: number, item: Item) => void
 }
 
 const CheckboxList = ({ items, onItemClick }: Props) => {
-  const handleToggle = (
-    value: string,
-    isChecked: boolean,
-    index: number
-  ) => () => {
-    if (!!onItemClick) onItemClick(value, index, isChecked)
+  const handleToggle = (index: number, value: Item) => () => {
+    if (!!onItemClick) onItemClick(index, value)
   }
 
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
       {items.map((value, index) => {
         const labelId = `checkbox-list-label-${value}`
-        const isChecked = value.indexOf('(done)') !== -1
+        const isChecked = value.label.indexOf('(done)') !== -1
 
         return (
-          <ListItem key={value} disablePadding>
+          <ListItem key={`${index}-${value.label}`} disablePadding>
             <ListItemButton
               role={undefined}
-              onClick={handleToggle(value, isChecked, index)}
+              onClick={handleToggle(index, value)}
               dense
             >
               <ListItemIcon>
@@ -42,7 +43,7 @@ const CheckboxList = ({ items, onItemClick }: Props) => {
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={value} />
+              <ListItemText id={labelId} primary={value.label} />
             </ListItemButton>
           </ListItem>
         )
