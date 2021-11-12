@@ -8,13 +8,13 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import { useNavigate } from '@reach/router'
 
-import type { NoteType } from 'components/Note'
+import type { NoteDBType } from 'modules/Note'
 import { dateToPretty } from 'services/date'
 import { capitalize, removeVocals } from 'services/string'
 
 interface Props {
   path?: string
-  notes: Array<NoteType> | null
+  notes: Array<NoteDBType> | null
 }
 
 const NoteList = (props: Props) => {

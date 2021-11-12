@@ -3,6 +3,7 @@ import Container from '@mui/material/Container'
 import { Router } from '@reach/router'
 import yaml from 'js-yaml'
 import { useSelector, useDispatch } from 'react-redux'
+import { toast } from 'react-hot-toast'
 
 import Empty from 'components/Empty'
 import Navbar from 'components/Navbar'
@@ -31,6 +32,7 @@ const Home = (props: Props) => {
       // @ts-ignore
       const notes: Array<NoteType> = yaml.loadAll(value)
       dispatch(actions.replaceNotes({ notes }))
+      toast.success('Loaded')
     },
     [dispatch]
   )
@@ -39,12 +41,17 @@ const Home = (props: Props) => {
     dispatch(actions.setSearch({ search: event.target.value }))
   }
 
+  const onResetClick = () => {
+    dispatch(actions.reset())
+    toast.success('Everything was removed')
+  }
+
   return (
     <>
       <Navbar
         search={search}
         onSearchChange={onSearchChange}
-        onResetClick={() => dispatch(actions.reset())}
+        onResetClick={onResetClick}
       />
       <Container maxWidth="lg">
         <Router>

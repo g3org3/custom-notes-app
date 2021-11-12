@@ -1,6 +1,7 @@
 import Paper from '@mui/material/Paper'
 import { createRef } from 'react'
 import { useSelector } from 'react-redux'
+import { toast } from 'react-hot-toast'
 import yaml from 'js-yaml'
 
 import { selectNotes } from 'modules/Note/Note.selectors'
@@ -23,6 +24,7 @@ const Export = (props: Props) => {
     if (ref.current) {
       ref.current.select()
       document.execCommand('copy')
+      toast.success('Copied to clipboard')
     }
   }, 1000)
 

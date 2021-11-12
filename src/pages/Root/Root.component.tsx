@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ThemeProvider } from '@mui/material/styles'
 import { Router } from '@reach/router'
+import { Toaster } from 'react-hot-toast'
 
 import { theme, darkTheme } from 'style'
 import RootContext from './Root.context'
@@ -26,6 +27,7 @@ const Root = () => {
           <Router>
             <Home default />
           </Router>
+          <Toaster />
         </Container>
       </ThemeProvider>
     </RootContext.Provider>
