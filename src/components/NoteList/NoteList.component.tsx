@@ -1,12 +1,12 @@
-import Typography from '@mui/material/Typography'
+import { useNavigate } from '@reach/router'
+import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import { useNavigate } from '@reach/router'
+import Typography from '@mui/material/Typography'
 
 import type { NoteDBType } from 'modules/Note'
 import { getNextStepsStats } from 'components/Note/Note.service'
@@ -21,6 +21,7 @@ interface Props {
 const NoteList = (props: Props) => {
   const navigate = useNavigate()
   const { notes } = props
+
   if (notes === null || notes.length === 0) {
     return <Typography>No notes found</Typography>
   }

@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
+import Button from '@mui/material/Button'
 
-import { dateToISO } from 'services/date'
 import type { NoteDBType } from 'modules/Note'
 import { actions } from 'modules/Note'
 import { isNextStepDone } from 'components/Note/Note.service'
@@ -13,39 +14,46 @@ interface Props {
   notes: Array<NoteDBType> | null
 }
 
-type Item = {
-  id?: string | null
-  label: string
+const filterHasNextSteps = (note: NoteDBType) => {
+  if (!note.next_steps) return false
+
+  return (
+    note.next_steps.filter((nextStep) => !isNextStepDone(nextStep)).length > 0
+  )
+}
+
+const notesWithNextSteps = (note: NoteDBType) =>
+  note.next_steps
+    ?.filter((nextStep: string) => !isNextStepDone(nextStep))
+    .map((x: string) => ({ id: note.id, label: x })) || []
+
+const Section = ({
+  title,
+  items,
+  handleRemove,
+}: {
+  title: string
+  items: Array<{ id?: string; label: string }>
+  handleRemove: (
+    index: number,
+    item: { id?: string | null; label: string }
+  ) => void
+}) => {
+  const [collapsed, setCollapsed] = useState(false)
+
+  return (
+    <div>
+      <Button onClick={() => setCollapsed(!collapsed)}>
+        <Typography sx={{ fontSize: '16px' }}>{title}</Typography>
+      </Button>
+      {!collapsed && <CheckboxList items={items} onItemClick={handleRemove} />}
+    </div>
+  )
 }
 
 const NextSteps = (props: Props) => {
   const dispatch = useDispatch()
-  const [nextSteps, setNextSteps] = useState<Array<Item>>([])
   const { notes } = props
-
-  useEffect(() => {
-    if (!notes) return
-
-    const filteredNextSteps = notes
-      .filter((note) => !!note.next_steps)
-      .map((note) =>
-        note.next_steps?.map((x: string) => ({
-          id: note.id,
-          label: `${x} [${dateToISO(note.date) || ''}] [${
-            note.subject || note.tags?.join(',') || ''
-          }]`,
-        }))
-      )
-      .flat()
-      .filter(Boolean)
-      .filter((x) => !isNextStepDone(x?.label))
-      .map((x, i) => ({
-        ...x,
-        label: `${i} | ${x?.label}`,
-      }))
-
-    setNextSteps(filteredNextSteps)
-  }, [notes])
 
   const handleRemove = (
     index: number,
@@ -59,13 +67,22 @@ const NextSteps = (props: Props) => {
     )
   }
 
+  if (!notes || notes.filter(filterHasNextSteps).length === 0) {
+    console.log(notes)
+    return <Paper sx={{ padding: '20px' }}>Nothing left to do</Paper>
+  }
+
+  const fileteredNotes = notes.filter(filterHasNextSteps)
+
   return (
-    <Paper>
-      {nextSteps.length === 0 ? (
-        'Nothing left to do'
-      ) : (
-        <CheckboxList items={nextSteps} onItemClick={handleRemove} />
-      )}
+    <Paper sx={{ padding: '10px' }}>
+      {fileteredNotes.map((note) => (
+        <Section
+          title={note.subject || 'No Subject'}
+          items={notesWithNextSteps(note)}
+          handleRemove={handleRemove}
+        />
+      ))}
     </Paper>
   )
 }
