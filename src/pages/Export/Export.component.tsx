@@ -1,5 +1,5 @@
 import Paper from '@mui/material/Paper'
-import { createRef } from 'react'
+import { createRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-hot-toast'
 import yaml from 'js-yaml'
@@ -20,13 +20,15 @@ const Export = (props: Props) => {
     noArrayIndent: true,
   })
 
-  setTimeout(() => {
-    if (ref.current) {
-      ref.current.select()
-      document.execCommand('copy')
-      toast.success('Copied to clipboard')
-    }
-  }, 1000)
+  useEffect(() => {
+    setTimeout(() => {
+      if (ref.current) {
+        ref.current.select()
+        document.execCommand('copy')
+        toast.success('Copied to clipboard')
+      }
+    }, 1000)
+  }, [])
 
   return (
     <Paper sx={{ padding: '20px' }}>

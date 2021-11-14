@@ -6,6 +6,7 @@ import Button from '@mui/material/Button'
 
 import type { NoteDBType } from 'modules/Note'
 import { actions } from 'modules/Note'
+import { toRelativeCalendar } from 'services/date'
 import { isNextStepDone } from 'components/Note/Note.service'
 import CheckboxList from 'components/CheckboxList'
 
@@ -30,9 +31,11 @@ const notesWithNextSteps = (note: NoteDBType) =>
 const Section = ({
   title,
   items,
+  date,
   handleRemove,
 }: {
   title: string
+  date?: Date | null
   items: Array<{ id?: string; label: string }>
   handleRemove: (
     index: number,
@@ -43,9 +46,10 @@ const Section = ({
 
   return (
     <div>
-      <Button onClick={() => setCollapsed(!collapsed)}>
-        <Typography sx={{ fontSize: '16px' }}>{title}</Typography>
-      </Button>
+      <Typography sx={{ fontSize: '16px' }}>
+        <Button onClick={() => setCollapsed(!collapsed)}>{title}</Button>
+        {toRelativeCalendar(date)}
+      </Typography>
       {!collapsed && <CheckboxList items={items} onItemClick={handleRemove} />}
     </div>
   )
@@ -79,6 +83,7 @@ const NextSteps = (props: Props) => {
       {fileteredNotes.map((note) => (
         <Section
           title={note.subject || 'No Subject'}
+          date={note.date}
           items={notesWithNextSteps(note)}
           handleRemove={handleRemove}
         />

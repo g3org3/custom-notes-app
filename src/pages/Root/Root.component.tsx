@@ -27,7 +27,7 @@ const Root = () => {
           <Router>
             <Home default />
           </Router>
-          <Toaster />
+          <Toaster position="bottom-right" reverseOrder={true} />
         </Container>
       </ThemeProvider>
     </RootContext.Provider>
