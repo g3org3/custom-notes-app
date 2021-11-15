@@ -76,7 +76,7 @@ export default createSlice({
         return
       }
 
-      state.byId = notes.reduce((byId, note) => {
+      state.byId = notes.reverse().reduce((byId, note) => {
         const id = uuidv4()
         byId.set(note.id || id, { id, ...note })
 
