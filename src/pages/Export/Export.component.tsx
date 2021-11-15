@@ -15,10 +15,16 @@ const ref = createRef<HTMLTextAreaElement>()
 
 const Export = (props: Props) => {
   const notes = useSelector(selectNotes)
-  const str = yaml.dump(notes, {
-    // sortKeys: true,
-    noArrayIndent: true,
-  })
+  const str =
+    '---\n' +
+    notes
+      ?.map((note) => {
+        return yaml.dump(note, {
+          // sortKeys: true,
+          noArrayIndent: true,
+        })
+      })
+      .join('---\n')
 
   useEffect(() => {
     setTimeout(() => {
