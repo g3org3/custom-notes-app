@@ -8,11 +8,11 @@ export default configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore these action types
-        ignoredActions: ['note/replaceNotes'],
+        ignoredActions: ['note/replaceNotes', 'note/setFileHandler'],
         // Ignore these field paths in all actions
         ignoredActionPaths: ['payload.notes.date'],
         // Ignore these paths in the state
-        ignoredPaths: ['note.byId'],
+        ignoredPaths: ['note.byId', 'note.fileHandler'],
       },
     }),
 })
