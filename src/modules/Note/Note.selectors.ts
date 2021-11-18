@@ -1,5 +1,3 @@
-import yaml from 'js-yaml'
-
 import type { NoteDBType, State } from './Note.slice'
 
 interface Store {
