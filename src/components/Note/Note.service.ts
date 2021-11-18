@@ -66,8 +66,6 @@ export const searchNotes = (
       blobOfText += ' ' + note.next_steps.join(' ')
     }
 
-    console.log(blobOfText)
-
     return fts(blobOfText)
   }
 

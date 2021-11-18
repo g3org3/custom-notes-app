@@ -17,6 +17,7 @@ const appVersion = process.env['REACT_APP_VERSION'] || '-1'
 const Root = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(false)
   const [keyCombo, setKeyCombo] = useState('')
+  const [lastKeyDatetime, setLastKeyDate] = useState<number>(0)
   const fileHandler = useSelector(selectFileHandler)
   const notes = useSelector(selectNotes)
 
@@ -28,10 +29,15 @@ const Root = () => {
       }
       keys.push(event.key)
       const combo = keys.join('-')
-      setKeyCombo(combo)
+
+      const combos = ['Meta-s', 'Meta-o', 'Control-o', 'Control-s', 'Control-k', 'Meta-k']
+      if (combos.includes(combo)) {
+        event.preventDefault()
+        keys = []
+      }
+
       const userWantsToSave = (event.ctrlKey && event.key === 's') || combo === 'Meta-s'
       if (userWantsToSave) {
-        event.preventDefault()
         try {
           if (!notes) throw Error('There are 0 notes to export')
 
@@ -44,6 +50,9 @@ const Root = () => {
           toast.error('Uh oh, something went wrong.')
         }
       }
+
+      setKeyCombo(combo)
+      setLastKeyDate(new Date().getTime())
     }
   }, [fileHandler, notes])
 
@@ -54,7 +63,9 @@ const Root = () => {
         appVersion,
         isDarkTheme,
         setIsDarkTheme,
-        keyCombo
+        keyCombo,
+        setKeyCombo,
+        lastKeyDatetime
       }}
     >
       <ThemeProvider theme={isDarkTheme ? darkTheme : theme}>

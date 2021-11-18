@@ -72,7 +72,6 @@ const NextSteps = (props: Props) => {
   }
 
   if (!notes || notes.filter(filterHasNextSteps).length === 0) {
-    console.log(notes)
     return <Paper sx={{ padding: '20px' }}>Nothing left to do</Paper>
   }
 

@@ -23,7 +23,7 @@ const Home = (props: Props) => {
   const dispatch = useDispatch()
   const notes = useSelector(selectNotesWithSearch)
   const search = useSelector(selectSearch)
-  const { keyCombo } = useContext(RootContext)
+  const { keyCombo, setKeyCombo } = useContext(RootContext)
 
   const onCopyPasteYaml = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +78,7 @@ const Home = (props: Props) => {
     if (keyCombo === 'Meta-o' || keyCombo === 'Control-o') {
       handleOpenFile()
     }
-  }, [keyCombo, handleOpenFile])
+  }, [keyCombo, handleOpenFile, setKeyCombo])
 
   return (
     <>

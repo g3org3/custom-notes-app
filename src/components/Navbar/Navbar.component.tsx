@@ -21,13 +21,13 @@ const searchRef = createRef<HTMLInputElement>()
 const Navbar = (props: Props) => {
   const { onSearchChange, search, onResetClick } = props
   const navigate = useNavigate()
-  const { appVersion, isDarkTheme, setIsDarkTheme, keyCombo } = useContext(RootContext)
+  const { appVersion, isDarkTheme, setIsDarkTheme, keyCombo, setKeyCombo } = useContext(RootContext)
 
   useEffect(() => {
-    if (searchRef.current && (keyCombo === 'Meta-k' || keyCombo === 'Control-k')) {
+    if (searchRef.current && (keyCombo === 'Meta-k' || keyCombo === 'Control-k' || keyCombo === '/-/')) {
       searchRef.current.focus()
     }
-  }, [keyCombo])
+  }, [keyCombo, setKeyCombo])
 
   return (
     <Box sx={{ flexGrow: 1 }}>

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Typography from '@mui/material/Typography'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate, Redirect } from '@reach/router'
 import yaml from 'js-yaml'
 
+import RootContext from 'pages/Root/Root.context'
 import CheckboxList from 'components/CheckboxList'
 import { dateToISO } from 'services/date'
 import { capitalize } from 'services/string'
@@ -21,8 +22,16 @@ interface Props {
 const Note = (props: Props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { keyCombo, setKeyCombo, lastKeyDatetime } = useContext(RootContext)
   const [isSourceDisplayed, setIsSourceDisplayed] = useState(false)
   const note = useSelector(selectNoteById(props.id))
+
+  useEffect(() => {
+    const diff = new Date().getTime() - lastKeyDatetime
+    if (keyCombo === 'q-q' && diff < 100) {
+      navigate('/')
+    }
+  }, [keyCombo, setKeyCombo, navigate, lastKeyDatetime])
 
   if (!note) {
     return <Redirect to="/" />
@@ -32,6 +41,7 @@ const Note = (props: Props) => {
   const lxdate = dateToISO(date)
 
   const onCloseClick = () => navigate('/')
+
 
   const onNextStepClick = (index: number) => {
     dispatch(
@@ -91,7 +101,7 @@ const Note = (props: Props) => {
       {tags && (
         <>
           {tags.map((tag) => (
-            <span>
+            <span key={tag}>
               <Typography
                 style={{
                   fontSize: 14,
