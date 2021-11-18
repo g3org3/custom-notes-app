@@ -46,6 +46,31 @@ const Home = (props: Props) => {
     toast.success('Everything was removed')
   }
 
+  const handleOpenFile = async () => {
+    const options = {
+      types: [{
+        description: 'Text',
+        accept: { 'text/*': ['.txt', '.yaml', '.yml'] }
+      }],
+      multiple: false
+    }
+
+    // @ts-ignore
+    const [fileHandle] = await window.showOpenFilePicker(options)
+    if (fileHandle.kind !== 'file') {
+      toast.error('Could not open file')
+      return
+    }
+
+    const file = await fileHandle.getFile();
+    const content = await file.text()
+
+    // @ts-ignore
+    const notes: Array<NoteType> = yaml.loadAll(content)
+    dispatch(actions.replaceNotes({ notes }))
+    toast.success('Loaded')
+  }
+
   return (
     <>
       <Navbar
@@ -56,7 +81,7 @@ const Home = (props: Props) => {
       <Container maxWidth="lg">
         <Router>
           {(search === '' && !notes) || (search !== '' && notes == null) ? (
-            <Empty onChange={onCopyPasteYaml} text="" path="/" />
+            <Empty onChange={onCopyPasteYaml} onOpenFileClick={handleOpenFile} text="" path="/" />
           ) : (
             <NoteList notes={notes} path="/" />
           )}
