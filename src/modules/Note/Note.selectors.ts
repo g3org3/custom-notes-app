@@ -8,7 +8,7 @@ export const selectNotes = (state: Store): Array<NoteDBType> | null => {
   const { byId } = state.note
   if (!byId) return null
 
-  return Array.from(byId.values())
+  return Array.from(byId.values()).reverse()
 }
 
 export const selectNotesWithSearch = (state: Store): Array<NoteDBType> | null => {
