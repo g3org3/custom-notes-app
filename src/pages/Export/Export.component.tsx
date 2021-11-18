@@ -2,9 +2,9 @@ import Paper from '@mui/material/Paper'
 import { createRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-hot-toast'
-import yaml from 'js-yaml'
 
 import { selectNotes } from 'modules/Note/Note.selectors'
+import { notesToYaml } from 'modules/Note/Note.service'
 import Pre from 'components/Pre'
 
 interface Props {
@@ -15,16 +15,7 @@ const ref = createRef<HTMLTextAreaElement>()
 
 const Export = (props: Props) => {
   const notes = useSelector(selectNotes)
-  const str =
-    '---\n' +
-    notes
-      ?.map((note) => {
-        return yaml.dump(note, {
-          // sortKeys: true,
-          noArrayIndent: true,
-        })
-      })
-      .join('---\n')
+  const str = notesToYaml(notes)
 
   useEffect(() => {
     setTimeout(() => {

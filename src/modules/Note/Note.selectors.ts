@@ -1,3 +1,5 @@
+import yaml from 'js-yaml'
+
 import type { NoteDBType, State } from './Note.slice'
 
 interface Store {
@@ -5,11 +7,17 @@ interface Store {
 }
 
 export const selectNotes = (state: Store): Array<NoteDBType> | null => {
-  const { byId, search, filteredIds } = state.note
+  const { byId } = state.note
   if (!byId) return null
 
-  const notes = Array.from(byId.values())
+  return Array.from(byId.values())
+}
 
+export const selectNotesWithSearch = (state: Store): Array<NoteDBType> | null => {
+  const notes = selectNotes(state)
+  if (!notes) return null
+
+  const { search, filteredIds } = state.note
   if (!search || search === '') return notes
 
   return notes.filter((n) => filteredIds.includes(n.id))
@@ -24,3 +32,5 @@ export const selectNoteById = (id?: string) => (
 
   return state.note.byId.get(id) || null
 }
+
+export const selectFileHandler = (state: Store) => state.note.fileHandler

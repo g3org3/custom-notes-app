@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, createRef } from 'react'
 import Container from '@mui/material/Container'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -16,10 +16,18 @@ interface Props {
   onResetClick: () => void
 }
 
+const searchRef = createRef<HTMLInputElement>()
+
 const Navbar = (props: Props) => {
   const { onSearchChange, search, onResetClick } = props
-  const { appVersion, isDarkTheme, setIsDarkTheme } = useContext(RootContext)
   const navigate = useNavigate()
+  const { appVersion, isDarkTheme, setIsDarkTheme, keyCombo } = useContext(RootContext)
+
+  useEffect(() => {
+    if (searchRef.current && (keyCombo === 'Meta-k' || keyCombo === 'Control-k')) {
+      searchRef.current.focus()
+    }
+  }, [keyCombo])
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -34,6 +42,7 @@ const Navbar = (props: Props) => {
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
+                inputRef={searchRef}
                 placeholder="Search…"
                 inputProps={{ 'aria-label': 'search' }}
                 onChange={onSearchChange}

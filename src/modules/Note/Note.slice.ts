@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { searchNotes, toggleNextStepDone } from 'components/Note/Note.service'
 
+type FileHandler = {
+}
+
 export interface NoteType {
   id?: string | null
   date?: Date
@@ -22,7 +25,8 @@ export interface NoteDBType extends NoteType {
 export interface State {
   byId: Map<string, NoteDBType> | null
   search: string | null
-  filteredIds: Array<string>
+  filteredIds: Array<string>,
+  fileHandler: FileHandler | null
 }
 
 export default createSlice({
@@ -31,6 +35,7 @@ export default createSlice({
     byId: null,
     search: null,
     filteredIds: [],
+    fileHandler: null,
   },
   reducers: {
     toggleNextStep: (
@@ -53,6 +58,9 @@ export default createSlice({
     reset: (state: State) => {
       state.byId = null
       state.search = null
+    },
+    setFileHandler: (state: State, action: {type: string; payload: { fileHandler: FileHandler } }) => {
+      state.fileHandler = action.payload.fileHandler
     },
     setSearch: (
       state: State,

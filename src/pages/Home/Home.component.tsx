@@ -1,10 +1,11 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useContext } from 'react'
 import Container from '@mui/material/Container'
 import { Router } from '@reach/router'
 import yaml from 'js-yaml'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-hot-toast'
 
+import RootContext from 'pages/Root/Root.context'
 import Empty from 'components/Empty'
 import Navbar from 'components/Navbar'
 import Note from 'components/Note'
@@ -12,7 +13,7 @@ import NoteList from 'components/NoteList'
 import NextSteps from 'pages/NextSteps'
 import Export from 'pages/Export'
 import { actions, NoteType } from 'modules/Note'
-import { selectNotes, selectSearch } from 'modules/Note/Note.selectors'
+import { selectNotesWithSearch, selectSearch } from 'modules/Note/Note.selectors'
 
 interface Props {
   default?: boolean
@@ -20,8 +21,9 @@ interface Props {
 
 const Home = (props: Props) => {
   const dispatch = useDispatch()
-  const notes = useSelector(selectNotes)
+  const notes = useSelector(selectNotesWithSearch)
   const search = useSelector(selectSearch)
+  const { keyCombo } = useContext(RootContext)
 
   const onCopyPasteYaml = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +48,7 @@ const Home = (props: Props) => {
     toast.success('Everything was removed')
   }
 
-  const handleOpenFile = async () => {
+  const handleOpenFile = useCallback(async () => {
     const options = {
       types: [{
         description: 'Text',
@@ -56,20 +58,27 @@ const Home = (props: Props) => {
     }
 
     // @ts-ignore
-    const [fileHandle] = await window.showOpenFilePicker(options)
-    if (fileHandle.kind !== 'file') {
+    const [fileHandler] = await window.showOpenFilePicker(options)
+    if (fileHandler.kind !== 'file') {
       toast.error('Could not open file')
       return
     }
 
-    const file = await fileHandle.getFile();
+    const file = await fileHandler.getFile();
     const content = await file.text()
 
     // @ts-ignore
     const notes: Array<NoteType> = yaml.loadAll(content)
+    dispatch(actions.setFileHandler({ fileHandler }))
     dispatch(actions.replaceNotes({ notes }))
     toast.success('Loaded')
-  }
+  }, [dispatch])
+
+  useEffect(() => {
+    if (keyCombo === 'Meta-o' || keyCombo === 'Control-o') {
+      handleOpenFile()
+    }
+  }, [keyCombo, handleOpenFile])
 
   return (
     <>
