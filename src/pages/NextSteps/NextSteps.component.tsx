@@ -82,6 +82,7 @@ const NextSteps = (props: Props) => {
     <Paper sx={{ padding: '10px' }}>
       {fileteredNotes.map((note) => (
         <Section
+          key={note.id}
           title={note.subject || 'No Subject'}
           date={note.date}
           items={notesWithNextSteps(note)}
