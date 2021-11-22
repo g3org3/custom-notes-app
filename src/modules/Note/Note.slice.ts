@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
 
-import { searchNotes, toggleNextStepDone } from 'components/Note/Note.service'
+import { searchNotes, toggleNextStepDone, toggleDoubtDone } from 'components/Note/Note.service'
 
 type FileHandler = {
 }
@@ -53,6 +53,23 @@ export default createSlice({
       if (!note) return
 
       const newNote = toggleNextStepDone(note, nextStepIndex)
+      state.byId.set(noteId, newNote)
+    },
+    toggleDoubt: (
+      state: State,
+      action: {
+        type: string
+        payload: { noteId: string | null; doubtIndex: number }
+      }
+    ): void => {
+      const { noteId, doubtIndex } = action.payload
+      if (!state.byId || !noteId || !state.byId.get(noteId)) return
+
+      const note = state.byId.get(noteId)
+
+      if (!note) return
+
+      const newNote = toggleDoubtDone(note, doubtIndex)
       state.byId.set(noteId, newNote)
     },
     reset: (state: State) => {

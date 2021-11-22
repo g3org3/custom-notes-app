@@ -1,35 +1,50 @@
 import { createFTS } from 'services/full-text-search'
 import type { NoteDBType } from 'modules/Note'
 
-export const isNextStepDone = (nextStep?: string) => {
-  if (!nextStep) return false
+export const isLineDone = (line?: string) => {
+  if (!line) return false
 
-  return nextStep.indexOf('(done) ') !== -1
+  return line.indexOf('(done) ') !== -1
 }
 
-export const toggleNextStepDone = (
+export const toggleLineDone = (
   note: NoteDBType,
-  index: number
+  index: number,
+  listName: string,
 ): NoteDBType => {
-  if (!note.next_steps) return note
+  // @ts-ignore
+  if (!note[listName]) return note
 
-  const nextStep = note.next_steps[index]
-  const isDone = isNextStepDone(nextStep)
+  // @ts-ignore
+  const line = note[listName][index]
+  const isDone = isLineDone(line)
 
   if (!isDone) {
-    note.next_steps[index] = '(done) ' + nextStep
+    // @ts-ignore
+    note[listName][index] = '(done) ' + line
   } else {
-    note.next_steps[index] = nextStep.split('(done) ').join('')
+    // @ts-ignore
+    note[listName][index] = line.split('(done) ').join('')
   }
 
   return note
 }
 
+export const toggleNextStepDone = (
+  note: NoteDBType,
+  index: number
+): NoteDBType => toggleLineDone(note, index, 'next_steps')
+
+export const toggleDoubtDone = (
+  note: NoteDBType,
+  index: number
+): NoteDBType => toggleLineDone(note, index, 'doubts')
+
 export const getNextStepsStats = (note: NoteDBType): Array<number> => {
   if (!note.next_steps) return []
 
   const doneCount = note.next_steps?.reduce((doneCount, nextStep) => {
-    return isNextStepDone(nextStep) ? doneCount + 1 : doneCount
+    return isLineDone(nextStep) ? doneCount + 1 : doneCount
   }, 0)
 
   return [doneCount, note.next_steps?.length]

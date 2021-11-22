@@ -3,13 +3,14 @@ import Typography from '@mui/material/Typography'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate, Redirect } from '@reach/router'
 import yaml from 'js-yaml'
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 import RootContext from 'pages/Root/Root.context'
 import CheckboxList from 'components/CheckboxList'
 import { dateToISO } from 'services/date'
 import { capitalize } from 'services/string'
 import { actions } from 'modules/Note'
-import Pre from 'components/Pre'
 import { selectNoteById } from 'modules/Note/Note.selectors'
 import NoteHeader from './components/NoteHeader'
 import Code from './components/Code'
@@ -22,9 +23,10 @@ interface Props {
 const Note = (props: Props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { keyCombo, setKeyCombo, lastKeyDatetime } = useContext(RootContext)
+  const { keyCombo, setKeyCombo, lastKeyDatetime, isDarkTheme } = useContext(RootContext)
   const [isSourceDisplayed, setIsSourceDisplayed] = useState(false)
   const note = useSelector(selectNoteById(props.id))
+  const theme = isDarkTheme ? atomOneDark : atomOneLight
 
   useEffect(() => {
     const diff = new Date().getTime() - lastKeyDatetime
@@ -52,8 +54,27 @@ const Note = (props: Props) => {
     )
   }
 
+  const onDoubtClick = (index: number) => {
+    dispatch(
+      actions.toggleDoubt({
+        noteId: note.id,
+        doubtIndex: index,
+      })
+    )
+  }
+
   if (isSourceDisplayed) {
-    const yamlversionstr = '---\n' + yaml.dump(note) + '\n'
+    const yamlversionstr = '---\n' + yaml.dump(note, {
+      replacer: (_, value) => {
+        if (value.date instanceof Date) {
+          return {
+            ...value,
+            date: dateToISO(value.date)
+          }
+        }
+        return value
+      }
+    }) + '\n'
 
     return (
       <NoteHeader
@@ -69,7 +90,9 @@ const Note = (props: Props) => {
         >
           {subject || 'No Subject'}
         </Typography>
-        <Pre>{yamlversionstr}</Pre>
+        <SyntaxHighlighter language="yaml" style={theme}>
+          {yamlversionstr}
+        </SyntaxHighlighter>
       </NoteHeader>
     )
   }
@@ -147,7 +170,7 @@ const Note = (props: Props) => {
           >
             Doubts:
           </Typography>
-          <CheckboxList items={doubts.map((label) => ({ label }))} />
+          <CheckboxList items={doubts.map((label) => ({ label }))} onItemClick={onDoubtClick} />
         </>
       )}
     </NoteHeader>

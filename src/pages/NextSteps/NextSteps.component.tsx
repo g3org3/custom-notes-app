@@ -3,12 +3,16 @@ import { useDispatch } from 'react-redux'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 import type { NoteDBType } from 'modules/Note'
 import { actions } from 'modules/Note'
 import { toRelativeCalendar } from 'services/date'
-import { isNextStepDone } from 'components/Note/Note.service'
+import { isLineDone } from 'components/Note/Note.service'
 import CheckboxList from 'components/CheckboxList'
+import { capitalize } from 'services/string'
 
 interface Props {
   path?: string
@@ -19,13 +23,13 @@ const filterHasNextSteps = (note: NoteDBType) => {
   if (!note.next_steps) return false
 
   return (
-    note.next_steps.filter((nextStep) => !isNextStepDone(nextStep)).length > 0
+    note.next_steps.filter((nextStep) => !isLineDone(nextStep)).length > 0
   )
 }
 
 const notesWithNextSteps = (note: NoteDBType) =>
   note.next_steps
-    ?.filter((nextStep: string) => !isNextStepDone(nextStep))
+    ?.filter((nextStep: string) => !isLineDone(nextStep))
     .map((x: string) => ({ id: note.id, label: x })) || []
 
 const Section = ({
@@ -47,8 +51,9 @@ const Section = ({
   return (
     <div>
       <Typography sx={{ fontSize: '16px' }}>
-        <Button onClick={() => setCollapsed(!collapsed)}>{title}</Button>
-        {toRelativeCalendar(date)}
+        <IconButton size="small" onClick={() => setCollapsed(!collapsed)}>{collapsed ? <ArrowRightIcon /> : <ArrowDropDownIcon />}</IconButton>
+        {capitalize(title)}{' '}
+        ({toRelativeCalendar(date)})
       </Typography>
       {!collapsed && <CheckboxList items={items} onItemClick={handleRemove} />}
     </div>
