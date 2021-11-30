@@ -47,6 +47,7 @@ const Root = () => {
           writableStream.close();
           toast.success('Saved!')
         } catch (e) {
+          console.error(e)
           toast.error('Uh oh, something went wrong.')
         }
       }
@@ -73,7 +74,7 @@ const Root = () => {
           <Router>
             <Home default />
           </Router>
-          <Toaster position="bottom-right" reverseOrder={true} />
+          <Toaster position="top-center" reverseOrder={true} />
         </Container>
       </ThemeProvider>
     </RootContext.Provider>
