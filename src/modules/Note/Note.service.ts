@@ -10,7 +10,7 @@ export const notesToYaml = (notes: Array<NoteDBType> | null) => {
       // sortKeys: true,
       noArrayIndent: true,
       replacer: (_: string, value: NoteDBType) => {
-        if (value.date instanceof Date) {
+        if (value && value.date instanceof Date) {
           return {
             ...value,
             date: dateToISO(value.date)
