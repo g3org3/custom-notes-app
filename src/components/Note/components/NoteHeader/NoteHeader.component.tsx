@@ -12,10 +12,11 @@ import type { NoteDBType } from 'modules/Note'
 
 interface Props {
   children: React.ReactNode
-  isSourceDisplayed: boolean
+  isMode: string | null
   note: NoteDBType
   onCloseClick: () => void
   onSourceClick: () => void
+  onEditClick: () => void
 }
 
 const NoteHeader = (props: Props) => {
@@ -24,7 +25,8 @@ const NoteHeader = (props: Props) => {
     children,
     onCloseClick,
     onSourceClick,
-    isSourceDisplayed,
+    onEditClick,
+    isMode,
   } = props
   const { people } = note
 
@@ -48,19 +50,30 @@ const NoteHeader = (props: Props) => {
                 cursor: 'pointer',
                 display: 'inline-block',
                 margin: 0,
-                marginLeft: '5px',
+                marginLeft: '10px',
               }}
               onClick={onSourceClick}
             >
               <Button
-                variant={isSourceDisplayed ? 'contained' : 'outlined'}
-                disableElevation={isSourceDisplayed}
+                variant={isMode === 'source' ? 'contained' : 'outlined'}
+                disableElevation={isMode === 'source'}
                 color="primary"
                 size="small"
               >
                 {'</>'}
               </Button>
             </pre>
+            <div style={{ marginLeft: '10px' }}>
+              <Button
+                variant={isMode === 'editor' ? 'contained' : 'outlined'}
+                disableElevation={isMode === 'editor'}
+                color="primary"
+                onClick={onEditClick}
+                size="small"
+              >
+                Edit
+              </Button>
+            </div>
           </div>
           <div style={{ flexGrow: 1 }}>
             <Typography

@@ -33,7 +33,7 @@ const Navbar = (props: Props) => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
         <Toolbar variant="dense">
-          <Container sx={{ display: 'flex' }}>
+          <Container maxWidth="xl" sx={{ display: 'flex' }}>
             <Button onClick={() => navigate('/')} color="inherit">
               Notes {appVersion}
             </Button>

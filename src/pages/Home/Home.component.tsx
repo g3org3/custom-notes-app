@@ -87,7 +87,7 @@ const Home = (props: Props) => {
         onSearchChange={onSearchChange}
         onResetClick={onResetClick}
       />
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Router>
           {(search === '' && !notes) || (search !== '' && notes == null) ? (
             <Empty onChange={onCopyPasteYaml} onOpenFileClick={handleOpenFile} text="" path="/" />

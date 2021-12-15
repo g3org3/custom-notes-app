@@ -1,3 +1,4 @@
+import Editor from "@monaco-editor/react";
 import { useState, useEffect, useContext } from 'react'
 import Typography from '@mui/material/Typography'
 import { useSelector, useDispatch } from 'react-redux'
@@ -24,7 +25,7 @@ const Note = (props: Props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { keyCombo, setKeyCombo, lastKeyDatetime, isDarkTheme } = useContext(RootContext)
-  const [isSourceDisplayed, setIsSourceDisplayed] = useState(false)
+  const [isMode, setIsMode] = useState<string | null>(null)
   const note = useSelector(selectNoteById(props.id))
   const theme = isDarkTheme ? atomOneDark : atomOneLight
 
@@ -63,7 +64,44 @@ const Note = (props: Props) => {
     )
   }
 
-  if (isSourceDisplayed) {
+  if (isMode === 'editor') {
+    const yamlversionstr = '---\n' + yaml.dump(note, {
+      replacer: (_, value) => {
+        if (value.date instanceof Date) {
+          return {
+            ...value,
+            date: dateToISO(value.date)
+          }
+        }
+        return value
+      }
+    }) + '\n'
+
+    return <NoteHeader
+      note={note}
+      onCloseClick={onCloseClick}
+      onSourceClick={() => setIsMode('source')}
+      onEditClick={() => setIsMode(null)}
+      isMode={isMode}
+    >
+      <Typography
+        sx={{ fontSize: 20, display: 'inline-block' }}
+        color="text.primary"
+        gutterBottom
+      >
+        {subject || 'No Subject'}
+      </Typography>
+      <Editor
+        height="90vh" // By default, it fully fits with its parent
+        theme="light"
+        language={"yaml"}
+        value={yamlversionstr}
+        loading={`Loading...`}
+      />
+    </NoteHeader>
+  }
+
+  if (isMode === 'source') {
     const yamlversionstr = '---\n' + yaml.dump(note, {
       replacer: (_, value) => {
         if (value.date instanceof Date) {
@@ -80,8 +118,9 @@ const Note = (props: Props) => {
       <NoteHeader
         note={note}
         onCloseClick={onCloseClick}
-        onSourceClick={() => setIsSourceDisplayed(false)}
-        isSourceDisplayed={isSourceDisplayed}
+        onSourceClick={() => setIsMode(null)}
+        onEditClick={() => setIsMode('editor')}
+        isMode={isMode}
       >
         <Typography
           sx={{ fontSize: 20, display: 'inline-block' }}
@@ -101,8 +140,9 @@ const Note = (props: Props) => {
     <NoteHeader
       note={note}
       onCloseClick={onCloseClick}
-      onSourceClick={() => setIsSourceDisplayed(true)}
-      isSourceDisplayed={isSourceDisplayed}
+      onSourceClick={() => setIsMode('source')}
+      onEditClick={() => setIsMode('editor')}
+      isMode={isMode}
     >
       {subject && (
         <Typography

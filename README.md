@@ -2,14 +2,13 @@
 
 ```ts
 export interface NoteType {
-  date?: Date
+  date?: YYYY-MM-DD
   people?: Array<string>
   subject?: string
   notes?: string
   next_steps?: Array<string>
   tags?: Array<string>
   doubts?: Array<string>
-  time?: string
 }
 ```
 

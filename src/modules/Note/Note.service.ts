@@ -20,7 +20,7 @@ export const notesToYaml = (notes: Array<NoteDBType> | null) => {
       }
     }
     
-    const text = notes.map((note) => yaml.dump(note, options)).join('---\n')
+    const text = notes.reverse().map((note) => yaml.dump(note, options)).join('---\n')
     
     return `---
 ${text}
