@@ -35,6 +35,7 @@ import { notesToYaml } from 'services/notes'
 import { useAuth } from 'config/auth'
 import { dbSet } from 'config/firebase'
 import { actions } from 'modules/Note'
+import { AnimatePresence, motion } from 'framer-motion'
 
 interface Props {
   title: string
@@ -132,6 +133,7 @@ const Layout: React.FC<Props> = ({
             status: 'error',
           })
         })
+      return
     }
 
     saveToFile(fileHandler, notesInYaml)
@@ -166,7 +168,7 @@ const Layout: React.FC<Props> = ({
   return (
     <>
       <NewNoteModal isOpen={newNoteIsOpen} onClose={newNoteOnClose} />
-      <Grid minH="100vh" pt="48px">
+      <Grid minH="100vh">
         <Box
           bg={navbarBackgroundColor}
           position="fixed"
@@ -220,16 +222,22 @@ const Layout: React.FC<Props> = ({
             </MenuList>
           </Menu>
           <Flex grow={{ base: '1', md: '0' }} justifyContent="center">
-            <Link as={ReachLink} to={homeUrl || '/'}>
-              <Heading as="h1" size="md" display="flex" alignItems="center">
-                {title}{' '}
-                {by ? (
-                  <>
-                    <FiX size={13} /> {currentUser?.displayName || by}
-                  </>
-                ) : null}
-              </Heading>
-            </Link>
+            <AnimatePresence>
+              <motion.div whileHover={{ scale: 1.2 }}>
+                <Link as={ReachLink} to={homeUrl || '/'}>
+                  <Heading as="h1" size="md" display="flex" alignItems="center">
+                    {title}{' '}
+                    {by ? (
+                      <>
+                        <FiX size={13} />
+
+                        {currentUser?.displayName || by}
+                      </>
+                    ) : null}
+                  </Heading>
+                </Link>
+              </motion.div>
+            </AnimatePresence>
           </Flex>
           <Flex
             flexGrow={{ base: '0', md: '1' }}
@@ -240,7 +248,7 @@ const Layout: React.FC<Props> = ({
             <ColorModeSwitcher />
           </Flex>
         </Box>
-        <Flex textAlign="left" padding={pagePadding} direction="column">
+        <Flex mt="48px" padding={pagePadding} direction="column">
           {children}
         </Flex>
       </Grid>

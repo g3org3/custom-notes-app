@@ -118,7 +118,7 @@ const Home: FC<Props> = () => {
           <Table
             variant="simple"
             size="sm"
-            display={{ base: 'block', md: 'none' }}
+            display={{ base: 'inline-table', md: 'none' }}
           >
             <Thead>
               <Tr>
@@ -139,8 +139,7 @@ const Home: FC<Props> = () => {
           </Table>
           <Table
             variant="simple"
-            size="md"
-            display={{ base: 'none', md: 'block' }}
+            display={{ base: 'none', md: 'inline-table' }}
           >
             <Thead>
               <Tr>
