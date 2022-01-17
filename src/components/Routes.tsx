@@ -10,9 +10,9 @@ import Login from 'pages/Login'
 import { selectIsThereAnyNotes } from 'modules/Note/Note.selectors'
 
 const menuItems = [
-  { path: '/notes', label: 'Notes', icon: '📓' },
+  { path: '/notes', label: 'Notes', icon: '📓', command: '1' },
+  { path: '/export', label: 'Export', icon: '📦', command: '2' },
   // { path: '/next-steps', label: 'Next Steps', icon: '🥞' },
-  { path: '/export', label: 'Export', icon: '📦' },
 ]
 
 const Routes = () => {

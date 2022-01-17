@@ -43,7 +43,12 @@ interface Props {
   by?: string
   childrend?: React.ReactNode
   path?: string
-  menuItems?: Array<{ path: string; label: string; icon: string }>
+  menuItems?: Array<{
+    path: string
+    label: string
+    icon: string
+    command: string
+  }>
 }
 
 const Layout: React.FC<Props> = ({
@@ -187,7 +192,7 @@ const Layout: React.FC<Props> = ({
             </MenuButton>
             <MenuList>
               {menuItems?.map((item) => (
-                <MenuItem key={item.path}>
+                <MenuItem key={item.path} command={item.command}>
                   <Link as={ReachLink} to={item.path} display="flex" gap={2}>
                     <span>{item.icon}</span>
                     {item.label}
@@ -197,24 +202,32 @@ const Layout: React.FC<Props> = ({
               {menuItems && <MenuDivider color={dividerColor} />}
               {currentUser && (
                 // @ts-ignore
-                <MenuItem onClick={newNoteOnOpen} display="flex" gap={2}>
-                  <span>📝</span>
+                <MenuItem
+                  onClick={newNoteOnOpen}
+                  icon={<span>📝</span>}
+                  command="N"
+                >
                   New Note
                 </MenuItem>
               )}
               {isAnyNotes && currentUser && (
-                // @ts-ignore
-                <MenuItem onClick={saveNotesToFile} display="flex" gap={2}>
-                  <span>💾</span>
+                <MenuItem
+                  // @ts-ignore
+                  onClick={saveNotesToFile}
+                  icon={<span>💾</span>}
+                  command="⌘S"
+                >
                   Save
                 </MenuItem>
               )}
+              {isAnyNotes && <MenuDivider color={dividerColor} />}
               {isAnyNotes && (
                 <MenuItem onClick={handleReset} display="flex" gap={2}>
                   <span>🚧</span>
                   Reset
                 </MenuItem>
               )}
+              {isAnyNotes && <MenuDivider color={dividerColor} />}
               <MenuItem onClick={handleAuth} display="flex" gap={2}>
                 <span>🔓</span>
                 {currentUser ? 'Log out' : 'Log in'}
