@@ -59,10 +59,14 @@ const Home: FC<Props> = () => {
   const filename = useSelector(selectFileName)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  useHotkeys('/', (e) => {
-    e.preventDefault()
-    void onOpen()
-  })
+  useHotkeys(
+    '/',
+    (e) => {
+      e.preventDefault()
+      onOpen()
+    },
+    [onOpen]
+  )
 
   useEffect(() => {
     if (!isThereAnyNotes) {
@@ -151,7 +155,7 @@ const Home: FC<Props> = () => {
             <Tbody>
               {notes?.map((note) => (
                 <Tr key={note.id}>
-                  <Td>
+                  <Td fontFamily="monospace">
                     <Link as={ReachLink} to={`/notes/${note.id}`}>
                       {dateToPretty(note.date)}
                     </Link>
@@ -166,6 +170,7 @@ const Home: FC<Props> = () => {
                     <Flex gap={2} wrap="wrap">
                       {note.tags?.map((tag) => (
                         <Box
+                          key={tag}
                           display="inline-block"
                           bg={tagBackground}
                           color="blue.400"

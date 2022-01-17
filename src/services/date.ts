@@ -9,7 +9,7 @@ export const dateToISO = (date?: DateTime | null) => {
 export const dateToPretty = (date?: DateTime | null) => {
   if (!date) return 'Some day'
 
-  if (date instanceof DateTime) return date.toFormat('LLLL cccc dd')
+  if (date instanceof DateTime) return date.toFormat('LLL ccc dd')
 
   return date
 }

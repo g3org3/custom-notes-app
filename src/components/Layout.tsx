@@ -13,6 +13,7 @@ import {
   MenuItem,
   MenuList,
   useColorModeValue,
+  useDisclosure,
   useToast,
 } from '@chakra-ui/react'
 import base64 from 'base-64'
@@ -20,6 +21,7 @@ import { FiX } from 'react-icons/fi'
 import { Link as ReachLink, useNavigate } from '@reach/router'
 import { useHotkeys } from 'react-hotkeys-hook'
 
+import NewNoteModal from 'components/NewNoteModal'
 import ColorModeSwitcher from 'components/ColorModeSwitcher'
 import { getFileName, openAndSaveToFile, saveToFile } from 'services/file'
 import { useDispatch, useSelector } from 'react-redux'
@@ -61,6 +63,20 @@ const Layout: React.FC<Props> = ({
   const notes = useSelector(selectNotes)
   const isAnyNotes = useSelector(selectIsThereAnyNotes)
   const pagePadding = { base: '10px', md: '20px 40px' }
+
+  const {
+    isOpen: newNoteIsOpen,
+    onOpen: newNoteOnOpen,
+    onClose: newNoteOnClose,
+  } = useDisclosure()
+  useHotkeys(
+    'n',
+    (e) => {
+      e.preventDefault()
+      newNoteOnOpen()
+    },
+    [newNoteOnOpen]
+  )
 
   const handleReset = useCallback(() => {
     dispatch(actions.reset())
@@ -116,7 +132,6 @@ const Layout: React.FC<Props> = ({
             status: 'error',
           })
         })
-      return
     }
 
     saveToFile(fileHandler, notesInYaml)
@@ -149,77 +164,87 @@ const Layout: React.FC<Props> = ({
   ])
 
   return (
-    <Grid minH="100vh" pt="48px">
-      <Box
-        bg={navbarBackgroundColor}
-        position="fixed"
-        top="0"
-        display="flex"
-        width="100vw"
-        height="48px"
-        alignItems="center"
-        gap="10px"
-        boxShadow="md"
-        padding={pagePadding}
-      >
-        <Menu>
-          <MenuButton variant="ghost" as={Button}>
-            <Avatar src={currentUser?.photoURL || ''} size="sm" />
-          </MenuButton>
-          <MenuList>
-            {menuItems?.map((item) => (
-              <MenuItem key={item.path}>
-                <Link as={ReachLink} to={item.path} display="flex" gap={2}>
-                  <span>{item.icon}</span>
-                  {item.label}
-                </Link>
-              </MenuItem>
-            ))}
-            {menuItems && <MenuDivider color={dividerColor} />}
-            {isAnyNotes && currentUser && (
-              // @ts-ignore
-              <MenuItem onClick={saveNotesToFile} display="flex" gap={2}>
-                <span>💾</span>
-                Save
-              </MenuItem>
-            )}
-            {isAnyNotes && (
-              <MenuItem onClick={handleReset} display="flex" gap={2}>
-                <span>🚧</span>
-                Reset
-              </MenuItem>
-            )}
-            <MenuItem onClick={handleAuth} display="flex" gap={2}>
-              <span>🔓</span>
-              {currentUser ? 'Log out' : 'Log in'}
-            </MenuItem>
-          </MenuList>
-        </Menu>
-        <Flex grow={{ base: '1', md: '0' }} justifyContent="center">
-          <Link as={ReachLink} to={homeUrl || '/'}>
-            <Heading as="h1" size="md" display="flex" alignItems="center">
-              {title}{' '}
-              {by ? (
-                <>
-                  <FiX size={13} /> {currentUser?.displayName || by}
-                </>
-              ) : null}
-            </Heading>
-          </Link>
-        </Flex>
-        <Flex
-          flexGrow={{ base: '0', md: '1' }}
-          gap={3}
-          justify="flex-end"
+    <>
+      <NewNoteModal isOpen={newNoteIsOpen} onClose={newNoteOnClose} />
+      <Grid minH="100vh" pt="48px">
+        <Box
+          bg={navbarBackgroundColor}
+          position="fixed"
+          top="0"
+          display="flex"
+          width="100vw"
+          height="48px"
           alignItems="center"
+          gap="10px"
+          boxShadow="md"
+          padding={pagePadding}
         >
-          <ColorModeSwitcher />
+          <Menu>
+            <MenuButton variant="ghost" as={Button}>
+              <Avatar src={currentUser?.photoURL || ''} size="sm" />
+            </MenuButton>
+            <MenuList>
+              {menuItems?.map((item) => (
+                <MenuItem key={item.path}>
+                  <Link as={ReachLink} to={item.path} display="flex" gap={2}>
+                    <span>{item.icon}</span>
+                    {item.label}
+                  </Link>
+                </MenuItem>
+              ))}
+              {menuItems && <MenuDivider color={dividerColor} />}
+              {currentUser && (
+                // @ts-ignore
+                <MenuItem onClick={newNoteOnOpen} display="flex" gap={2}>
+                  <span>📝</span>
+                  New Note
+                </MenuItem>
+              )}
+              {isAnyNotes && currentUser && (
+                // @ts-ignore
+                <MenuItem onClick={saveNotesToFile} display="flex" gap={2}>
+                  <span>💾</span>
+                  Save
+                </MenuItem>
+              )}
+              {isAnyNotes && (
+                <MenuItem onClick={handleReset} display="flex" gap={2}>
+                  <span>🚧</span>
+                  Reset
+                </MenuItem>
+              )}
+              <MenuItem onClick={handleAuth} display="flex" gap={2}>
+                <span>🔓</span>
+                {currentUser ? 'Log out' : 'Log in'}
+              </MenuItem>
+            </MenuList>
+          </Menu>
+          <Flex grow={{ base: '1', md: '0' }} justifyContent="center">
+            <Link as={ReachLink} to={homeUrl || '/'}>
+              <Heading as="h1" size="md" display="flex" alignItems="center">
+                {title}{' '}
+                {by ? (
+                  <>
+                    <FiX size={13} /> {currentUser?.displayName || by}
+                  </>
+                ) : null}
+              </Heading>
+            </Link>
+          </Flex>
+          <Flex
+            flexGrow={{ base: '0', md: '1' }}
+            gap={3}
+            justify="flex-end"
+            alignItems="center"
+          >
+            <ColorModeSwitcher />
+          </Flex>
+        </Box>
+        <Flex textAlign="left" padding={pagePadding} direction="column">
+          {children}
         </Flex>
-      </Box>
-      <Flex textAlign="left" padding={pagePadding} direction="column">
-        {children}
-      </Flex>
-    </Grid>
+      </Grid>
+    </>
   )
 }
 

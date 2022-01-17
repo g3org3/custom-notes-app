@@ -8,7 +8,7 @@ import {
 } from 'services/notes'
 import { DateTime } from 'luxon'
 
-type FileHandler = {}
+export interface FileHandler {}
 
 export interface NoteType {
   id: string | null
@@ -60,6 +60,17 @@ export default createSlice({
 
       const newNote = toggleNextStepDone(note, nextStepIndex)
       state.byId.set(noteId, newNote)
+    },
+    add: (
+      state: State,
+      action: { type: string; payload: { note: NoteDBType } }
+    ) => {
+      if (!state.byId) {
+        state.byId = new Map()
+      }
+      state.byId.set(action.payload.note.id, action.payload.note)
+      state.search = null
+      state.filteredIds = []
     },
     toggleDoubt: (
       state: State,
