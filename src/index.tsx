@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
+import 'emoji-mart/css/emoji-mart.css'
 
 import Root from 'components/Root'
 import store from 'modules/store'

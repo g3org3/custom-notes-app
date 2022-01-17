@@ -9,11 +9,15 @@ import {
   ModalBody,
   Textarea,
   Button,
+  Box,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { DateTime } from 'luxon'
 import { actions, NoteDBType } from 'modules/Note'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from '@reach/router'
+import { ChevronDownIcon } from '@chakra-ui/icons'
+import { Picker, Emoji } from 'emoji-mart'
 
 interface Props {
   isOpen: boolean
@@ -23,6 +27,12 @@ interface Props {
 const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const {
+    onOpen: onOpenEmoji,
+    isOpen: isOpenEmoji,
+    onClose: onCloseEmoji,
+  } = useDisclosure()
+
   const [state, setState] = useState({
     emoji: '',
     subject: '',
@@ -88,42 +98,65 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
       <ModalContent>
         <ModalHeader>New Note</ModalHeader>
         <ModalBody display="flex" flexDir="column" gap={2}>
-          <Input
-            placeholder="emoji"
-            onChange={handleOnChange('emoji')}
-            value={state.emoji}
-          />
-          <Input
-            placeholder="subject"
-            onChange={handleOnChange('subject')}
-            value={state.subject}
-          />
-          <Input
-            placeholder="people separated by ,"
-            onChange={handleOnChange('people')}
-            value={state.people}
-          />
-          <Input
-            placeholder="tags separated by ,"
-            onChange={handleOnChange('tags')}
-            value={state.tags}
-          />
-          <Textarea
-            placeholder="notes in markdown"
-            onChange={handleOnChange('notes')}
-            value={state.notes}
-          />
-          <Textarea
-            placeholder="next_steps"
-            onChange={handleOnChange('next_steps')}
-            value={state.next_steps}
-          />
-          <Textarea
-            placeholder="doubts"
-            onChange={handleOnChange('doubts')}
-            value={state.doubts}
-          />
-          <Button onClick={handleForm}>Create</Button>
+          <Box
+            height="32px"
+            width="32px"
+            bg={state.emoji ? '' : 'gray.200'}
+            onClick={isOpenEmoji ? onCloseEmoji : onOpenEmoji}
+          >
+            {!state.emoji ? (
+              <ChevronDownIcon bg="gray.600" height="32px" width="32px" />
+            ) : (
+              <Emoji set="google" emoji={state.emoji} size={32} />
+            )}
+          </Box>
+          {isOpenEmoji ? (
+            <Box dispaly="inline-block">
+              <Picker
+                set="google"
+                theme="auto"
+                onClick={(emoji) => {
+                  handleOnChange('emoji')({ target: { value: emoji.colons } })
+                  onCloseEmoji()
+                }}
+              />
+            </Box>
+          ) : null}
+          {!isOpenEmoji ? (
+            <>
+              <Input
+                placeholder="subject"
+                onChange={handleOnChange('subject')}
+                value={state.subject}
+              />
+              <Input
+                placeholder="people separated by ,"
+                onChange={handleOnChange('people')}
+                value={state.people}
+              />
+              <Input
+                placeholder="tags separated by ,"
+                onChange={handleOnChange('tags')}
+                value={state.tags}
+              />
+              <Textarea
+                placeholder="notes in markdown"
+                onChange={handleOnChange('notes')}
+                value={state.notes}
+              />
+              <Textarea
+                placeholder="next_steps"
+                onChange={handleOnChange('next_steps')}
+                value={state.next_steps}
+              />
+              <Textarea
+                placeholder="doubts"
+                onChange={handleOnChange('doubts')}
+                value={state.doubts}
+              />
+              <Button onClick={handleForm}>Create</Button>
+            </>
+          ) : null}
         </ModalBody>
       </ModalContent>
     </Modal>

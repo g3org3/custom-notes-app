@@ -8,7 +8,6 @@ import {
   Text,
   useToast,
   Flex,
-  Divider,
 } from '@chakra-ui/react'
 import yaml from 'js-yaml'
 import { FC, useState } from 'react'
@@ -22,6 +21,7 @@ import {
   atomOneLight,
 } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { Emoji } from 'emoji-mart'
 
 import {
   selectFileHandler,
@@ -137,7 +137,7 @@ const NoteId: FC<Props> = (props) => {
             <Heading as="h2">
               {note.emoji ? (
                 <Box display="inline-block" mr="8px">
-                  {note.emoji}
+                  <Emoji set="google" emoji={note.emoji} size={40} />
                 </Box>
               ) : null}
               {note.subject}
@@ -193,8 +193,6 @@ const NoteId: FC<Props> = (props) => {
           <Text textTransform="capitalize">{note.people?.join(', ')}</Text>
         </Box>
       </ShowIf>
-
-      <Divider color="gray.400" />
 
       <ShowIf value={!!note.notes}>
         <Flex mt={5} mb={2} direction="row" alignItems="center" gap={2}>

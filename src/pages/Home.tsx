@@ -54,6 +54,7 @@ const Home: FC<Props> = () => {
   const completedColor = useColorModeValue('green.500', 'green.400')
   const tagBackground = useColorModeValue('blue.100', 'blue.900')
   const nsBackground = useColorModeValue('red.100', 'red.900')
+  const stripedTableBackground = useColorModeValue('gray.100', 'gray.700')
   const search = useSelector(selectSearch)
   const notes = useSelector(selectNotesWithSearch)
   const filename = useSelector(selectFileName)
@@ -106,7 +107,7 @@ const Home: FC<Props> = () => {
       </Modal>
       <Box display="flex" flexDirection="column">
         <Heading as="h2">
-          <span>📓 </span> {currentUser ? filename : 'Notes'}
+          <span>📓 </span> {currentUser ? filename || 'Untitled.txt' : 'Notes'}
         </Heading>
         {search && (
           <Box bg={completedBackround} color="green.500" textAlign="center">
@@ -115,28 +116,32 @@ const Home: FC<Props> = () => {
         )}
 
         <ShowIf value={!!notes}>
-          <Table
-            variant="simple"
-            size="sm"
-            display={{ base: 'inline-table', md: 'none' }}
+          <Flex
+            display={{ base: 'inline-flex', md: 'none' }}
+            direction="column"
+            borderTop="1px solid black"
+            borderColor={stripedTableBackground}
+            mt={2}
           >
-            <Thead>
-              <Tr>
-                <Th>Subject</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {notes?.map((note) => (
-                <Tr key={note.id}>
-                  <Td>
-                    <Link as={ReachLink} to={`/notes/${note.id}`}>
-                      <Text>{note.subject}</Text>
-                    </Link>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
+            {notes?.map((note, i) => (
+              <Box
+                key={note.id}
+                display="flex"
+                flexDirection="column"
+                background={i % 2 === 0 ? stripedTableBackground : ''}
+                pl={2}
+                pb={2}
+                cursor="pointer"
+                as={ReachLink}
+                _hover={{ background: 'gray.300' }}
+                to={`/notes/${note.id}`}
+              >
+                <Text fontSize="24px">{note.subject || 'Untitled'}</Text>
+                <Text>{note.date?.toISODate()}</Text>
+              </Box>
+            ))}
+          </Flex>
+
           <Table
             variant="simple"
             display={{ base: 'none', md: 'inline-table' }}
