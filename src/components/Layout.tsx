@@ -16,26 +16,26 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import base64 from 'base-64'
+import { AnimatePresence, motion } from 'framer-motion'
 import { FiX } from 'react-icons/fi'
 import { Link as ReachLink, useNavigate } from '@reach/router'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHotkeys } from 'react-hotkeys-hook'
+import base64 from 'base-64'
 
+import { useAuth } from 'config/auth'
+import { dbSet } from 'config/firebase'
 import NewNoteModal from 'components/NewNoteModal'
 import ColorModeSwitcher from 'components/ColorModeSwitcher'
-import { getFileName, openAndSaveToFile, saveToFile } from 'services/file'
-import { useDispatch, useSelector } from 'react-redux'
 import {
   selectFileHandler,
   selectFileName,
   selectIsThereAnyNotes,
   selectNotes,
 } from 'modules/Note/Note.selectors'
-import { notesToYaml } from 'services/notes'
-import { useAuth } from 'config/auth'
-import { dbSet } from 'config/firebase'
 import { actions } from 'modules/Note'
-import { AnimatePresence, motion } from 'framer-motion'
+import { getFileName, openAndSaveToFile, saveToFile } from 'services/file'
+import { notesToYaml } from 'services/notes'
 
 interface Props {
   title: string
