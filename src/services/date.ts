@@ -1,22 +1,32 @@
 import { DateTime } from 'luxon'
 
-export const dateToISO = (date?: Date) => {
+export const dateToISO = (date?: DateTime | null) => {
   if (!date) return null
 
-  return DateTime.fromJSDate(date).toISODate()
+  return date.toISO()
 }
 
-export const dateToPretty = (date?: Date) => {
-  if (!date) return null
+export const dateToPretty = (date?: DateTime | null) => {
+  if (!date) return 'Some day'
 
-  if (date instanceof Date) 
-    return DateTime.fromJSDate(date).toFormat('ccc LLL dd')
+  if (date instanceof DateTime) return date.toFormat('LLL ccc dd')
 
   return date
 }
 
-export const toRelativeCalendar = (date?: Date | null) => {
+export const dateToPrettyTime = (date?: DateTime | null) => {
   if (!date) return null
 
-  return DateTime.fromJSDate(date).toRelativeCalendar()
+  const utc = date.toUTC()
+  const time = utc.hour + utc.minute + utc.millisecond
+
+  if (time) return date.toFormat('hh:mm a')
+
+  return ''
+}
+
+export const toRelativeCalendar = (date?: DateTime | null) => {
+  if (!date) return null
+
+  return date.toRelativeCalendar()
 }

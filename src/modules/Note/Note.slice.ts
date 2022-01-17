@@ -1,21 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
 
-import { searchNotes, toggleNextStepDone, toggleDoubtDone } from 'components/Note/Note.service'
+import {
+  searchNotes,
+  toggleNextStepDone,
+  toggleDoubtDone,
+} from 'services/notes'
+import { DateTime } from 'luxon'
 
-type FileHandler = {
-}
+type FileHandler = {}
 
 export interface NoteType {
-  id?: string | null
-  date?: Date
-  people?: Array<string>
-  subject?: string
-  notes?: string
-  next_steps?: Array<string>
-  tags?: Array<string>
-  doubts?: Array<string>
-  time?: string
+  id: string | null
+  date: DateTime | null
+  people: Array<string> | null
+  subject: string | null
+  notes: string | null
+  next_steps: Array<string> | null
+  emoji: string | null
+  tags: Array<string> | null
+  doubts: Array<string> | null
 }
 
 export interface NoteDBType extends NoteType {
@@ -25,8 +29,9 @@ export interface NoteDBType extends NoteType {
 export interface State {
   byId: Map<string, NoteDBType> | null
   search: string | null
-  filteredIds: Array<string>,
+  filteredIds: Array<string>
   fileHandler: FileHandler | null
+  fileName: string | null
 }
 
 export default createSlice({
@@ -36,6 +41,7 @@ export default createSlice({
     search: null,
     filteredIds: [],
     fileHandler: null,
+    fileName: null,
   },
   reducers: {
     toggleNextStep: (
@@ -75,16 +81,33 @@ export default createSlice({
     reset: (state: State) => {
       state.byId = null
       state.search = null
+      state.filteredIds = []
+      state.fileHandler = null
+      state.fileName = null
     },
-    setFileHandler: (state: State, action: {type: string; payload: { fileHandler: FileHandler } }) => {
+    setFileName: (
+      state: State,
+      action: { type: string; payload: { fileName: string } }
+    ) => {
+      state.fileName = action.payload.fileName
+    },
+    setFileHandler: (
+      state: State,
+      action: { type: string; payload: { fileHandler: FileHandler } }
+    ) => {
       state.fileHandler = action.payload.fileHandler
     },
     setSearch: (
       state: State,
-      action: { type: string; payload: { search: string } }
+      action: { type: string; payload: { search: string | null } }
     ): void => {
       state.search = action.payload.search
       if (state.byId == null) return
+
+      if (!state.search) {
+        state.filteredIds = []
+        return
+      }
 
       const notes = Array.from(state.byId.values())
       const filteredNotes = searchNotes(state.search, notes)
@@ -102,8 +125,10 @@ export default createSlice({
       }
 
       state.byId = notes.reduce((byId, note) => {
-        const id = uuidv4()
-        byId.set(note.id || id, { id, ...note })
+        const idv4 = uuidv4()
+        const { id, subject, ...rest } = note
+
+        byId.set(id || idv4, { subject, id: id || idv4, ...rest })
 
         return byId
       }, new Map())

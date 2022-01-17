@@ -6,12 +6,22 @@
 	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
 	// Placeholders with the same ids are connected.
 	// Example:
-	"import mui": {
+	"new componet": {
 		"scope": "typescript,typescriptreact",
-		"prefix": "mui",
+		"prefix": "newco",
 		"body": [
-			"import $1 from '@mui/material/$1'",
+			"import { FC } from 'react'",
+			"",
+			"interface Props {",
+			"  //",
+			"}",
+			"",
+			"const $1:FC<Props> = (props) => {",
+			"  return null",
+			"}",
+			"",
+			"export default $1"
 		],
-		"description": "import material ui component"
+		"description": "create new component"
 	}
 }
