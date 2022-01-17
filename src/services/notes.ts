@@ -24,15 +24,15 @@ export const notesToYaml = (notes: Array<NoteDBType> | null): string => {
 
   const text = yaml.dump(
     notes.map((n) => ({
-      subject: n.subject || null,
-      id: null,
-      emoji: n.emoji || null,
-      date: n.date ? n.date.toLocal().toJSDate() : null,
-      tags: n.tags || null,
-      people: n.people || null,
-      notes: n.notes || null,
-      doubts: n.doubts || null,
-      next_steps: n.next_steps || null,
+      subject: n.subject || undefined,
+      id: n.id || undefined,
+      emoji: n.emoji || undefined,
+      date: n.date ? n.date.toLocal().toJSDate() : undefined,
+      tags: n.tags || undefined,
+      people: n.people || undefined,
+      notes: n.notes || undefined,
+      doubts: n.doubts || undefined,
+      next_steps: n.next_steps || undefined,
     })),
     options
   )
