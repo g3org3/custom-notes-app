@@ -128,7 +128,11 @@ export default createSlice({
         const idv4 = uuidv4()
         const { id, subject, ...rest } = note
 
-        byId.set(id || idv4, { subject, id: id || idv4, ...rest })
+        byId.set(id || idv4, {
+          subject: subject || null,
+          id: id || idv4,
+          ...rest,
+        })
 
         return byId
       }, new Map())

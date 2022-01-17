@@ -51,7 +51,7 @@ const NoteId: FC<Props> = (props) => {
   const note = useSelector(selectNoteById(props.noteId))
   const fileHandler = useSelector(selectFileHandler)
   const theme = useColorModeValue(atomOneLight, atomOneDark)
-  const tagBackground = useColorModeValue('teal.100', 'teal.700')
+  const tagBackground = useColorModeValue('blue.100', 'blue.900')
   const backgroundDate = useColorModeValue('gray.200', 'gray.700')
 
   useHotkeys('esc', () => void navigate('/notes'), [navigate])
@@ -175,6 +175,7 @@ const NoteId: FC<Props> = (props) => {
                 textTransform="capitalize"
                 display="inline-block"
                 bg={tagBackground}
+                color="blue.500"
                 padding="0 10px"
                 borderRadius="full"
                 fontSize="xs"
