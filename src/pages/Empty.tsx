@@ -150,7 +150,7 @@ const Empty: FC<Props> = () => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Select Note</ModalHeader>
+          <ModalHeader>Select File</ModalHeader>
           <ModalBody>
             <Select
               onChange={handleSelectFileChange}
@@ -164,7 +164,12 @@ const Empty: FC<Props> = () => {
             </Select>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={readExternalFile} bg="teal.300">
+            <Button
+              onClick={readExternalFile}
+              bg={useColorModeValue('teal.300', 'teal.800')}
+              _hover={{ bg: useColorModeValue('teal.200', 'teal.700') }}
+              _active={{ bg: useColorModeValue('teal.400', 'teal.900') }}
+            >
               Choose
             </Button>
           </ModalFooter>

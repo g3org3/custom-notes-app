@@ -23,15 +23,16 @@ import {
 import { useHotkeys } from 'react-hotkeys-hook'
 import { Emoji } from 'emoji-mart'
 
-import {
-  selectFileHandler,
-  selectIsThereAnyNotes,
-  selectNoteById,
-} from 'modules/Note/Note.selectors'
 import { dateToPretty, dateToPrettyTime } from 'services/date'
 import ShowIf from 'components/Show'
 import CheckList from 'components/CheckList'
-import { actions, NoteDBType } from 'modules/Note'
+import {
+  actions,
+  NoteDBType,
+  selectFileHandler,
+  selectIsThereAnyNotes,
+  selectNoteById,
+} from 'modules/Note'
 import Markdown from 'components/Markdown'
 import { readFileContent } from 'services/file'
 import { DateTime } from 'luxon'

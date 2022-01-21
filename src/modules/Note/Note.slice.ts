@@ -5,6 +5,7 @@ import {
   searchNotes,
   toggleNextStepDone,
   toggleDoubtDone,
+  completedList,
 } from 'services/notes'
 import { DateTime } from 'luxon'
 
@@ -32,6 +33,7 @@ export interface State {
   filteredIds: Array<string>
   fileHandler: FileHandler | null
   fileName: string | null
+  isFilterNotFinished: boolean
 }
 
 export default createSlice({
@@ -42,6 +44,7 @@ export default createSlice({
     filteredIds: [],
     fileHandler: null,
     fileName: null,
+    isFilterNotFinished: false,
   },
   reducers: {
     toggleNextStep: (
@@ -115,6 +118,7 @@ export default createSlice({
       state.search = action.payload.search
       if (state.byId == null) return
 
+      state.isFilterNotFinished = false
       if (!state.search) {
         state.filteredIds = []
         return
@@ -123,6 +127,27 @@ export default createSlice({
       const notes = Array.from(state.byId.values())
       const filteredNotes = searchNotes(state.search, notes)
       state.filteredIds = filteredNotes.map((note) => note.id)
+    },
+    toggleNotFinished: (state: State) => {
+      if (state.byId == null) return
+
+      if (state.isFilterNotFinished) {
+        state.isFilterNotFinished = false
+        state.search = null
+        state.filteredIds = []
+        return
+      }
+
+      state.isFilterNotFinished = true
+      const notes = Array.from(state.byId.values())
+      const filteredNotes =
+        state.filteredIds.length > 0
+          ? notes.filter((note) => state.filteredIds.includes(note.id))
+          : notes
+      state.filteredIds = filteredNotes
+        .filter((note) => note.next_steps)
+        .filter((note) => !completedList(note.next_steps))
+        .map((note) => note.id)
     },
     replaceNotes: (
       state: State,
