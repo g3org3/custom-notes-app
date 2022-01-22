@@ -36,7 +36,7 @@ const Home: FC<Props> = () => {
   const isThereAnyNotes = useSelector(selectIsThereAnyNotes)
   const search = useSelector(selectSearch)
   const filterbg = useColorModeValue('green.100', 'green.900')
-  const isDesktop = useMediaQuery('(min-width: 48em')
+  const [isDesktop] = useMediaQuery('(min-width: 768px)')
   const filename = useSelector(selectFileName)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -60,7 +60,7 @@ const Home: FC<Props> = () => {
     <>
       <SearchModal isOpen={isOpen} onClose={onClose} />
       <Flex>
-        <FilterBar />
+        {isDesktop ? <FilterBar /> : null}
         <Box
           display="flex"
           flexDirection="column"
