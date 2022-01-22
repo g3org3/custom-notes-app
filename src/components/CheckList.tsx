@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, memo } from 'react'
 import { FiSquare, FiCheckSquare } from 'react-icons/fi'
 import { List, ListItem, ListIcon } from '@chakra-ui/react'
 
@@ -10,15 +10,13 @@ interface Props {
 }
 
 const CheckList: FC<Props> = ({ values, onClick }) => {
-  if (!values) return null
-
   const handleClick = (value: string, i: number) => () => {
     if (typeof onClick === 'function') onClick(i, value)
   }
 
   return (
     <List spacing={3}>
-      {values.map((value, i) => {
+      {values?.map((value, i) => {
         const isDone = isLineDone(value)
         const Icon = isDone ? FiCheckSquare : FiSquare
         const color = isDone ? 'green.500' : 'tomato'
@@ -38,4 +36,4 @@ const CheckList: FC<Props> = ({ values, onClick }) => {
   )
 }
 
-export default CheckList
+export default memo(CheckList)

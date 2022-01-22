@@ -177,6 +177,7 @@ const Layout: React.FC<Props> = ({
         <Box
           bg={navbarBackgroundColor}
           position="fixed"
+          zIndex={2}
           top="0"
           display="flex"
           width="100vw"

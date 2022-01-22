@@ -31,6 +31,7 @@ import { exampleNotesYaml } from 'services/yaml.example'
 import { useAuth } from 'config/auth'
 import { dbOnValue } from 'config/firebase'
 import { DateTime } from 'luxon'
+import { inboundMapper } from 'services/notes'
 
 interface Props {
   default?: boolean
@@ -109,19 +110,7 @@ const Empty: FC<Props> = () => {
           // @ts-ignore
           const result = yaml.loadAll(content)
           if (result instanceof Array) {
-            const notes: Array<NoteDBType> = result.flat().map((n) => ({
-              subject: n.s || n.subject || null,
-              id: n.id || null,
-              emoji: n.e || n.emoji || null,
-              date: DateTime.fromJSDate(n.d || n.date).isValid
-                ? DateTime.fromJSDate(n.d || n.date)
-                : null,
-              tags: n.t || n.tags || null,
-              people: n.p || n.people || null,
-              notes: n.n || n.notes || null,
-              doubts: n.q || n.doubts || null,
-              next_steps: n.ns || n.next_steps || null,
-            }))
+            const notes: Array<NoteDBType> = result.flat().map(inboundMapper)
             const fileName = getFileName(fileHandler)
             dispatch(actions.setFileName({ fileName }))
             dispatch(actions.setFileHandler({ fileHandler }))

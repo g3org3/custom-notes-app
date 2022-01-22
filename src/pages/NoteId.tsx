@@ -1,25 +1,20 @@
 import {
   Box,
   Heading,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   useColorModeValue,
   Text,
   useToast,
   Flex,
+  Icon,
+  Link,
 } from '@chakra-ui/react'
 import yaml from 'js-yaml'
-import { FC, useState } from 'react'
+import { FC, useCallback } from 'react'
 import { BsChevronRight } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, Link as ReachLink } from '@reach/router'
 import { FiHome } from 'react-icons/fi'
-import SyntaxHighlighter from 'react-syntax-highlighter'
-import {
-  atomOneDark,
-  atomOneLight,
-} from 'react-syntax-highlighter/dist/esm/styles/hljs'
+
 import { useHotkeys } from 'react-hotkeys-hook'
 import { Emoji } from 'emoji-mart'
 
@@ -33,9 +28,9 @@ import {
   selectIsThereAnyNotes,
   selectNoteById,
 } from 'modules/Note'
-import Markdown from 'components/Markdown'
 import { readFileContent } from 'services/file'
-import { DateTime } from 'luxon'
+import NoteContent from 'components/NoteContent'
+import { inboundMapper } from 'services/notes'
 
 interface Props {
   default?: boolean
@@ -44,14 +39,12 @@ interface Props {
 }
 
 const NoteId: FC<Props> = (props) => {
-  const [isMarkdown, setIsMarkdown] = useState(true)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const toast = useToast()
   const isThereAnyNotes = useSelector(selectIsThereAnyNotes)
   const note = useSelector(selectNoteById(props.noteId))
   const fileHandler = useSelector(selectFileHandler)
-  const theme = useColorModeValue(atomOneLight, atomOneDark)
   const tagBackground = useColorModeValue('blue.100', 'blue.900')
   const backgroundDate = useColorModeValue('gray.200', 'gray.700')
 
@@ -64,19 +57,7 @@ const NoteId: FC<Props> = (props) => {
           // @ts-ignore
           const result = yaml.loadAll(content)
           if (result instanceof Array) {
-            const notes: Array<NoteDBType> = result.flat().map((n) => ({
-              subject: n.s || n.subject || null,
-              id: n.id || null,
-              emoji: n.e || n.emoji || null,
-              date: DateTime.fromJSDate(n.d || n.date).isValid
-                ? DateTime.fromJSDate(n.d || n.date)
-                : null,
-              tags: n.t || n.tags || null,
-              people: n.p || n.people || null,
-              notes: n.n || n.notes || null,
-              doubts: n.q || n.doubts || null,
-              next_steps: n.ns || n.next_steps || null,
-            }))
+            const notes: Array<NoteDBType> = result.flat().map(inboundMapper)
             dispatch(actions.replaceNotes({ notes }))
             toast({ title: 'notes updated', status: 'success' })
           } else {
@@ -98,19 +79,24 @@ const NoteId: FC<Props> = (props) => {
     [dispatch, fileHandler]
   )
 
+  const onNextStepClick = useCallback(
+    (index: number, value: string) => {
+      if (!note) return
+
+      dispatch(
+        actions.toggleNextStep({
+          noteId: note.id,
+          nextStepIndex: index,
+        })
+      )
+    },
+    [dispatch, note]
+  )
+
   if (!isThereAnyNotes || !note) {
     navigate('/')
 
     return null
-  }
-
-  const onNextStepClick = (index: number, value: string) => {
-    dispatch(
-      actions.toggleNextStep({
-        noteId: note.id,
-        nextStepIndex: index,
-      })
-    )
   }
 
   const onDoubtClick = (index: number, value: string) => {
@@ -123,29 +109,21 @@ const NoteId: FC<Props> = (props) => {
   }
 
   return (
-    <Box>
-      <Breadcrumb
-        display="inline-flex"
-        separator={<BsChevronRight color="gray.300" />}
-      >
-        <BreadcrumbItem>
-          <BreadcrumbLink as={ReachLink} to="/notes">
-            <FiHome />
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink>
-            <Heading as="h2">
-              {note.emoji ? (
-                <Box display="inline-block" mr="8px">
-                  <Emoji set="google" emoji={note.emoji} size={40} />
-                </Box>
-              ) : null}
-              {note.subject}
-            </Heading>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
+    <Flex direction="column" alignItems="flex-start">
+      <Flex alignItems="center">
+        <Link as={ReachLink} to="/notes">
+          <Icon as={FiHome} fontSize={30} />
+        </Link>
+        <Icon as={BsChevronRight} color="gray.300" fontSize={30} />
+        <Heading as="h2">
+          {note.emoji ? (
+            <Box display="inline-block" mr="8px">
+              <Emoji set="google" emoji={note.emoji} size={40} />
+            </Box>
+          ) : null}
+          {note.subject}
+        </Heading>
+      </Flex>
 
       <Box display="flex" alignItems="center" mt={2} mb={2}>
         <ShowIf value={!!note.date}>
@@ -195,39 +173,7 @@ const NoteId: FC<Props> = (props) => {
         </Box>
       </ShowIf>
 
-      <ShowIf value={!!note.notes}>
-        <Flex mt={5} mb={2} direction="row" alignItems="center" gap={2}>
-          <Heading as="h3" size="md">
-            Notes
-          </Heading>
-          <Text
-            cursor="pointer"
-            onClick={() => setIsMarkdown(!isMarkdown)}
-            fontSize="xs"
-            bg={backgroundDate}
-            pl={2}
-            pr={2}
-            color="gray.500"
-          >
-            {isMarkdown ? 'markdown' : 'yaml'}
-          </Text>
-        </Flex>
-        {isMarkdown ? (
-          <Markdown value={note.notes} />
-        ) : (
-          <SyntaxHighlighter
-            customStyle={{
-              width: '90vw',
-              fontSize: '14px',
-              border: '1px solid #ccc',
-            }}
-            language="markdown"
-            style={theme}
-          >
-            {note.notes}
-          </SyntaxHighlighter>
-        )}
-      </ShowIf>
+      <NoteContent notes={note.notes} />
 
       <ShowIf value={!!note.doubts}>
         <Heading as="h3" size="md" mt={5} mb={2}>
@@ -242,7 +188,7 @@ const NoteId: FC<Props> = (props) => {
         </Heading>
         <CheckList values={note.next_steps} onClick={onNextStepClick} />
       </ShowIf>
-    </Box>
+    </Flex>
   )
 }
 

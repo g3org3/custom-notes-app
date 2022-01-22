@@ -10,6 +10,11 @@ const components = {
       },
     }),
   },
+  Button: {
+    baseStyle: (props: any) => ({
+      outline: '0',
+    }),
+  },
 }
 const config = {
   useSystemColorMode: true,

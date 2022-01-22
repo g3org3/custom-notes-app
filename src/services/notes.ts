@@ -3,6 +3,32 @@ import { createFTS } from 'services/full-text-search'
 import type { NoteDBType } from 'modules/Note'
 import { DateTime } from 'luxon'
 
+export const inboundMapper = (n: any) => ({
+  subject: n.s || n.subject || null,
+  id: n.id || null,
+  emoji: n.e || n.emoji || null,
+  date: DateTime.fromJSDate(n.d || n.date).isValid
+    ? DateTime.fromJSDate(n.d || n.date)
+    : null,
+  tags: n.t || n.tags || null,
+  people: n.p || n.people || null,
+  notes: n.n || n.notes || null,
+  doubts: n.q || n.doubts || null,
+  next_steps: n.ns || n.next_steps || null,
+})
+
+const outboundMapper = (n: NoteDBType) => ({
+  subject: n.subject || undefined,
+  id: n.id || undefined,
+  emoji: n.emoji || undefined,
+  date: n.date ? n.date.toLocal().toJSDate() : undefined,
+  tags: n.tags || undefined,
+  people: n.people || undefined,
+  notes: n.notes || undefined,
+  doubts: n.doubts || undefined,
+  next_steps: n.next_steps || undefined,
+})
+
 export const notesToYaml = (notes: Array<NoteDBType> | null): string => {
   if (!notes) return ''
 
@@ -22,20 +48,7 @@ export const notesToYaml = (notes: Array<NoteDBType> | null): string => {
     // },
   }
 
-  const text = yaml.dump(
-    notes.map((n) => ({
-      subject: n.subject || undefined,
-      id: n.id || undefined,
-      emoji: n.emoji || undefined,
-      date: n.date ? n.date.toLocal().toJSDate() : undefined,
-      tags: n.tags || undefined,
-      people: n.people || undefined,
-      notes: n.notes || undefined,
-      doubts: n.doubts || undefined,
-      next_steps: n.next_steps || undefined,
-    })),
-    options
-  )
+  const text = yaml.dump(notes.map(outboundMapper), options)
 
   return text
 }
