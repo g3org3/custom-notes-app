@@ -1,15 +1,14 @@
 import yaml from 'js-yaml'
-import { createFTS } from 'services/full-text-search'
-import type { NoteDBType } from 'modules/Note'
 import { DateTime } from 'luxon'
+
+import type { NoteDBType } from 'modules/Note'
+import { createFTS } from 'services/full-text-search'
 
 export const inboundMapper = (n: any) => ({
   subject: n.s || n.subject || null,
   id: n.id || null,
   emoji: n.e || n.emoji || null,
-  date: DateTime.fromJSDate(n.d || n.date).isValid
-    ? DateTime.fromJSDate(n.d || n.date)
-    : null,
+  date: DateTime.fromJSDate(n.d || n.date).isValid ? DateTime.fromJSDate(n.d || n.date) : null,
   tags: n.t || n.tags || null,
   people: n.p || n.people || null,
   notes: n.n || n.notes || null,
@@ -81,11 +80,7 @@ export const cleanLine = (line?: string) => {
   return isLineDone(line) ? line.split(')')[1] : line
 }
 
-export const toggleLineDone = (
-  note: NoteDBType,
-  index: number,
-  listName: string
-): NoteDBType => {
+export const toggleLineDone = (note: NoteDBType, index: number, listName: string): NoteDBType => {
   // @ts-ignore
   if (!note[listName]) return note
 
@@ -111,10 +106,8 @@ export const toggleLineDone = (
   return note
 }
 
-export const toggleNextStepDone = (
-  note: NoteDBType,
-  index: number
-): NoteDBType => toggleLineDone(note, index, 'next_steps')
+export const toggleNextStepDone = (note: NoteDBType, index: number): NoteDBType =>
+  toggleLineDone(note, index, 'next_steps')
 
 export const toggleDoubtDone = (note: NoteDBType, index: number): NoteDBType =>
   toggleLineDone(note, index, 'doubts')
@@ -129,10 +122,7 @@ export const getNextStepsStats = (note: NoteDBType): Array<number> => {
   return [doneCount, note.next_steps?.length]
 }
 
-export const searchNotes = (
-  search: string,
-  notes: Array<NoteDBType> | null
-): Array<NoteDBType> => {
+export const searchNotes = (search: string, notes: Array<NoteDBType> | null): Array<NoteDBType> => {
   if (!notes) return []
   if (!search || search.trim() === '') return notes
 

@@ -14,24 +14,21 @@ import {
   Button,
   Select,
 } from '@chakra-ui/react'
+import { useNavigate } from '@reach/router'
+import yaml from 'js-yaml'
+import { DateTime } from 'luxon'
 import React, { FC, useCallback, useEffect, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
-import yaml from 'js-yaml'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from '@reach/router'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import {
-  atomOneDark,
-  atomOneLight,
-} from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-import { actions, NoteDBType } from 'modules/Note'
-import { getFileName, openAndChooseFile } from 'services/file'
-import { exampleNotesYaml } from 'services/yaml.example'
 import { useAuth } from 'config/auth'
 import { dbOnValue } from 'config/firebase'
-import { DateTime } from 'luxon'
+import { actions, NoteDBType } from 'modules/Note'
+import { getFileName, openAndChooseFile } from 'services/file'
 import { inboundMapper } from 'services/notes'
+import { exampleNotesYaml } from 'services/yaml.example'
 
 interface Props {
   default?: boolean
@@ -141,10 +138,7 @@ const Empty: FC<Props> = () => {
         <ModalContent>
           <ModalHeader>Select File</ModalHeader>
           <ModalBody>
-            <Select
-              onChange={handleSelectFileChange}
-              placeholder="Select option"
-            >
+            <Select onChange={handleSelectFileChange} placeholder="Select option">
               {files.map((file) => (
                 <option key={file.id} value={file.id}>
                   {file.name}

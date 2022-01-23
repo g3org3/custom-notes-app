@@ -7,22 +7,17 @@ import {
   Flex,
   useMediaQuery,
 } from '@chakra-ui/react'
-import { FC, memo, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { useNavigate } from '@reach/router'
+import { FC, memo, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { useSelector } from 'react-redux'
 
-import {
-  selectFileName,
-  selectIsThereAnyNotes,
-  selectSearch,
-} from 'modules/Note'
-
-import { useAuth } from 'config/auth'
-import SearchModal from 'components/SearchModal'
+import DesktopTable from 'components/DesktopTable'
 import FilterBar from 'components/FilterBar'
 import MobileTable from 'components/MobileTable'
-import DesktopTable from 'components/DesktopTable'
+import SearchModal from 'components/SearchModal'
+import { useAuth } from 'config/auth'
+import { selectFileName, selectIsThereAnyNotes, selectSearch } from 'modules/Note'
 
 interface Props {
   default?: boolean
@@ -61,30 +56,12 @@ const Home: FC<Props> = () => {
       <SearchModal isOpen={isOpen} onClose={onClose} />
       <Flex>
         {isDesktop ? <FilterBar /> : null}
-        <Box
-          display="flex"
-          flexDirection="column"
-          flex={1}
-          height="calc(100vh - 88px)"
-          overflow="auto"
-        >
-          <Heading
-            as="h2"
-            position="sticky"
-            top="0"
-            bg={useColorModeValue('white', 'gray.800')}
-          >
-            <span>📓 </span>{' '}
-            {currentUser ? filename || 'Untitled.txt' : 'Notes'}
+        <Box display="flex" flexDirection="column" flex={1} height="calc(100vh - 88px)" overflow="auto">
+          <Heading as="h2" position="sticky" top="0" bg={useColorModeValue('white', 'gray.800')}>
+            <span>📓 </span> {currentUser ? filename || 'Untitled.txt' : 'Notes'}
           </Heading>
           {search && (
-            <Box
-              bg={filterbg}
-              color="green.500"
-              textAlign="center"
-              mb={3}
-              mt={3}
-            >
+            <Box bg={filterbg} color="green.500" textAlign="center" mb={3} mt={3}>
               Filtered
             </Box>
           )}

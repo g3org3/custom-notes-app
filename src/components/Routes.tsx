@@ -2,12 +2,12 @@ import { Router } from '@reach/router'
 import { useSelector } from 'react-redux'
 
 import Layout from 'components/Layout'
-import Empty from 'pages/Empty'
-import Home from 'pages/Home'
-import NoteId from 'pages/NoteId'
-import Export from 'pages/Export'
-import Login from 'pages/Login'
 import { selectIsThereAnyNotes } from 'modules/Note/Note.selectors'
+import Empty from 'pages/Empty'
+import Export from 'pages/Export'
+import Home from 'pages/Home'
+import Login from 'pages/Login'
+import NoteId from 'pages/NoteId'
 
 const menuItems = [
   { path: '/notes', label: 'Notes', icon: '📓', command: '1' },
@@ -22,13 +22,7 @@ const Routes = () => {
 
   return (
     <Router>
-      <Layout
-        title="Notes"
-        by="Jorge Adolfo"
-        homeUrl="/notes"
-        menuItems={menu}
-        path="/"
-      >
+      <Layout title="Notes" by="Jorge Adolfo" homeUrl="/notes" menuItems={menu} path="/">
         <Home path="/notes" />
         <NoteId path="/notes/:noteId" />
         <Export path="/export" />

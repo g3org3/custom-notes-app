@@ -9,18 +9,15 @@ import {
   Spacer,
   useClipboard,
 } from '@chakra-ui/react'
+import { useNavigate } from '@reach/router'
 import { FC, useCallback, useEffect } from 'react'
+import { FiCopy } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import { FiCopy } from 'react-icons/fi'
-import {
-  atomOneDark,
-  atomOneLight,
-} from 'react-syntax-highlighter/dist/esm/styles/hljs'
-import { useNavigate } from '@reach/router'
+import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-import { notesToYaml } from 'services/notes'
 import { selectIsThereAnyNotes, selectNotes } from 'modules/Note/Note.selectors'
+import { notesToYaml } from 'services/notes'
 
 interface Props {
   default?: boolean

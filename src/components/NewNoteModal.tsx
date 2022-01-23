@@ -1,5 +1,4 @@
-import { FC, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Modal,
   ModalOverlay,
@@ -12,12 +11,14 @@ import {
   Box,
   useDisclosure,
 } from '@chakra-ui/react'
-import { DateTime } from 'luxon'
-import { actions, NoteDBType } from 'modules/Note'
-import { useDispatch } from 'react-redux'
 import { useNavigate } from '@reach/router'
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Picker, Emoji } from 'emoji-mart'
+import { DateTime } from 'luxon'
+import { FC, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { v4 as uuidv4 } from 'uuid'
+
+import { actions, NoteDBType } from 'modules/Note'
 
 interface Props {
   isOpen: boolean
@@ -27,11 +28,7 @@ interface Props {
 const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const {
-    onOpen: onOpenEmoji,
-    isOpen: isOpenEmoji,
-    onClose: onCloseEmoji,
-  } = useDisclosure()
+  const { onOpen: onOpenEmoji, isOpen: isOpenEmoji, onClose: onCloseEmoji } = useDisclosure()
 
   const [state, setState] = useState({
     emoji: '',
@@ -68,23 +65,13 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
     const note: NoteDBType = {
       id: uuidv4(),
       date: DateTime.now(),
-      people:
-        state.people === ''
-          ? null
-          : state.people.split(',').map((x) => x.trim()),
+      people: state.people === '' ? null : state.people.split(',').map((x) => x.trim()),
       subject: state.subject === '' ? null : state.subject,
       notes: state.notes === '' ? null : state.notes,
-      next_steps:
-        state.next_steps === ''
-          ? null
-          : state.next_steps.split('\n').map((x) => x.trim()),
+      next_steps: state.next_steps === '' ? null : state.next_steps.split('\n').map((x) => x.trim()),
       emoji: state.emoji === '' ? null : state.emoji,
-      tags:
-        state.tags === '' ? null : state.tags.split(',').map((x) => x.trim()),
-      doubts:
-        state.doubts === ''
-          ? null
-          : state.doubts.split('\n').map((x) => x.trim()),
+      tags: state.tags === '' ? null : state.tags.split(',').map((x) => x.trim()),
+      doubts: state.doubts === '' ? null : state.doubts.split('\n').map((x) => x.trim()),
     }
     dispatch(actions.add({ note }))
     reset()
@@ -124,21 +111,13 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
           ) : null}
           {!isOpenEmoji ? (
             <>
-              <Input
-                placeholder="subject"
-                onChange={handleOnChange('subject')}
-                value={state.subject}
-              />
+              <Input placeholder="subject" onChange={handleOnChange('subject')} value={state.subject} />
               <Input
                 placeholder="people separated by ,"
                 onChange={handleOnChange('people')}
                 value={state.people}
               />
-              <Input
-                placeholder="tags separated by ,"
-                onChange={handleOnChange('tags')}
-                value={state.tags}
-              />
+              <Input placeholder="tags separated by ," onChange={handleOnChange('tags')} value={state.tags} />
               <Textarea
                 placeholder="notes in markdown"
                 onChange={handleOnChange('notes')}
@@ -149,11 +128,7 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
                 onChange={handleOnChange('next_steps')}
                 value={state.next_steps}
               />
-              <Textarea
-                placeholder="doubts"
-                onChange={handleOnChange('doubts')}
-                value={state.doubts}
-              />
+              <Textarea placeholder="doubts" onChange={handleOnChange('doubts')} value={state.doubts} />
               <Button onClick={handleForm}>Create</Button>
             </>
           ) : null}

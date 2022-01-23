@@ -1,4 +1,3 @@
-import React, { useCallback } from 'react'
 import {
   Avatar,
   Box,
@@ -16,24 +15,25 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { FiX } from 'react-icons/fi'
 import { Link as ReachLink, useNavigate } from '@reach/router'
-import { useDispatch, useSelector } from 'react-redux'
-import { useHotkeys } from 'react-hotkeys-hook'
 import base64 from 'base-64'
+import { AnimatePresence, motion } from 'framer-motion'
+import React, { useCallback } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { FiX } from 'react-icons/fi'
+import { useDispatch, useSelector } from 'react-redux'
 
+import ColorModeSwitcher from 'components/ColorModeSwitcher'
+import NewNoteModal from 'components/NewNoteModal'
 import { useAuth } from 'config/auth'
 import { dbSet } from 'config/firebase'
-import NewNoteModal from 'components/NewNoteModal'
-import ColorModeSwitcher from 'components/ColorModeSwitcher'
+import { actions } from 'modules/Note'
 import {
   selectFileHandler,
   selectFileName,
   selectIsThereAnyNotes,
   selectNotes,
 } from 'modules/Note/Note.selectors'
-import { actions } from 'modules/Note'
 import { getFileName, openAndSaveToFile, saveToFile } from 'services/file'
 import { notesToYaml } from 'services/notes'
 
@@ -51,13 +51,7 @@ interface Props {
   }>
 }
 
-const Layout: React.FC<Props> = ({
-  homeUrl,
-  children,
-  title,
-  by,
-  menuItems,
-}) => {
+const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) => {
   const navigate = useNavigate()
   const toast = useToast()
   const dispatch = useDispatch()
@@ -70,11 +64,7 @@ const Layout: React.FC<Props> = ({
   const isAnyNotes = useSelector(selectIsThereAnyNotes)
   const pagePadding = { base: '10px', md: '20px 40px' }
 
-  const {
-    isOpen: newNoteIsOpen,
-    onOpen: newNoteOnOpen,
-    onClose: newNoteOnClose,
-  } = useDisclosure()
+  const { isOpen: newNoteIsOpen, onOpen: newNoteOnOpen, onClose: newNoteOnClose } = useDisclosure()
   useHotkeys(
     'n',
     (e) => {
@@ -101,6 +91,7 @@ const Layout: React.FC<Props> = ({
 
     if (!notes || notes.length === 0) {
       toast({ title: 'There are no notes to save', status: 'error' })
+
       return
     }
 
@@ -138,6 +129,7 @@ const Layout: React.FC<Props> = ({
             status: 'error',
           })
         })
+
       return
     }
 
@@ -157,18 +149,8 @@ const Layout: React.FC<Props> = ({
   useHotkeys('1', () => void navigate('/notes'), [navigate])
   useHotkeys('2', () => void navigate('/export'), [navigate])
   useHotkeys('9', () => void navigate('/login'), [navigate])
-  useHotkeys('command+s', saveNotesToFile, [
-    toast,
-    notes,
-    fileHandler,
-    currentUser,
-  ])
-  useHotkeys('ctrl+s', saveNotesToFile, [
-    toast,
-    notes,
-    fileHandler,
-    currentUser,
-  ])
+  useHotkeys('command+s', saveNotesToFile, [toast, notes, fileHandler, currentUser])
+  useHotkeys('ctrl+s', saveNotesToFile, [toast, notes, fileHandler, currentUser])
 
   return (
     <>
@@ -203,11 +185,7 @@ const Layout: React.FC<Props> = ({
               {menuItems && <MenuDivider color={dividerColor} />}
               {currentUser && (
                 // @ts-ignore
-                <MenuItem
-                  onClick={newNoteOnOpen}
-                  icon={<span>📝</span>}
-                  command="N"
-                >
+                <MenuItem onClick={newNoteOnOpen} icon={<span>📝</span>} command="N">
                   New Note
                 </MenuItem>
               )}
@@ -253,12 +231,7 @@ const Layout: React.FC<Props> = ({
               </motion.div>
             </AnimatePresence>
           </Flex>
-          <Flex
-            flexGrow={{ base: '0', md: '1' }}
-            gap={3}
-            justify="flex-end"
-            alignItems="center"
-          >
+          <Flex flexGrow={{ base: '0', md: '1' }} gap={3} justify="flex-end" alignItems="center">
             <ColorModeSwitcher />
           </Flex>
         </Box>

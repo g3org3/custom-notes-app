@@ -1,17 +1,10 @@
-import { FC, memo } from 'react'
-import {
-  Box,
-  Text,
-  Flex,
-  Link,
-  useColorModeValue,
-  Spacer,
-} from '@chakra-ui/react'
+import { Box, Text, Flex, Link, useColorModeValue, Spacer } from '@chakra-ui/react'
 import { Link as ReachLink } from '@reach/router'
+import { Emoji } from 'emoji-mart'
+import { FC, memo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { selectors } from 'modules/Note'
-import { Emoji } from 'emoji-mart'
 import { countDone } from 'services/notes'
 
 interface Props {
@@ -31,6 +24,7 @@ const MobileTable: FC<Props> = () => {
       date: useColorModeValue('gray.500', 'gray'),
     },
   }
+
   return (
     <Flex direction="column" mt={2}>
       {notes?.map((note, i) => (

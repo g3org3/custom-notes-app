@@ -1,11 +1,4 @@
-import { FC } from 'react'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import SyntaxHighlighter from 'react-syntax-highlighter'
-import {
-  atomOneDark,
-  atomOneLight,
-} from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 import {
   useColorModeValue,
   Code,
@@ -23,7 +16,11 @@ import {
   Flex,
   Link,
 } from '@chakra-ui/react'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { FC } from 'react'
+import ReactMarkdown from 'react-markdown'
+import SyntaxHighlighter from 'react-syntax-highlighter'
+import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import remarkGfm from 'remark-gfm'
 
 interface Props {
   value?: string | null
@@ -75,6 +72,7 @@ const Markdown: FC<Props> = ({ value }) => {
           tbody: ({ children }) => <Tbody>{children}</Tbody>,
           code: ({ node, inline, className, children, ...props }) => {
             const match = /language-(\w+)/.exec(className || '')
+
             return !inline && match ? (
               <SyntaxHighlighter language={match[1]} style={theme}>
                 {children.join('')}

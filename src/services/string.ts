@@ -6,6 +6,7 @@ export const capitalize = (str?: string): string => {
 
 export const removeVocals = (str: string): string => {
   const vocals = ['a', 'e', 'i', 'o', 'u']
+
   return str
     .split('')
     .filter((letter) => vocals.indexOf(letter) === -1)

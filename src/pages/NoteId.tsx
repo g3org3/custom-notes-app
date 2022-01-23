@@ -1,35 +1,19 @@
-import {
-  Box,
-  Heading,
-  useColorModeValue,
-  Text,
-  useToast,
-  Flex,
-  Icon,
-  Link,
-} from '@chakra-ui/react'
+import { Box, Heading, useColorModeValue, Text, useToast, Flex, Icon, Link } from '@chakra-ui/react'
+import { useNavigate, Link as ReachLink } from '@reach/router'
+import { Emoji } from 'emoji-mart'
 import yaml from 'js-yaml'
 import { FC, useCallback } from 'react'
-import { BsChevronRight } from 'react-icons/bs'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, Link as ReachLink } from '@reach/router'
-import { FiHome } from 'react-icons/fi'
-
 import { useHotkeys } from 'react-hotkeys-hook'
-import { Emoji } from 'emoji-mart'
+import { BsChevronRight } from 'react-icons/bs'
+import { FiHome } from 'react-icons/fi'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { dateToPretty, dateToPrettyTime } from 'services/date'
-import ShowIf from 'components/Show'
 import CheckList from 'components/CheckList'
-import {
-  actions,
-  NoteDBType,
-  selectFileHandler,
-  selectIsThereAnyNotes,
-  selectNoteById,
-} from 'modules/Note'
-import { readFileContent } from 'services/file'
 import NoteContent from 'components/NoteContent'
+import ShowIf from 'components/Show'
+import { actions, NoteDBType, selectFileHandler, selectIsThereAnyNotes, selectNoteById } from 'modules/Note'
+import { dateToPretty, dateToPrettyTime } from 'services/date'
+import { readFileContent } from 'services/file'
 import { inboundMapper } from 'services/notes'
 
 interface Props {
@@ -127,21 +111,10 @@ const NoteId: FC<Props> = (props) => {
 
       <Box display="flex" alignItems="center" mt={2} mb={2}>
         <ShowIf value={!!note.date}>
-          <Text
-            display="flex"
-            padding="0 10px"
-            bg={backgroundDate}
-            title={note.date?.toISO()}
-          >
+          <Text display="flex" padding="0 10px" bg={backgroundDate} title={note.date?.toISO()}>
             {dateToPretty(note.date)}
           </Text>
-          <Text
-            display="flex"
-            padding="0 10px"
-            ml="10px"
-            bg={backgroundDate}
-            title={note.date?.toISO()}
-          >
+          <Text display="flex" padding="0 10px" ml="10px" bg={backgroundDate} title={note.date?.toISO()}>
             {dateToPrettyTime(note.date)}
           </Text>
         </ShowIf>

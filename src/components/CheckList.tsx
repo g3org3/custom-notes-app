@@ -1,6 +1,6 @@
+import { List, ListItem, ListIcon } from '@chakra-ui/react'
 import { FC, memo } from 'react'
 import { FiSquare, FiCheckSquare } from 'react-icons/fi'
-import { List, ListItem, ListIcon } from '@chakra-ui/react'
 
 import { isLineDone, cleanLine } from 'services/notes'
 
@@ -22,11 +22,7 @@ const CheckList: FC<Props> = ({ values, onClick }) => {
         const color = isDone ? 'green.500' : 'tomato'
 
         return (
-          <ListItem
-            cursor="pointer"
-            key={`${value}${i}`}
-            onClick={handleClick(value, i)}
-          >
+          <ListItem cursor="pointer" key={`${value}${i}`} onClick={handleClick(value, i)}>
             <ListIcon as={Icon} color={color} />
             {cleanLine(value)}
           </ListItem>

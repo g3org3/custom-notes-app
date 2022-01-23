@@ -1,10 +1,7 @@
-import { FC, memo, useState } from 'react'
 import { Flex, Heading, Text, useColorModeValue } from '@chakra-ui/react'
+import { FC, memo, useState } from 'react'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import {
-  atomOneDark,
-  atomOneLight,
-} from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 import Markdown from 'components/Markdown'
 

@@ -1,13 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { DateTime } from 'luxon'
 import { v4 as uuidv4 } from 'uuid'
 
-import {
-  searchNotes,
-  toggleNextStepDone,
-  toggleDoubtDone,
-  completedList,
-} from 'services/notes'
-import { DateTime } from 'luxon'
+import { searchNotes, toggleNextStepDone, toggleDoubtDone, completedList } from 'services/notes'
 
 export interface FileHandler {}
 
@@ -64,10 +59,7 @@ export default createSlice({
       const newNote = toggleNextStepDone(note, nextStepIndex)
       state.byId.set(noteId, newNote)
     },
-    add: (
-      state: State,
-      action: { type: string; payload: { note: NoteDBType } }
-    ) => {
+    add: (state: State, action: { type: string; payload: { note: NoteDBType } }) => {
       if (!state.byId) {
         state.byId = new Map()
       }
@@ -99,28 +91,20 @@ export default createSlice({
       state.fileHandler = null
       state.fileName = null
     },
-    setFileName: (
-      state: State,
-      action: { type: string; payload: { fileName: string } }
-    ) => {
+    setFileName: (state: State, action: { type: string; payload: { fileName: string } }) => {
       state.fileName = action.payload.fileName
     },
-    setFileHandler: (
-      state: State,
-      action: { type: string; payload: { fileHandler: FileHandler } }
-    ) => {
+    setFileHandler: (state: State, action: { type: string; payload: { fileHandler: FileHandler } }) => {
       state.fileHandler = action.payload.fileHandler
     },
-    setSearch: (
-      state: State,
-      action: { type: string; payload: { search: string | null } }
-    ): void => {
+    setSearch: (state: State, action: { type: string; payload: { search: string | null } }): void => {
       state.search = action.payload.search
       if (state.byId == null) return
 
       state.isFilterNotFinished = false
       if (!state.search) {
         state.filteredIds = []
+
         return
       }
 
@@ -135,15 +119,14 @@ export default createSlice({
         state.isFilterNotFinished = false
         state.search = null
         state.filteredIds = []
+
         return
       }
 
       state.isFilterNotFinished = true
       const notes = Array.from(state.byId.values())
       const filteredNotes =
-        state.filteredIds.length > 0
-          ? notes.filter((note) => state.filteredIds.includes(note.id))
-          : notes
+        state.filteredIds.length > 0 ? notes.filter((note) => state.filteredIds.includes(note.id)) : notes
       state.filteredIds = filteredNotes
         .filter((note) => note.next_steps)
         .filter((note) => !completedList(note.next_steps))
@@ -157,6 +140,7 @@ export default createSlice({
 
       if (!notes) {
         state.byId = null
+
         return
       }
 

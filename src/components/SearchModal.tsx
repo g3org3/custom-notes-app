@@ -1,4 +1,3 @@
-import { FC, useCallback } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -8,8 +7,10 @@ import {
   Input,
   InputRightAddon,
 } from '@chakra-ui/react'
+import { FC, useCallback } from 'react'
 import { FiSearch, FiX } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { actions, selectors } from 'modules/Note'
 
 interface Props {
@@ -41,12 +42,7 @@ const SearchModal: FC<Props> = ({ isOpen, onClose }) => {
             <InputLeftElement>
               <FiSearch />
             </InputLeftElement>
-            <Input
-              fontSize="3xl"
-              onChange={onChange}
-              placeholder="search"
-              value={search || ''}
-            />
+            <Input fontSize="3xl" onChange={onChange} placeholder="search" value={search || ''} />
             <InputRightAddon cursor="pointer" onClick={onRemove}>
               <FiX />
             </InputRightAddon>

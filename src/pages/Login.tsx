@@ -1,9 +1,9 @@
 import { Button, Flex, useColorModeValue, useToast } from '@chakra-ui/react'
+import { useNavigate } from '@reach/router'
 import { FC } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 
 import { useAuth } from 'config/auth'
-import { useNavigate } from '@reach/router'
 
 interface Props {
   path?: string
@@ -17,6 +17,7 @@ const Login: FC<Props> = (props) => {
 
   if (currentUser) {
     navigate('/')
+
     return null
   }
 
@@ -36,11 +37,7 @@ const Login: FC<Props> = (props) => {
   return (
     <Flex direction="column" justifyContent="center" alignItems="center">
       <Flex direction="column" gap={2} minWidth={{ base: '', md: '400px' }}>
-        <Button
-          leftIcon={<FcGoogle />}
-          onClick={handleLogin}
-          bg={btnBackground}
-        >
+        <Button leftIcon={<FcGoogle />} onClick={handleLogin} bg={btnBackground}>
           Log in
         </Button>
       </Flex>

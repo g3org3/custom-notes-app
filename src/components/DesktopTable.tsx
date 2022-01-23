@@ -1,25 +1,14 @@
-import { FC } from 'react'
-import {
-  Flex,
-  Box,
-  Text,
-  Table,
-  Thead,
-  Th,
-  Tbody,
-  Tr,
-  Td,
-  Link,
-  useColorModeValue,
-} from '@chakra-ui/react'
+import { Flex, Box, Text, Table, Thead, Th, Tbody, Tr, Td, Link, useColorModeValue } from '@chakra-ui/react'
 import { Link as ReachLink } from '@reach/router'
 import { Emoji } from 'emoji-mart'
+import { FC } from 'react'
+import { useSelector } from 'react-redux'
 
+import ShowIf from 'components/Show'
 import { selectors } from 'modules/Note'
 import { dateToPretty } from 'services/date'
 import { completedList, countDone } from 'services/notes'
-import ShowIf from 'components/Show'
-import { useSelector } from 'react-redux'
+import { removeVocals } from 'services/string'
 
 interface Props {
   //
@@ -67,7 +56,7 @@ const DesktopTable: FC<Props> = () => {
                 <Text>{note.subject}</Text>
               </Link>
             </Td>
-            <Td maxWidth="300px">{note.people?.join(', ')}</Td>
+            <Td maxWidth="300px">{note.people?.map(removeVocals).join(', ')}</Td>
             <Td maxWidth="300px">
               <Flex gap={2} wrap="wrap">
                 {note.tags?.map((tag) => (
@@ -91,18 +80,8 @@ const DesktopTable: FC<Props> = () => {
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  bg={
-                    completedList(note.next_steps) ||
-                    countDone(note.next_steps) === ''
-                      ? ''
-                      : nsBackground
-                  }
-                  color={
-                    completedList(note.next_steps) ||
-                    countDone(note.next_steps) === ''
-                      ? ''
-                      : 'red.500'
-                  }
+                  bg={completedList(note.next_steps) || countDone(note.next_steps) === '' ? '' : nsBackground}
+                  color={completedList(note.next_steps) || countDone(note.next_steps) === '' ? '' : 'red.500'}
                 >
                   {countDone(note.next_steps)}
                 </Box>
@@ -122,17 +101,9 @@ const DesktopTable: FC<Props> = () => {
               </ShowIf>
             </Td>
             <Td>
-              <ShowIf value={!completedList(note.doubts)}>
-                {countDone(note.doubts)}
-              </ShowIf>
+              <ShowIf value={!completedList(note.doubts)}>{countDone(note.doubts)}</ShowIf>
               <ShowIf value={completedList(note.doubts)}>
-                <Box
-                  display="inline-block"
-                  bg={completedBackround}
-                  color={completedColor}
-                  pl={2}
-                  pr={2}
-                >
+                <Box display="inline-block" bg={completedBackround} color={completedColor} pl={2} pr={2}>
                   completed
                 </Box>
               </ShowIf>
