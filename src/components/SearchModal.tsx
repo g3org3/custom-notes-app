@@ -6,8 +6,9 @@ import {
   InputLeftElement,
   Input,
   InputRightAddon,
+  Button,
 } from '@chakra-ui/react'
-import { FC, useCallback } from 'react'
+import { createRef, FC, RefObject, useCallback, useEffect, useRef } from 'react'
 import { FiSearch, FiX } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -20,14 +21,16 @@ interface Props {
 
 const SearchModal: FC<Props> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch()
-  const search = useSelector(selectors.selectSearch)
+  const ref = useRef() as RefObject<HTMLInputElement>
 
-  const onChange = useCallback(
-    (event: any) => {
-      dispatch(actions.setSearch({ search: event.target.value }))
-    },
-    [dispatch]
-  )
+  const onSubmit = (e: any) => {
+    console.log('submit')
+    e.preventDefault()
+    const value = ref.current?.value || ''
+    dispatch(actions.setSearch({ search: value }))
+    onClose()
+  }
+
   const onRemove = useCallback(() => {
     dispatch(actions.setSearch({ search: null }))
     onClose()
@@ -36,17 +39,20 @@ const SearchModal: FC<Props> = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
-        <form>
+      <ModalContent p={4}>
+        <form onSubmit={onSubmit}>
           <InputGroup>
             <InputLeftElement>
               <FiSearch />
             </InputLeftElement>
-            <Input fontSize="3xl" onChange={onChange} placeholder="search" value={search || ''} />
+            <Input _focus={{ boxShadow: 'none' }} border={0} fontSize="2xl" ref={ref} placeholder="search" />
             <InputRightAddon cursor="pointer" onClick={onRemove}>
               <FiX />
             </InputRightAddon>
           </InputGroup>
+          <Button type="submit" display="none">
+            submit
+          </Button>
         </form>
       </ModalContent>
     </Modal>
