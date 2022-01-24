@@ -8,11 +8,11 @@ import {
   InputRightAddon,
   Button,
 } from '@chakra-ui/react'
-import { createRef, FC, RefObject, useCallback, useEffect, useRef } from 'react'
+import { FC, RefObject, useCallback, useRef } from 'react'
 import { FiSearch, FiX } from 'react-icons/fi'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
-import { actions, selectors } from 'modules/Note'
+import { actions } from 'modules/Note'
 
 interface Props {
   isOpen: boolean

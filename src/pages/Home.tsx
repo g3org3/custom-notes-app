@@ -6,10 +6,12 @@ import {
   useColorModeValue,
   Flex,
   useMediaQuery,
+  Icon,
 } from '@chakra-ui/react'
 import { useNavigate } from '@reach/router'
 import { FC, memo, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { FiZap, FiZapOff } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
 
 import DesktopTable from 'components/DesktopTable'
@@ -17,7 +19,7 @@ import FilterBar from 'components/FilterBar'
 import MobileTable from 'components/MobileTable'
 import SearchModal from 'components/SearchModal'
 import { useAuth } from 'config/auth'
-import { selectFileName, selectIsThereAnyNotes, selectSearch } from 'modules/Note'
+import { selectFileHandler, selectFileName, selectIsThereAnyNotes, selectSearch } from 'modules/Note'
 
 interface Props {
   default?: boolean
@@ -29,6 +31,7 @@ const Home: FC<Props> = () => {
   const toast = useToast()
   const { currentUser } = useAuth()
   const isThereAnyNotes = useSelector(selectIsThereAnyNotes)
+  const filehandler = useSelector(selectFileHandler)
   const search = useSelector(selectSearch)
   const filterbg = useColorModeValue('green.100', 'green.900')
   const [isDesktop] = useMediaQuery('(min-width: 768px)')
@@ -57,8 +60,18 @@ const Home: FC<Props> = () => {
       <Flex>
         {isDesktop ? <FilterBar /> : null}
         <Box display="flex" flexDirection="column" flex={1} height="calc(100vh - 88px)" overflow="auto">
-          <Heading as="h2" position="sticky" top="0" bg={useColorModeValue('white', 'gray.800')}>
-            <span>📓 </span> {currentUser ? filename || 'Untitled.txt' : 'Notes'}
+          <Heading
+            as="h2"
+            position="sticky"
+            top="0"
+            alignItems="center"
+            bg={useColorModeValue('white', 'gray.800')}
+            gap={2}
+            display="flex"
+          >
+            <span>📓 </span>
+            {currentUser ? filename || 'Untitled.txt' : 'Notes'}
+            {filehandler ? <Icon as={FiZap} fontSize={20} /> : <Icon as={FiZapOff} fontSize={20} />}
           </Heading>
           {search && (
             <Box bg={filterbg} color="green.500" textAlign="center" mb={3} mt={3}>
