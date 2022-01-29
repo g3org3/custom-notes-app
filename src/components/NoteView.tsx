@@ -44,8 +44,8 @@ const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt,
         <Flex
           direction="column"
           alignItems="flex-start"
-          height="calc(100vh - 98px)"
-          width={{ base: '', md: '300px' }}
+          height={{ base: 'unset', md: 'calc(100vh - 98px)' }}
+          width={{ base: 'unset', md: '300px' }}
           top="0px"
           left="0px"
           position={{ base: 'relative', md: 'sticky' }}
