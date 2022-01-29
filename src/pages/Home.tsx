@@ -78,9 +78,11 @@ const Home: FC<Props> = () => {
           <Heading
             as="h2"
             position="sticky"
+            zIndex="2"
             top="0"
             alignItems="center"
-            bg={useColorModeValue('white', 'gray.800')}
+            bg={useColorModeValue('whiteAlpha.500', 'blackAlpha.100')}
+            backdropFilter="blur(2px)"
             gap={2}
             display="flex"
           >

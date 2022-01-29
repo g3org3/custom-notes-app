@@ -1,16 +1,9 @@
 import {
-  Avatar,
   Box,
-  Button,
   Flex,
   Grid,
   Heading,
   Link,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
   useColorMode,
   useColorModeValue,
   useDisclosure,
@@ -25,6 +18,7 @@ import { FiX } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
 
 import ColorModeSwitcher from 'components/ColorModeSwitcher'
+import LayoutMenu, { MenuOption } from 'components/LayoutMenu'
 import NewNoteModal from 'components/NewNoteModal'
 import { useAuth } from 'config/auth'
 import { dbSet } from 'config/firebase'
@@ -44,26 +38,21 @@ interface Props {
   by?: string
   childrend?: React.ReactNode
   path?: string
-  menuItems?: Array<{
-    path: string
-    label: string
-    icon: string
-    command: string
-  }>
+  menuOptions?: Array<MenuOption>
 }
 
-const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) => {
+const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) => {
   const navigate = useNavigate()
   const toast = useToast()
   const dispatch = useDispatch()
   const { currentUser, logout } = useAuth()
   const navbarBackgroundColor = useColorModeValue('teal.500', 'teal.500')
-  const dividerColor = useColorModeValue('gray.200', 'gray.700')
   const fileHandler = useSelector(selectFileHandler)
   const storeFileName = useSelector(selectFileName)
   const notes = useSelector(selectNotes)
   const isAnyNotes = useSelector(selectIsThereAnyNotes)
   const pagePadding = { base: '10px', md: '20px 40px' }
+  const isAuthenticated = !!currentUser
 
   const { isOpen: newNoteIsOpen, onOpen: newNoteOnOpen, onClose: newNoteOnClose } = useDisclosure()
   useHotkeys(
@@ -75,11 +64,11 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) =>
     [newNoteOnOpen]
   )
 
-  const handleReset = useCallback(() => {
+  const onClickReset = useCallback(() => {
     dispatch(actions.reset())
   }, [dispatch])
 
-  const handleAuth = useCallback(() => {
+  const onClickAuth = useCallback(() => {
     if (currentUser) {
       logout()
     } else {
@@ -87,8 +76,10 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) =>
     }
   }, [logout, currentUser, navigate])
 
-  const saveNotesToFile = (event: Event) => {
-    event.preventDefault()
+  const saveNotesToFile = (event: any) => {
+    if (event && event.preventDefault && typeof event.preventDefault === 'function') {
+      event.preventDefault()
+    }
 
     if (!notes || notes.length === 0) {
       toast({ title: 'There are no notes to save', status: 'error' })
@@ -152,67 +143,42 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) =>
   const { toggleColorMode } = useColorMode()
   useHotkeys('d', () => toggleColorMode(), [toggleColorMode])
 
+  const isMac = true
+  const superIcon = isMac ? '⌘+' : 'ctrl+'
+  const authenticatedMenuOptions = isAuthenticated
+    ? [
+        { onClick: newNoteOnOpen, label: 'New Note', emoji: ':memo:', command: 'N' },
+        { onClick: saveNotesToFile, label: 'Save All', emoji: ':floppy_disk:', command: superIcon + 'S' },
+      ]
+    : []
+
   return (
     <>
       <NewNoteModal isOpen={newNoteIsOpen} onClose={newNoteOnClose} />
       <Grid minH="100vh">
         <Box
-          bg={navbarBackgroundColor}
-          position="fixed"
-          zIndex={2}
-          top="0"
-          display="flex"
-          width="100vw"
-          height="48px"
           alignItems="center"
-          gap="10px"
+          bg={navbarBackgroundColor}
           boxShadow="md"
+          display="flex"
+          gap="10px"
+          height="48px"
           padding={pagePadding}
+          position="fixed"
+          top="0"
+          width="100vw"
+          zIndex="3"
         >
-          <Menu>
-            <MenuButton variant="ghost" as={Button}>
-              <Avatar src={currentUser?.photoURL || ''} size="sm" />
-            </MenuButton>
-            <MenuList>
-              {menuItems?.map((item) => (
-                <MenuItem key={item.path}>
-                  <Link as={ReachLink} to={item.path} display="flex" gap={2}>
-                    <span>{item.icon}</span>
-                    {item.label}
-                  </Link>
-                </MenuItem>
-              ))}
-              {menuItems && <MenuDivider color={dividerColor} />}
-              {currentUser && (
-                // @ts-ignore
-                <MenuItem onClick={newNoteOnOpen} icon={<span>📝</span>} command="N">
-                  New Note
-                </MenuItem>
-              )}
-              {isAnyNotes && currentUser && (
-                <MenuItem
-                  // @ts-ignore
-                  onClick={saveNotesToFile}
-                  icon={<span>💾</span>}
-                  command="⌘S"
-                >
-                  Save
-                </MenuItem>
-              )}
-              {isAnyNotes && <MenuDivider color={dividerColor} />}
-              {isAnyNotes && (
-                <MenuItem onClick={handleReset} display="flex" gap={2}>
-                  <span>🚧</span>
-                  Reset
-                </MenuItem>
-              )}
-              {isAnyNotes && <MenuDivider color={dividerColor} />}
-              <MenuItem onClick={handleAuth} display="flex" gap={2}>
-                <span>🔓</span>
-                {currentUser ? 'Log out' : 'Log in'}
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <LayoutMenu
+            authenticatedMenuOptions={authenticatedMenuOptions}
+            avatarUrl={currentUser?.photoURL}
+            isAuthenticated={isAuthenticated}
+            isStateEmpty={!isAnyNotes}
+            menuOptions={menuOptions}
+            onClickAuth={onClickAuth}
+            onClickReset={onClickReset}
+            userDisplayName={currentUser?.displayName}
+          />
           <Flex grow={{ base: '1', md: '0' }} justifyContent="center">
             <AnimatePresence>
               <Link as={ReachLink} to={homeUrl || '/'}>

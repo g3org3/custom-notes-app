@@ -2,6 +2,7 @@ import { Router } from '@reach/router'
 import { useSelector } from 'react-redux'
 
 import Layout from 'components/Layout'
+import { MenuOption } from 'components/LayoutMenu'
 import { selectIsThereAnyNotes } from 'modules/Note/Note.selectors'
 import Empty from 'pages/Empty'
 import Export from 'pages/Export'
@@ -10,21 +11,20 @@ import Login from 'pages/Login'
 import NoteId from 'pages/NoteId'
 import Shared from 'pages/Shared'
 
-const menuItems = [
-  { path: '/notes', label: 'Notes', icon: '📓', command: '1' },
-  { path: '/export', label: 'Export', icon: '📦', command: '2' },
-  { path: '/shared', label: 'Shared', icon: '🔖', command: '3' },
-  // { path: '/next-steps', label: 'Next Steps', icon: '🥞' },
+const menuOptions: Array<MenuOption> = [
+  { path: '/notes', label: 'Notes', emoji: ':notebook:' },
+  { path: '/export', label: 'Export', emoji: ':package:' },
+  { path: '/shared', label: 'Shared', emoji: ':satellite:' },
 ]
 
 const Routes = () => {
   const isThereAnyNotes = useSelector(selectIsThereAnyNotes)
 
-  const menu = isThereAnyNotes ? menuItems : undefined
+  const menu = isThereAnyNotes ? menuOptions : undefined
 
   return (
     <Router>
-      <Layout title="Notes" by="Jorge Adolfo" homeUrl="/notes" menuItems={menu} path="/">
+      <Layout title="Notes" by="Jorge Adolfo" homeUrl="/notes" menuOptions={menu} path="/">
         <Home path="/notes" />
         <Shared path="/shared" />
         <NoteId path="/notes/:noteId" />

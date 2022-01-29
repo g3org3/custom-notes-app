@@ -1,4 +1,3 @@
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Modal,
   ModalOverlay,
@@ -10,6 +9,7 @@ import {
   Button,
   Box,
   useDisclosure,
+  Flex,
 } from '@chakra-ui/react'
 import { useNavigate } from '@reach/router'
 import { Picker, Emoji } from 'emoji-mart'
@@ -31,7 +31,7 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
   const { onOpen: onOpenEmoji, isOpen: isOpenEmoji, onClose: onCloseEmoji } = useDisclosure()
 
   const [state, setState] = useState({
-    emoji: '',
+    emoji: ':memo:',
     subject: '',
     people: '',
     tags: '',
@@ -81,22 +81,19 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
-      <ModalOverlay />
+      <ModalOverlay zIndex="2" />
       <ModalContent>
         <ModalHeader>New Note</ModalHeader>
-        <ModalBody display="flex" flexDir="column" gap={2}>
-          <Box
-            height="32px"
-            width="32px"
-            bg={state.emoji ? '' : 'gray.200'}
-            onClick={isOpenEmoji ? onCloseEmoji : onOpenEmoji}
-          >
-            {!state.emoji ? (
-              <ChevronDownIcon bg="gray.600" height="32px" width="32px" />
-            ) : (
-              <Emoji set="google" emoji={state.emoji} size={32} />
-            )}
-          </Box>
+        <ModalBody display="flex" flexDir="column" gap={2} height="100%">
+          <Flex gap={2}>
+            <Emoji
+              set="google"
+              emoji={state.emoji}
+              size={32}
+              onClick={isOpenEmoji ? onCloseEmoji : onOpenEmoji}
+            />
+            <Input placeholder="subject" onChange={handleOnChange('subject')} value={state.subject} />
+          </Flex>
           {isOpenEmoji ? (
             <Box dispaly="inline-block">
               <Picker
@@ -111,7 +108,6 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
           ) : null}
           {!isOpenEmoji ? (
             <>
-              <Input placeholder="subject" onChange={handleOnChange('subject')} value={state.subject} />
               <Input
                 placeholder="people separated by ,"
                 onChange={handleOnChange('people')}
@@ -120,6 +116,7 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
               <Input placeholder="tags separated by ," onChange={handleOnChange('tags')} value={state.tags} />
               <Textarea
                 placeholder="notes in markdown"
+                minHeight="md"
                 onChange={handleOnChange('notes')}
                 value={state.notes}
               />
