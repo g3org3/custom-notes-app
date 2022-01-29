@@ -11,6 +11,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  useColorMode,
   useColorModeValue,
   useDisclosure,
   useToast,
@@ -18,7 +19,7 @@ import {
 import { Link as ReachLink, useNavigate } from '@reach/router'
 import base64 from 'base-64'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { FiX } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
@@ -56,7 +57,7 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) =>
   const toast = useToast()
   const dispatch = useDispatch()
   const { currentUser, logout } = useAuth()
-  const navbarBackgroundColor = useColorModeValue('teal.300', 'teal.500')
+  const navbarBackgroundColor = useColorModeValue('teal.500', 'teal.500')
   const dividerColor = useColorModeValue('gray.200', 'gray.700')
   const fileHandler = useSelector(selectFileHandler)
   const storeFileName = useSelector(selectFileName)
@@ -146,11 +147,10 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) =>
       })
   }
 
-  useHotkeys('1', () => void navigate('/notes'), [navigate])
-  useHotkeys('2', () => void navigate('/export'), [navigate])
-  useHotkeys('9', () => void navigate('/login'), [navigate])
   useHotkeys('command+s', saveNotesToFile, [toast, notes, fileHandler, currentUser])
   useHotkeys('ctrl+s', saveNotesToFile, [toast, notes, fileHandler, currentUser])
+  const { toggleColorMode } = useColorMode()
+  useHotkeys('d', () => toggleColorMode(), [toggleColorMode])
 
   return (
     <>
@@ -175,7 +175,7 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) =>
             </MenuButton>
             <MenuList>
               {menuItems?.map((item) => (
-                <MenuItem key={item.path} command={item.command}>
+                <MenuItem key={item.path}>
                   <Link as={ReachLink} to={item.path} display="flex" gap={2}>
                     <span>{item.icon}</span>
                     {item.label}
@@ -215,20 +215,18 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuItems }) =>
           </Menu>
           <Flex grow={{ base: '1', md: '0' }} justifyContent="center">
             <AnimatePresence>
-              <motion.div whileHover={{ scale: 1.2 }}>
-                <Link as={ReachLink} to={homeUrl || '/'}>
-                  <Heading as="h1" size="md" display="flex" alignItems="center">
-                    {title}{' '}
-                    {by ? (
-                      <>
-                        <FiX size={13} />
+              <Link as={ReachLink} to={homeUrl || '/'}>
+                <Heading as="h1" size="md" display="flex" alignItems="center" color="white">
+                  {title}{' '}
+                  {by ? (
+                    <>
+                      <FiX size={13} />
 
-                        {currentUser?.displayName || by}
-                      </>
-                    ) : null}
-                  </Heading>
-                </Link>
-              </motion.div>
+                      {currentUser?.displayName || by}
+                    </>
+                  ) : null}
+                </Heading>
+              </Link>
             </AnimatePresence>
           </Flex>
           <Flex flexGrow={{ base: '0', md: '1' }} gap={3} justify="flex-end" alignItems="center">

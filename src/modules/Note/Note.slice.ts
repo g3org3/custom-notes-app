@@ -28,6 +28,7 @@ export interface State {
   filteredIds: Array<string>
   fileHandler: FileHandler | null
   fileName: string | null
+  fileId: string | null
   isFilterNotFinished: boolean
 }
 
@@ -39,6 +40,7 @@ export default createSlice({
     filteredIds: [],
     fileHandler: null,
     fileName: null,
+    fileId: null,
     isFilterNotFinished: false,
   },
   reducers: {
@@ -90,9 +92,11 @@ export default createSlice({
       state.filteredIds = []
       state.fileHandler = null
       state.fileName = null
+      state.fileId = null
     },
-    setFileName: (state: State, action: { type: string; payload: { fileName: string } }) => {
+    setFileName: (state: State, action: { type: string; payload: { fileName: string; id?: string } }) => {
       state.fileName = action.payload.fileName
+      state.fileId = action.payload.id || null
     },
     setFileHandler: (state: State, action: { type: string; payload: { fileHandler: FileHandler } }) => {
       state.fileHandler = action.payload.fileHandler

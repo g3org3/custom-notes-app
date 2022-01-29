@@ -31,7 +31,7 @@ const Markdown: FC<Props> = ({ value }) => {
   if (!value) return null
 
   return (
-    <Flex direction="column" alignItems="flex-start" gap={4}>
+    <Flex direction="column" alignItems="flex-start" gap={4} overflow="auto">
       <ReactMarkdown
         children={value}
         components={{

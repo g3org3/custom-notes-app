@@ -24,7 +24,9 @@ const ColorModeSwitcher: FC<ColorModeSwitcherProps> = (props) => {
           size="md"
           fontSize="lg"
           variant="ghost"
-          color="current"
+          color="white"
+          _hover={{ background: 'whiteAlpha.300' }}
+          _active={{ background: 'whiteAlpha.500' }}
           marginLeft="2"
           onClick={toggleColorMode}
           icon={<SwitchIcon />}

@@ -46,6 +46,22 @@ const Home: FC<Props> = () => {
     },
     [onOpen]
   )
+  useHotkeys(
+    'command+k',
+    (e) => {
+      e.preventDefault()
+      onOpen()
+    },
+    [onOpen]
+  )
+  useHotkeys(
+    'ctrl+k',
+    (e) => {
+      e.preventDefault()
+      onOpen()
+    },
+    [onOpen]
+  )
 
   useEffect(() => {
     if (!isThereAnyNotes) {
@@ -57,8 +73,7 @@ const Home: FC<Props> = () => {
   return (
     <>
       <SearchModal isOpen={isOpen} onClose={onClose} />
-      <Flex>
-        {isDesktop ? <FilterBar /> : null}
+      <Flex direction="row-reverse">
         <Box display="flex" flexDirection="column" flex={1} height="calc(100vh - 88px)" overflow="auto">
           <Heading
             as="h2"
@@ -80,6 +95,7 @@ const Home: FC<Props> = () => {
           )}
           {isDesktop ? <DesktopTable /> : <MobileTable />}
         </Box>
+        {isDesktop ? <FilterBar /> : null}
       </Flex>
     </>
   )

@@ -4,17 +4,21 @@ import { Emoji } from 'emoji-mart'
 import { FC, memo } from 'react'
 import { useSelector } from 'react-redux'
 
-import { selectors } from 'modules/Note'
+import { NoteDBType, selectors } from 'modules/Note'
 import { countDone } from 'services/notes'
 
 interface Props {
-  //
+  notes?: Array<NoteDBType>
+  onClickNote?: (note: NoteDBType) => () => void
 }
 
 const LLink = memo((props: any) => <Link as={ReachLink} {...props} />)
 
-const MobileTable: FC<Props> = () => {
-  const notes = useSelector(selectors.selectNotesWithSearch)
+const MobileTable: FC<Props> = (props) => {
+  let notes = useSelector(selectors.selectNotesWithSearch)
+  if (props.notes) {
+    notes = props.notes
+  }
   const style = {
     bg: {
       table: useColorModeValue('gray.100', 'gray.900'),
@@ -24,6 +28,10 @@ const MobileTable: FC<Props> = () => {
       date: useColorModeValue('gray.500', 'gray'),
     },
   }
+  const getLinkProps = (note: NoteDBType) =>
+    props.onClickNote && typeof props.onClickNote === 'function'
+      ? { onClick: props.onClickNote(note) }
+      : { as: LLink, to: `/notes/${note.id}` }
 
   return (
     <Flex direction="column" mt={2}>
@@ -36,9 +44,8 @@ const MobileTable: FC<Props> = () => {
           pl={2}
           pb={2}
           cursor="pointer"
-          as={LLink}
           _hover={{ background: style.bg.hover, boxShadow: 'md' }}
-          to={`/notes/${note.id}`}
+          {...getLinkProps(note)}
         >
           <Flex alignItems="center" gap={2}>
             <Emoji emoji={note.emoji || ''} size={24} />

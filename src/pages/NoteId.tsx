@@ -1,18 +1,12 @@
-import { Box, Heading, useColorModeValue, Text, useToast, Flex, Icon, Link } from '@chakra-ui/react'
-import { useNavigate, Link as ReachLink } from '@reach/router'
-import { Emoji } from 'emoji-mart'
+import { useToast } from '@chakra-ui/react'
+import { useNavigate } from '@reach/router'
 import yaml from 'js-yaml'
 import { FC, useCallback } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { BsChevronRight } from 'react-icons/bs'
-import { FiHome } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
 
-import CheckList from 'components/CheckList'
-import NoteContent from 'components/NoteContent'
-import ShowIf from 'components/Show'
-import { actions, NoteDBType, selectFileHandler, selectIsThereAnyNotes, selectNoteById } from 'modules/Note'
-import { dateToPretty, dateToPrettyTime } from 'services/date'
+import NoteView from 'components/NoteView'
+import { actions, NoteDBType, selectors } from 'modules/Note'
 import { readFileContent } from 'services/file'
 import { inboundMapper } from 'services/notes'
 
@@ -26,11 +20,9 @@ const NoteId: FC<Props> = (props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const toast = useToast()
-  const isThereAnyNotes = useSelector(selectIsThereAnyNotes)
-  const note = useSelector(selectNoteById(props.noteId))
-  const fileHandler = useSelector(selectFileHandler)
-  const tagBackground = useColorModeValue('blue.100', 'blue.900')
-  const backgroundDate = useColorModeValue('gray.200', 'gray.700')
+  const isThereAnyNotes = useSelector(selectors.selectIsThereAnyNotes)
+  const note = useSelector(selectors.selectNoteById(props.noteId))
+  const fileHandler = useSelector(selectors.selectFileHandler)
 
   useHotkeys('esc', () => void navigate('/notes'), [navigate])
   useHotkeys(
@@ -63,7 +55,7 @@ const NoteId: FC<Props> = (props) => {
     [dispatch, fileHandler]
   )
 
-  const onNextStepClick = useCallback(
+  const onClickNextStep = useCallback(
     (index: number, value: string) => {
       if (!note) return
 
@@ -83,7 +75,7 @@ const NoteId: FC<Props> = (props) => {
     return null
   }
 
-  const onDoubtClick = (index: number, value: string) => {
+  const onClickDoubt = (index: number, value: string) => {
     dispatch(
       actions.toggleDoubt({
         noteId: note.id,
@@ -92,77 +84,7 @@ const NoteId: FC<Props> = (props) => {
     )
   }
 
-  return (
-    <Flex direction="column" alignItems="flex-start">
-      <Flex alignItems="center">
-        <Link as={ReachLink} to="/notes">
-          <Icon as={FiHome} fontSize={30} />
-        </Link>
-        <Icon as={BsChevronRight} color="gray.300" fontSize={30} />
-        <Heading as="h2">
-          {note.emoji ? (
-            <Box display="inline-block" mr="8px">
-              <Emoji set="google" emoji={note.emoji} size={40} />
-            </Box>
-          ) : null}
-          {note.subject}
-        </Heading>
-      </Flex>
-
-      <Box display="flex" alignItems="center" mt={2} mb={2}>
-        <ShowIf value={!!note.date}>
-          <Text display="flex" padding="0 10px" bg={backgroundDate} title={note.date?.toISO()}>
-            {dateToPretty(note.date)}
-          </Text>
-          <Text display="flex" padding="0 10px" ml="10px" bg={backgroundDate} title={note.date?.toISO()}>
-            {dateToPrettyTime(note.date)}
-          </Text>
-        </ShowIf>
-
-        <ShowIf value={!!note.tags}>
-          <Box display="inline-flex" ml="10px" gap="10px">
-            {note.tags?.map((name) => (
-              <Text
-                key={name}
-                textTransform="capitalize"
-                display="inline-block"
-                bg={tagBackground}
-                color="blue.500"
-                padding="0 10px"
-                borderRadius="full"
-                fontSize="xs"
-              >
-                {name}
-              </Text>
-            ))}
-          </Box>
-        </ShowIf>
-      </Box>
-
-      <ShowIf value={!!note.people && note.people.length > 0}>
-        <Box display="flex" gap="10px" mb={2}>
-          <b>Attendees:</b>
-          <Text textTransform="capitalize">{note.people?.join(', ')}</Text>
-        </Box>
-      </ShowIf>
-
-      <NoteContent notes={note.notes} />
-
-      <ShowIf value={!!note.doubts}>
-        <Heading as="h3" size="md" mt={5} mb={2}>
-          Doubts
-        </Heading>
-        <CheckList values={note.doubts} onClick={onDoubtClick} />
-      </ShowIf>
-
-      <ShowIf value={!!note.next_steps}>
-        <Heading as="h3" size="md" mt={5} mb={2}>
-          Next Steps
-        </Heading>
-        <CheckList values={note.next_steps} onClick={onNextStepClick} />
-      </ShowIf>
-    </Flex>
-  )
+  return <NoteView note={note} onClickDoubt={onClickDoubt} onClickNextStep={onClickNextStep} />
 }
 
 export default NoteId

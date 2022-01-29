@@ -51,7 +51,7 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
 
   const reset = () => {
     setState({
-      emoji: '',
+      emoji: ':memo:',
       subject: '',
       people: '',
       tags: '',

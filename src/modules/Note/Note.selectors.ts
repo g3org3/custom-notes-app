@@ -50,6 +50,7 @@ export const selectNoteById =
 export const selectFileHandler = (state: Store) => state.note.fileHandler
 
 export const selectFileName = (state: Store): string | null => state.note.fileName
+export const selectFileId = (state: Store): string | null => state.note.fileId
 
 export const selectTags = (state: Store): Array<[string, string]> => {
   if (!state.note.byId) return []

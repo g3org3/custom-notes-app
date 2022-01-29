@@ -24,7 +24,6 @@ const SearchModal: FC<Props> = ({ isOpen, onClose }) => {
   const ref = useRef() as RefObject<HTMLInputElement>
 
   const onSubmit = (e: any) => {
-    console.log('submit')
     e.preventDefault()
     const value = ref.current?.value || ''
     dispatch(actions.setSearch({ search: value }))

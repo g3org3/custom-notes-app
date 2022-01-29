@@ -8,10 +8,12 @@ import Export from 'pages/Export'
 import Home from 'pages/Home'
 import Login from 'pages/Login'
 import NoteId from 'pages/NoteId'
+import Shared from 'pages/Shared'
 
 const menuItems = [
   { path: '/notes', label: 'Notes', icon: '📓', command: '1' },
   { path: '/export', label: 'Export', icon: '📦', command: '2' },
+  { path: '/shared', label: 'Shared', icon: '🔖', command: '3' },
   // { path: '/next-steps', label: 'Next Steps', icon: '🥞' },
 ]
 
@@ -24,6 +26,7 @@ const Routes = () => {
     <Router>
       <Layout title="Notes" by="Jorge Adolfo" homeUrl="/notes" menuItems={menu} path="/">
         <Home path="/notes" />
+        <Shared path="/shared" />
         <NoteId path="/notes/:noteId" />
         <Export path="/export" />
         <Login path="/login" />

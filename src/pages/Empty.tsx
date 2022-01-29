@@ -79,7 +79,7 @@ const Empty: FC<Props> = () => {
   const readExternalFile = useCallback(() => {
     if (fileid) {
       const [file] = files.filter((f) => f.id === fileid)
-      dispatch(actions.setFileName({ fileName: file.name }))
+      dispatch(actions.setFileName({ fileName: file.name, id: file.id }))
       dispatch(
         actions.replaceNotes({
           notes: file.notes.map((n) => ({
@@ -129,7 +129,8 @@ const Empty: FC<Props> = () => {
     [dispatch, toast, navigate]
   )
 
-  useHotkeys('o', openAndLoadNotesToApp)
+  useHotkeys('ctrl+o', openAndLoadNotesToApp)
+  useHotkeys('command+o', openAndLoadNotesToApp)
 
   return (
     <>

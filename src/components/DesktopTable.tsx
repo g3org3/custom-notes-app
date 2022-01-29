@@ -5,21 +5,29 @@ import { FC } from 'react'
 import { useSelector } from 'react-redux'
 
 import ShowIf from 'components/Show'
-import { selectors } from 'modules/Note'
+import { NoteDBType, selectors } from 'modules/Note'
 import { dateToPretty } from 'services/date'
 import { completedList, countDone } from 'services/notes'
 import { removeVocals } from 'services/string'
 
 interface Props {
-  //
+  notes?: Array<NoteDBType>
+  onClickNote?: (note: NoteDBType) => () => void
 }
 
-const DesktopTable: FC<Props> = () => {
+const DesktopTable: FC<Props> = (props) => {
   const completedColor = useColorModeValue('green.500', 'green.400')
   const tagBackground = useColorModeValue('blue.100', 'blue.900')
   const nsBackground = useColorModeValue('red.100', 'red.900')
   const completedBackround = useColorModeValue('green.100', 'green.900')
-  const notes = useSelector(selectors.selectNotesWithSearch)
+  let notes = useSelector(selectors.selectNotesWithSearch)
+  if (props.notes) {
+    notes = props.notes
+  }
+  const getLinkProps = (note: NoteDBType) =>
+    props.onClickNote && typeof props.onClickNote === 'function'
+      ? { onClick: props.onClickNote(note) }
+      : { as: ReachLink, to: `/notes/${note.id}` }
 
   return (
     <Table variant="simple" display={{ base: 'none', md: 'inline-table' }}>
@@ -37,19 +45,12 @@ const DesktopTable: FC<Props> = () => {
         {notes?.map((note) => (
           <Tr key={note.id}>
             <Td fontFamily="monospace">
-              <Link as={ReachLink} to={`/notes/${note.id}`}>
-                {dateToPretty(note.date)}
-              </Link>
+              {/* @ts-ignore */}
+              <Link {...getLinkProps(note)}>{dateToPretty(note.date)}</Link>
             </Td>
             <Td>
-              <Link
-                tabIndex={-1}
-                as={ReachLink}
-                to={`/notes/${note.id}`}
-                display="flex"
-                alignItems="center"
-                gap={2}
-              >
+              {/* @ts-ignore */}
+              <Link {...getLinkProps(note)} tabIndex={-1} display="flex" alignItems="center" gap={2}>
                 <Text>
                   <Emoji set="google" emoji={note.emoji || ''} size={24} />
                 </Text>

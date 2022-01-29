@@ -12,7 +12,10 @@ const components = {
   },
   Button: {
     baseStyle: (props: any) => ({
-      outline: '0',
+      _focus: {
+        boxShadow: 'none',
+        textDecoration: 'underline',
+      },
     }),
   },
 }
