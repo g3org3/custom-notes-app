@@ -1,10 +1,8 @@
 import { Router } from '@reach/router'
 import { isIOS } from 'react-device-detect'
-import { useSelector } from 'react-redux'
 
 import Layout from 'components/Layout'
 import { MenuOption } from 'components/LayoutMenu'
-import { selectIsThereAnyNotes } from 'modules/Note/Note.selectors'
 import AuthLog from 'pages/AuthLog'
 import Empty from 'pages/Empty'
 import Export from 'pages/Export'
@@ -22,17 +20,13 @@ const menuOptions: Array<MenuOption> = [
 ]
 
 const Routes = () => {
-  const isThereAnyNotes = useSelector(selectIsThereAnyNotes)
-
-  const menu = isThereAnyNotes ? menuOptions : undefined
-
   if (isIOS && menuOptions.length === 3) {
     menuOptions.push({ path: '/read-qr', label: 'Login with QR', emoji: ':camera:' })
   }
 
   return (
     <Router>
-      <Layout title="Notes" by="Jorge Adolfo" homeUrl="/notes" menuOptions={menu} path="/">
+      <Layout title="Notes" by="Jorge Adolfo" homeUrl="/notes" menuOptions={menuOptions} path="/">
         <Home path="/notes" />
         <Shared path="/shared" />
         <ReadQr path="/read-qr" />
