@@ -5,7 +5,7 @@ import { FC, useEffect, useState } from 'react'
 import * as uuid from 'uuid'
 
 import { useAuth } from 'config/auth'
-import { dbOnValue, dbSet } from 'config/firebase'
+import { dbOnValue, dbRemove, dbSet } from 'config/firebase'
 
 interface Props {
   //
@@ -17,11 +17,12 @@ const GenQrCode: FC<Props> = (props) => {
 
   useEffect(() => {
     if (!authQr) return
-    dbOnValue('/public/' + authQr, (snapshot) => {
+    dbOnValue(`public/${authQr}`, (snapshot) => {
       const val: any = snapshot.val()
       if (val.currentUser) {
         const currentUser = val.currentUser as { email: string; uid: string }
         login(currentUser.email, currentUser.uid)
+        dbRemove(`public/${authQr}`)
       }
     })
     // eslint-disable-next-line
