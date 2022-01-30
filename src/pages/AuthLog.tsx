@@ -14,7 +14,7 @@ interface Props {
 interface Auth {
   connected: boolean
   ip: string
-  ipdata: IpInfo
+  ipdata?: IpInfo
   fingerprint: FingerPrint
   fingerprintId: string
   uuid: string
@@ -67,7 +67,7 @@ const AuthLog: FC<Props> = (props) => {
                   {auth.connected ? 'online' : 'offline'}
                 </Badge>
               </Td>
-              <Td>{auth.ipdata.country}</Td>
+              <Td>{auth.ipdata?.country}</Td>
               <Td>{auth.fingerprint.browserName}</Td>
               <Td>{auth.fingerprint.osName}</Td>
               <Td>{DateTime.fromISO(auth.updatedAt).toRelative()}</Td>
