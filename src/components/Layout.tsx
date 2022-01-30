@@ -22,7 +22,7 @@ import ColorModeSwitcher from 'components/ColorModeSwitcher'
 import LayoutMenu, { MenuOption } from 'components/LayoutMenu'
 import NewNoteModal from 'components/NewNoteModal'
 import { useAuth } from 'config/auth'
-import { dbSet } from 'config/firebase'
+import { dbOnValue, dbSet } from 'config/firebase'
 import { actions } from 'modules/Note'
 import {
   selectFileHandler,
@@ -55,12 +55,13 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) 
   const isAnyNotes = useSelector(selectIsThereAnyNotes)
   const pagePadding = { base: '10px', md: '20px 40px' }
   const isAuthenticated = !!currentUser
+  const { fingerprintId } = getFingerPrint()
 
   useEffect(() => {
     if (!currentUser) return
-    const { fingerprintId } = getFingerPrint()
     dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'connected', true)
     dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'updatedAt', DateTime.now().toISO())
+    // eslint-disable-next-line
   }, [currentUser])
 
   const { isOpen: newNoteIsOpen, onOpen: newNoteOnOpen, onClose: newNoteOnClose } = useDisclosure()
@@ -77,14 +78,24 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) 
     dispatch(actions.reset())
   }, [dispatch])
 
-  const onClickAuth = useCallback(() => {
+  const onClickAuth = useCallback(async () => {
     if (currentUser) {
       dispatch(actions.reset())
-      logout()
-    } else {
-      navigate('/login')
+      await logout()
     }
+    navigate('/login')
   }, [logout, currentUser, navigate, dispatch])
+
+  useEffect(() => {
+    if (!currentUser) return
+
+    dbOnValue(`auth/${currentUser.uid}/${fingerprintId}/forceLogout`, (snapshot) => {
+      const val = snapshot.val()
+      if (val) {
+        onClickAuth()
+      }
+    })
+  }, [currentUser])
 
   const saveNotesToFile = (event: any) => {
     if (event && event.preventDefault && typeof event.preventDefault === 'function') {

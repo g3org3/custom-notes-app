@@ -7,7 +7,7 @@ import { IOSView } from 'react-device-detect'
 
 import { useAuth } from 'config/auth'
 import { dbOnValue, dbSet } from 'config/firebase'
-import { FingerPrint, IpInfo } from 'services/fingerprint'
+import { FingerPrint, getFingerPrint, IpInfo } from 'services/fingerprint'
 
 interface Props {
   default?: boolean
@@ -31,10 +31,16 @@ const ReadQr: FC<Props> = (props) => {
   const [go, setGo] = useState(false)
   const [val, setVal] = useState(null)
   const { currentUser } = useAuth()
+  const { fingerprintId } = getFingerPrint()
 
   const onFind = (value: any) => {
     setVal(value)
     setGo(false)
+  }
+
+  const onClickForceLogout = () => {
+    if (!currentUser) return
+    dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'forceLogout', true)
   }
 
   useEffect(() => {
@@ -99,9 +105,15 @@ const ReadQr: FC<Props> = (props) => {
               <Td>{DateTime.fromISO(auth.updatedAt).toRelative()}</Td>
               <Td>{DateTime.fromISO(auth.createdAt).toRelative()}</Td>
               <Td>
-                <Button size="xs" colorScheme="red">
-                  logout
-                </Button>
+                {auth.fingerprintId === fingerprintId ? (
+                  <Button onClick={onClickForceLogout} size="xs" colorScheme="red">
+                    force logout
+                  </Button>
+                ) : (
+                  <Button onClick={onClickForceLogout} size="xs" colorScheme="red">
+                    force logout
+                  </Button>
+                )}
               </Td>
             </Tr>
           ))}
