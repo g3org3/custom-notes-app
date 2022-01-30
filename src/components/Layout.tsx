@@ -70,11 +70,12 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) 
 
   const onClickAuth = useCallback(() => {
     if (currentUser) {
+      dispatch(actions.reset())
       logout()
     } else {
       navigate('/login')
     }
-  }, [logout, currentUser, navigate])
+  }, [logout, currentUser, navigate, dispatch])
 
   const saveNotesToFile = (event: any) => {
     if (event && event.preventDefault && typeof event.preventDefault === 'function') {

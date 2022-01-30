@@ -1,7 +1,6 @@
 import {
   Avatar,
   Button,
-  Link,
   Menu,
   MenuButton,
   MenuDivider,
@@ -9,9 +8,10 @@ import {
   MenuList,
   useColorModeValue,
 } from '@chakra-ui/react'
-import { Link as ReachLink } from '@reach/router'
 import { Emoji } from 'emoji-mart'
-import { FC, ReactNode } from 'react'
+import { FC } from 'react'
+
+import ConditionalLink from 'components/ConditionalLink'
 
 export interface MenuOption {
   label: string
@@ -31,20 +31,6 @@ interface Props {
   onClickReset: (event: any) => void
   onClickAuth: (event: any) => void
 }
-
-interface ConditionalLinkProps {
-  path?: string | null
-  children: ReactNode
-}
-
-const ConditionalLink: FC<ConditionalLinkProps> = ({ path, children }) =>
-  path ? (
-    <Link as={ReachLink} to={path}>
-      {children}
-    </Link>
-  ) : (
-    <>{children}</>
-  )
 
 const LayoutMenu: FC<Props> = (props) => {
   const {
@@ -74,9 +60,8 @@ const LayoutMenu: FC<Props> = (props) => {
           <>
             {menuOptions.map((item) => {
               return (
-                <ConditionalLink path={item.path}>
+                <ConditionalLink path={item.path} key={item.label}>
                   <MenuItem
-                    key={item.label}
                     onClick={item.onClick}
                     icon={!!item.emoji ? <Emoji set="google" emoji={item.emoji} size={24} /> : undefined}
                   >
@@ -93,9 +78,8 @@ const LayoutMenu: FC<Props> = (props) => {
           <>
             {authenticatedMenuOptions.map((item) => {
               return (
-                <ConditionalLink path={item.path}>
+                <ConditionalLink path={item.path} key={item.label}>
                   <MenuItem
-                    key={item.label}
                     onClick={item.onClick}
                     icon={!!item.emoji ? <Emoji set="google" emoji={item.emoji} size={24} /> : undefined}
                     command={item.command}

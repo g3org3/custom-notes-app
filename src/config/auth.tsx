@@ -18,6 +18,7 @@ interface AuthContextProps {
   login: (email: string, password: string) => void
   logout: () => void
   loginWithGoogle: () => void
+  setCurrentUser: (user: User) => void
 }
 const initialContext = {
   initialLoading: false,
@@ -26,6 +27,7 @@ const initialContext = {
   login: () => {},
   logout: () => {},
   loginWithGoogle: () => {},
+  setCurrentUser: () => {},
 }
 const AuthContext = createContext<AuthContextProps>(initialContext)
 
@@ -70,6 +72,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const value: AuthContextProps = {
     initialLoading: loading,
     currentUser,
+    setCurrentUser,
     signup,
     login,
     logout,

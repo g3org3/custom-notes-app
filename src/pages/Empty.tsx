@@ -52,20 +52,33 @@ const Empty: FC<Props> = () => {
   const { currentUser } = useAuth()
 
   useEffect(() => {
-    if (currentUser) {
-      dbOnValue(
-        `/users/${currentUser.uid}/notes`,
-        (snapshot: any) => {
-          const data = snapshot.val()
-          if (!data) return
-          const files: Array<FirebaseFile> = Object.values(data)
-          if (files.length === 0) return
-          setFiles(files)
-          onOpen()
-        },
-        {}
-      )
+    if (!currentUser) return
+    const { uid, displayName, email, emailVerified, isAnonymous, phoneNumber, photoURL, providerId } =
+      currentUser
+    const u = {
+      uid,
+      displayName,
+      email,
+      emailVerified,
+      isAnonymous,
+      phoneNumber,
+      photoURL,
+      providerId,
     }
+    console.log('runed', u)
+    dbOnValue(
+      `users/${currentUser.uid}/notes`,
+      (snapshot: any) => {
+        console.log('> files')
+        const data = snapshot.val()
+        if (!data) return
+        const files: Array<FirebaseFile> = Object.values(data)
+        if (files.length === 0) return
+        setFiles(files)
+        onOpen()
+      },
+      {}
+    )
   }, [currentUser, onOpen])
 
   const handleSelectFileChange = useCallback(

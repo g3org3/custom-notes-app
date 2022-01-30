@@ -1,8 +1,10 @@
-import { Button, Flex, useColorModeValue, useToast } from '@chakra-ui/react'
+import { Button, Flex, Heading, useColorModeValue, useToast } from '@chakra-ui/react'
 import { useNavigate } from '@reach/router'
-import { FC } from 'react'
+import { EmailAuthProvider, linkWithCredential } from 'firebase/auth'
+import { FC, useEffect } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 
+import GenQrCode from 'components/GenQrCode'
 import { useAuth } from 'config/auth'
 
 interface Props {
@@ -15,11 +17,16 @@ const Login: FC<Props> = (props) => {
   const navigate = useNavigate()
   const { currentUser, loginWithGoogle } = useAuth()
 
-  if (currentUser) {
-    navigate('/')
+  useEffect(() => {
+    if (!currentUser || !currentUser.email) return
 
-    return null
-  }
+    if (currentUser.providerData.length === 1) {
+      const credential = EmailAuthProvider.credential(currentUser.email, currentUser.uid)
+      linkWithCredential(currentUser, credential)
+    }
+    navigate('/')
+    // eslint-disable-next-line
+  }, [currentUser])
 
   const handleLogin = async () => {
     try {
@@ -35,12 +42,14 @@ const Login: FC<Props> = (props) => {
   }
 
   return (
-    <Flex direction="column" justifyContent="center" alignItems="center">
+    <Flex direction="column" justifyContent="center" alignItems="center" gap={4}>
+      <Heading>Login</Heading>
       <Flex direction="column" gap={2} minWidth={{ base: '', md: '400px' }}>
         <Button leftIcon={<FcGoogle />} onClick={handleLogin} bg={btnBackground}>
           Log in
         </Button>
       </Flex>
+      <GenQrCode />
     </Flex>
   )
 }
