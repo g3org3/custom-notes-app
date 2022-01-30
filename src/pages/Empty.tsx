@@ -135,7 +135,7 @@ const Empty: FC<Props> = () => {
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
+        <ModalOverlay zIndex="2" />
         <ModalContent>
           <ModalHeader>Select File</ModalHeader>
           <ModalBody>

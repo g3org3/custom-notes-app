@@ -8,6 +8,9 @@ const components = {
       _hover: {
         color: mode('black', 'white')(props),
       },
+      _focus: {
+        boxShadow: 'md',
+      },
     }),
   },
   Button: {

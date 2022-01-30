@@ -8,7 +8,6 @@ import ShowIf from 'components/Show'
 import { NoteDBType, selectors } from 'modules/Note'
 import { dateToPretty } from 'services/date'
 import { completedList, countDone } from 'services/notes'
-import { removeVocals } from 'services/string'
 
 interface Props {
   notes?: Array<NoteDBType>
@@ -17,7 +16,7 @@ interface Props {
 
 const DesktopTable: FC<Props> = (props) => {
   const completedColor = useColorModeValue('green.500', 'green.400')
-  const tagBackground = useColorModeValue('blue.100', 'blue.900')
+  const tagBackground = useColorModeValue('blue.50', 'blue.900')
   const nsBackground = useColorModeValue('red.100', 'red.900')
   const completedBackround = useColorModeValue('green.100', 'green.900')
   let notes = useSelector(selectors.selectNotesWithSearch)
@@ -57,7 +56,7 @@ const DesktopTable: FC<Props> = (props) => {
                 <Text>{note.subject}</Text>
               </Link>
             </Td>
-            <Td maxWidth="300px">{note.people?.map(removeVocals).join(', ')}</Td>
+            <Td maxWidth="300px">{note.people?.join(', ')}</Td>
             <Td maxWidth="300px">
               <Flex gap={2} wrap="wrap">
                 {note.tags?.map((tag) => (
