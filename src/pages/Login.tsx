@@ -1,5 +1,6 @@
 import { Button, Flex, Heading, useColorModeValue, useToast } from '@chakra-ui/react'
 import { useNavigate } from '@reach/router'
+import base64 from 'base-64'
 import { EmailAuthProvider, linkWithCredential } from 'firebase/auth'
 import { DateTime } from 'luxon'
 import { FC, useEffect } from 'react'
@@ -9,7 +10,7 @@ import * as uuid from 'uuid'
 
 import GenQrCode from 'components/GenQrCode'
 import { useAuth } from 'config/auth'
-import { dbPush, dbSet } from 'config/firebase'
+import { dbSet } from 'config/firebase'
 
 interface Props {
   path?: string
@@ -47,7 +48,6 @@ const Login: FC<Props> = (props) => {
       const parser = new UAParser()
       const { browser, device, engine, os, cpu } = parser.getResult()
       const fingerprint = {
-        ip,
         browserName: browser.name ? browser.name : null,
         browserVersion: browser.version ? browser.version : null,
         cpu: cpu.architecture ? cpu.architecture : null,
@@ -61,23 +61,22 @@ const Login: FC<Props> = (props) => {
         screenWidth: window.screen.width,
         screenPixelDepth: window.screen.pixelDepth,
       }
-      console.log(fingerprint)
+      const str = Object.values(fingerprint).join('')
+      const fingerprintId = base64.encode(str)
       const id = uuid.v4()
       const payload = {
         ip,
         ipdata,
         fingerprint,
+        fingerprintId,
         uuid: id,
         ua: ua || 'unknown',
         connected: true,
         createdAt: DateTime.now().toISO(),
         updatedAt: DateTime.now().toISO(),
       }
-      const { key } = dbPush('auth/' + currentUser.uid, payload)
-      if (key) {
-        dbSet(`auth/${currentUser.uid}/${key}`, 'id', key)
-        setSessionId(key)
-      }
+      dbSet(`auth/${currentUser.uid}`, fingerprintId, payload)
+      setSessionId(fingerprintId)
 
       navigate('/')
     }

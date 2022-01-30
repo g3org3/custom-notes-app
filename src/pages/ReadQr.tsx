@@ -32,7 +32,7 @@ const ReadQr: FC<Props> = (props) => {
     dbSet('/public/' + val, 'currentUser', payload)
     setTimeout(() => {
       window.location.reload()
-    }, 5000)
+    }, 3000)
     // eslint-disable-next-line
   }, [val])
 
