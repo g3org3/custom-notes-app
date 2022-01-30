@@ -7,9 +7,10 @@ import {
   User,
   GoogleAuthProvider,
 } from 'firebase/auth'
+import { DateTime } from 'luxon'
 import React, { useState, useContext, createContext, useEffect } from 'react'
 
-import { auth } from 'config/firebase'
+import { auth, dbOnDisconnect, dbSet } from 'config/firebase'
 
 interface AuthContextProps {
   initialLoading: boolean
@@ -18,7 +19,7 @@ interface AuthContextProps {
   login: (email: string, password: string) => void
   logout: () => void
   loginWithGoogle: () => void
-  setCurrentUser: (user: User) => void
+  setSessionId: (id: string) => void
 }
 const initialContext = {
   initialLoading: false,
@@ -27,7 +28,7 @@ const initialContext = {
   login: () => {},
   logout: () => {},
   loginWithGoogle: () => {},
-  setCurrentUser: () => {},
+  setSessionId: () => {},
 }
 const AuthContext = createContext<AuthContextProps>(initialContext)
 
@@ -42,6 +43,7 @@ interface Props {
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
   const signup = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password)
@@ -57,8 +59,19 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }
 
   const logout = () => {
+    if (!currentUser || !sessionId) return
+    dbSet(`auth/${currentUser.uid}/${sessionId}`, 'updatedAt', DateTime.now().toISO())
+    dbSet(`auth/${currentUser.uid}/${sessionId}`, 'connected', false)
+
     return signOut(auth)
   }
+
+  useEffect(() => {
+    if (!currentUser || !sessionId) return
+
+    dbOnDisconnect(`auth/${currentUser.uid}/${sessionId}/connected`)
+    // eslint-disable-next-line
+  }, [sessionId])
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -72,7 +85,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const value: AuthContextProps = {
     initialLoading: loading,
     currentUser,
-    setCurrentUser,
+    setSessionId,
     signup,
     login,
     logout,

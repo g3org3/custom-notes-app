@@ -30,11 +30,14 @@ const ReadQr: FC<Props> = (props) => {
       uid: currentUser.uid,
     }
     dbSet('/public/' + val, 'currentUser', payload)
+    setTimeout(() => {
+      window.location.reload()
+    }, 5000)
     // eslint-disable-next-line
   }, [val])
 
   return (
-    <Flex direction="column" justifyContent="center">
+    <Flex direction="column" alignItems="center">
       <Heading>Authenticate with QR</Heading>
       <IOSView>
         {go ? (

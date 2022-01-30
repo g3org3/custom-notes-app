@@ -1,11 +1,15 @@
 import { Button, Flex, Heading, useColorModeValue, useToast } from '@chakra-ui/react'
 import { useNavigate } from '@reach/router'
 import { EmailAuthProvider, linkWithCredential } from 'firebase/auth'
+import { DateTime } from 'luxon'
 import { FC, useEffect } from 'react'
 import { FcGoogle } from 'react-icons/fc'
+import UAParser from 'ua-parser-js'
+import * as uuid from 'uuid'
 
 import GenQrCode from 'components/GenQrCode'
 import { useAuth } from 'config/auth'
+import { dbPush, dbSet } from 'config/firebase'
 
 interface Props {
   path?: string
@@ -15,16 +19,69 @@ const Login: FC<Props> = (props) => {
   const btnBackground = useColorModeValue('gray.200', 'blue.800')
   const toast = useToast()
   const navigate = useNavigate()
-  const { currentUser, loginWithGoogle } = useAuth()
+  const { currentUser, loginWithGoogle, setSessionId } = useAuth()
 
   useEffect(() => {
-    if (!currentUser || !currentUser.email) return
+    const fn = async () => {
+      if (!currentUser || !currentUser.email) return
 
-    if (currentUser.providerData.length === 1) {
-      const credential = EmailAuthProvider.credential(currentUser.email, currentUser.uid)
-      linkWithCredential(currentUser, credential)
+      if (currentUser.providerData.length === 1) {
+        const credential = EmailAuthProvider.credential(currentUser.email, currentUser.uid)
+        linkWithCredential(currentUser, credential)
+      }
+
+      let ip = 'unknown'
+      let ipdata = 'unknown'
+      try {
+        const res = await fetch('https://ipinfo.io?token=9d1708faa861f9', {
+          headers: { accept: 'application/json' },
+        })
+        const data = await res.json()
+        if (data.ip) {
+          ip = data.ip
+          ipdata = data
+        }
+      } catch {}
+
+      const ua = window?.navigator?.userAgent
+      const parser = new UAParser()
+      const { browser, device, engine, os, cpu } = parser.getResult()
+      const fingerprint = {
+        ip,
+        browserName: browser.name ? browser.name : null,
+        browserVersion: browser.version ? browser.version : null,
+        cpu: cpu.architecture ? cpu.architecture : null,
+        deviceModel: device.model ? device.model : null,
+        deviceVendor: device.vendor ? device.vendor : null,
+        deviceType: device.type ? device.type : null,
+        engineName: engine.name ? engine.name : null,
+        osName: os.name ? os.name : null,
+        osVersion: os.version ? os.version : null,
+        screenHeight: window.screen.height,
+        screenWidth: window.screen.width,
+        screenPixelDepth: window.screen.pixelDepth,
+      }
+      console.log(fingerprint)
+      const id = uuid.v4()
+      const payload = {
+        ip,
+        ipdata,
+        fingerprint,
+        uuid: id,
+        ua: ua || 'unknown',
+        connected: true,
+        createdAt: DateTime.now().toISO(),
+        updatedAt: DateTime.now().toISO(),
+      }
+      const { key } = dbPush('auth/' + currentUser.uid, payload)
+      if (key) {
+        dbSet(`auth/${currentUser.uid}/${key}`, 'id', key)
+        setSessionId(key)
+      }
+
+      navigate('/')
     }
-    navigate('/')
+    fn()
     // eslint-disable-next-line
   }, [currentUser])
 

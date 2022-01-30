@@ -24,7 +24,7 @@ const Routes = () => {
 
   const menu = isThereAnyNotes ? menuOptions : undefined
 
-  if (isIOS) {
+  if (isIOS && menuOptions.length === 3) {
     menuOptions.push({ path: '/read-qr', label: 'Login with QR', emoji: 'package' })
   }
 
