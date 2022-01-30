@@ -24,6 +24,7 @@ interface Auth {
   ua: string
   createdAt: string
   updatedAt: string
+  forceLogout?: boolean
 }
 
 const ReadQr: FC<Props> = (props) => {
@@ -38,9 +39,9 @@ const ReadQr: FC<Props> = (props) => {
     setGo(false)
   }
 
-  const onClickForceLogout = () => {
+  const onClickForceLogout = (forceLogout?: boolean) => () => {
     if (!currentUser) return
-    dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'forceLogout', true)
+    dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'forceLogout', !forceLogout)
   }
 
   useEffect(() => {
@@ -106,12 +107,10 @@ const ReadQr: FC<Props> = (props) => {
               <Td>{DateTime.fromISO(auth.createdAt).toRelative()}</Td>
               <Td>
                 {auth.fingerprintId === fingerprintId ? (
-                  <Button onClick={onClickForceLogout} size="xs" colorScheme="red">
-                    force logout
-                  </Button>
+                  'current session'
                 ) : (
-                  <Button onClick={onClickForceLogout} size="xs" colorScheme="red">
-                    force logout
+                  <Button onClick={onClickForceLogout(auth.forceLogout)} size="xs" colorScheme="red">
+                    {auth.forceLogout ? 'unblock machine' : 'force logout'}
                   </Button>
                 )}
               </Td>

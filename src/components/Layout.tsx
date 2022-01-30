@@ -95,6 +95,7 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) 
         onClickAuth()
       }
     })
+    // eslint-disable-next-line
   }, [currentUser])
 
   const saveNotesToFile = (event: any) => {
