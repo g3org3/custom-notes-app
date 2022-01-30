@@ -11,6 +11,7 @@ import { DateTime } from 'luxon'
 import React, { useState, useContext, createContext, useEffect } from 'react'
 
 import { auth, dbOnDisconnect, dbSet } from 'config/firebase'
+import { getFingerPrint } from 'services/fingerprint'
 
 interface AuthContextProps {
   initialLoading: boolean
@@ -59,9 +60,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }
 
   const logout = () => {
-    if (!currentUser || !sessionId) return
-    dbSet(`auth/${currentUser.uid}/${sessionId}`, 'updatedAt', DateTime.now().toISO())
-    dbSet(`auth/${currentUser.uid}/${sessionId}`, 'connected', false)
+    if (currentUser) {
+      const { fingerprintId } = getFingerPrint()
+      dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'updatedAt', DateTime.now().toISO())
+      dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'connected', false)
+    }
 
     return signOut(auth)
   }

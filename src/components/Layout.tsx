@@ -12,7 +12,8 @@ import {
 import { Link as ReachLink, useNavigate } from '@reach/router'
 import base64 from 'base-64'
 import { AnimatePresence } from 'framer-motion'
-import React, { useCallback } from 'react'
+import { DateTime } from 'luxon'
+import React, { useCallback, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { FiX } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,6 +31,7 @@ import {
   selectNotes,
 } from 'modules/Note/Note.selectors'
 import { getFileName, openAndSaveToFile, saveToFile } from 'services/file'
+import { getFingerPrint } from 'services/fingerprint'
 import { notesToYaml } from 'services/notes'
 
 interface Props {
@@ -53,6 +55,13 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) 
   const isAnyNotes = useSelector(selectIsThereAnyNotes)
   const pagePadding = { base: '10px', md: '20px 40px' }
   const isAuthenticated = !!currentUser
+
+  useEffect(() => {
+    if (!currentUser) return
+    const { fingerprintId } = getFingerPrint()
+    dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'connected', true)
+    dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'updatedAt', DateTime.now().toISO())
+  }, [currentUser])
 
   const { isOpen: newNoteIsOpen, onOpen: newNoteOnOpen, onClose: newNoteOnClose } = useDisclosure()
   useHotkeys(
@@ -144,7 +153,8 @@ const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) 
   const { toggleColorMode } = useColorMode()
   useHotkeys('d', () => toggleColorMode(), [toggleColorMode])
 
-  const isMac = true
+  // @ts-ignore
+  const isMac = !!window.navigator?.userAgentData === 'macOS'
   const superIcon = isMac ? '⌘+' : 'ctrl+'
   const authenticatedMenuOptions = isAuthenticated
     ? [

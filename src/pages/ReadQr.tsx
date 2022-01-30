@@ -1,18 +1,33 @@
-import { Button, Flex, Heading } from '@chakra-ui/react'
+import { Badge, Button, Flex, Heading, Table, Tbody, Td, Thead, Tr } from '@chakra-ui/react'
+import { DateTime } from 'luxon'
 // @ts-ignore
 import QRScan from 'qrscan'
 import { FC, useEffect, useState } from 'react'
 import { IOSView } from 'react-device-detect'
 
 import { useAuth } from 'config/auth'
-import { dbSet } from 'config/firebase'
+import { dbOnValue, dbSet } from 'config/firebase'
+import { FingerPrint, IpInfo } from 'services/fingerprint'
 
 interface Props {
   default?: boolean
   path?: string
 }
 
+interface Auth {
+  connected: boolean
+  ip: string
+  ipdata: IpInfo
+  fingerprint: FingerPrint
+  fingerprintId: string
+  uuid: string
+  ua: string
+  createdAt: string
+  updatedAt: string
+}
+
 const ReadQr: FC<Props> = (props) => {
+  const [auths, setAuths] = useState<Array<Auth>>([])
   const [go, setGo] = useState(false)
   const [val, setVal] = useState(null)
   const { currentUser } = useAuth()
@@ -21,6 +36,14 @@ const ReadQr: FC<Props> = (props) => {
     setVal(value)
     setGo(false)
   }
+
+  useEffect(() => {
+    if (!currentUser) return
+    dbOnValue(`auth/${currentUser.uid}`, (snapshot) => {
+      const val = snapshot.val() as { [f: string]: Auth }
+      setAuths(Object.values(val))
+    })
+  }, [currentUser])
 
   useEffect(() => {
     if (!val || !currentUser) return
@@ -48,6 +71,42 @@ const ReadQr: FC<Props> = (props) => {
           <Button onClick={() => setGo(true)}>Login with QR Code</Button>
         )}
       </IOSView>
+      <Table size="sm">
+        <Thead>
+          <Tr>
+            <Td>IP</Td>
+            <Td>Status</Td>
+            <Td>Country</Td>
+            <Td>Browser</Td>
+            <Td>OS</Td>
+            <Td>Updated At</Td>
+            <Td>Duration</Td>
+            <Td></Td>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {auths.map((auth) => (
+            <Tr>
+              <Td>{auth.ip}</Td>
+              <Td>
+                <Badge colorScheme={auth.connected ? 'green' : 'red'}>
+                  {auth.connected ? 'online' : 'offline'}
+                </Badge>
+              </Td>
+              <Td>{auth.ipdata.country}</Td>
+              <Td>{auth.fingerprint.browserName}</Td>
+              <Td>{auth.fingerprint.osName}</Td>
+              <Td>{DateTime.fromISO(auth.updatedAt).toRelative()}</Td>
+              <Td>{DateTime.fromISO(auth.createdAt).toRelative()}</Td>
+              <Td>
+                <Button size="xs" colorScheme="red">
+                  logout
+                </Button>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
     </Flex>
   )
 }
