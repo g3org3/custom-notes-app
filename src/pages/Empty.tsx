@@ -53,18 +53,7 @@ const Empty: FC<Props> = () => {
 
   useEffect(() => {
     if (!currentUser) return
-    const { uid, displayName, email, emailVerified, isAnonymous, phoneNumber, photoURL, providerId } =
-      currentUser
-    const u = {
-      uid,
-      displayName,
-      email,
-      emailVerified,
-      isAnonymous,
-      phoneNumber,
-      photoURL,
-      providerId,
-    }
+
     dbOnValue(
       `users/${currentUser.uid}/notes`,
       (snapshot: any) => {

@@ -2,7 +2,7 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, Textarea } f
 import { useNavigate } from '@reach/router'
 import yaml from 'js-yaml'
 import { DateTime } from 'luxon'
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useDispatch } from 'react-redux'
 import { v4 as uuidv4 } from 'uuid'
