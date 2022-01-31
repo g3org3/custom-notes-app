@@ -65,11 +65,9 @@ const Empty: FC<Props> = () => {
       photoURL,
       providerId,
     }
-    console.log('runed', u)
     dbOnValue(
       `users/${currentUser.uid}/notes`,
       (snapshot: any) => {
-        console.log('> files')
         const data = snapshot.val()
         if (!data) return
         const files: Array<FirebaseFile> = Object.values(data)

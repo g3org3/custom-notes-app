@@ -1,133 +1,97 @@
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  Input,
-  ModalHeader,
-  ModalBody,
-  Textarea,
-  Button,
-  Box,
-  useDisclosure,
-  Flex,
-} from '@chakra-ui/react'
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, Textarea } from '@chakra-ui/react'
 import { useNavigate } from '@reach/router'
-import { Picker, Emoji } from 'emoji-mart'
+import yaml from 'js-yaml'
 import { DateTime } from 'luxon'
-import { FC, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useDispatch } from 'react-redux'
 import { v4 as uuidv4 } from 'uuid'
 
 import { actions, NoteDBType } from 'modules/Note'
+import { inboundMapper } from 'services/notes'
 
 interface Props {
   isOpen: boolean
   onClose: () => void
 }
 
+const initialNote = `subject: meeting
+emoji: memo
+people: []
+tags: []
+notes: |-
+  # hello`
+
 const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { onOpen: onOpenEmoji, isOpen: isOpenEmoji, onClose: onCloseEmoji } = useDisclosure()
+  const textRef = useRef<HTMLTextAreaElement>()
 
-  const [state, setState] = useState({
-    emoji: ':memo:',
-    subject: '',
-    people: '',
-    tags: '',
-    notes: '',
-    next_steps: '',
-    doubts: '',
-  })
+  const onKeyDown = (e: any) => {
+    if (e.code !== 'Tab') return
 
-  // @ts-ignore
-  const handleOnChange = (field: string) => (e) => {
-    setState({
-      ...state,
-      // @ts-ignore
-      [field]: e.target.value,
-    })
+    const index: number | null = e.target?.selectionStart
+    if (index === undefined || index === null || !textRef.current) return
+
+    let front = e.target.value.substring(0, index)
+    let back = e.target.value.substring(index, e.target.value.length)
+
+    textRef.current.value = front + '  ' + back
+    textRef.current.selectionStart = index + 2
+    textRef.current.selectionEnd = index + 2
+    textRef.current.focus()
   }
 
-  const reset = () => {
-    setState({
-      emoji: ':memo:',
-      subject: '',
-      people: '',
-      tags: '',
-      notes: '',
-      next_steps: '',
-      doubts: '',
-    })
-  }
-
-  const handleForm = () => {
-    const note: NoteDBType = {
+  const saveNote = () => {
+    if (!textRef.current) return
+    const rawNote = textRef.current.value
+    const ynote = yaml.load(rawNote)
+    // @ts-ignore
+    let note: NoteDBType = {
       id: uuidv4(),
+      emoji: 'memo',
       date: DateTime.now(),
-      people: state.people === '' ? null : state.people.split(',').map((x) => x.trim()),
-      subject: state.subject === '' ? null : state.subject,
-      notes: state.notes === '' ? null : state.notes,
-      next_steps: state.next_steps === '' ? null : state.next_steps.split('\n').map((x) => x.trim()),
-      emoji: state.emoji === '' ? null : state.emoji,
-      tags: state.tags === '' ? null : state.tags.split(',').map((x) => x.trim()),
-      doubts: state.doubts === '' ? null : state.doubts.split('\n').map((x) => x.trim()),
+    }
+    if (typeof ynote === 'string') {
+      note.notes = ynote
+    } else {
+      note = { ...inboundMapper(ynote), ...note }
     }
     dispatch(actions.add({ note }))
-    reset()
     onClose()
     navigate('/notes')
   }
 
+  useHotkeys('ctrl+return', saveNote, { enableOnTags: ['TEXTAREA'] })
+  useHotkeys('command+return', saveNote, { enableOnTags: ['TEXTAREA'] })
+
+  useEffect(() => {
+    if (!textRef.current) return
+    setTimeout(() => {
+      if (!textRef.current) return
+      textRef.current.selectionStart = 2
+      textRef.current.selectionEnd = 2
+    }, 1000)
+  }, [textRef])
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} size="full">
       <ModalOverlay zIndex="2" />
       <ModalContent>
         <ModalHeader>New Note</ModalHeader>
-        <ModalBody display="flex" flexDir="column" gap={2} height="100%">
-          <Flex gap={2}>
-            <Emoji
-              set="google"
-              emoji={state.emoji}
-              size={32}
-              onClick={isOpenEmoji ? onCloseEmoji : onOpenEmoji}
-            />
-            <Input placeholder="subject" onChange={handleOnChange('subject')} value={state.subject} />
-          </Flex>
-          {isOpenEmoji ? (
-            <Box dispaly="inline-block">
-              <Picker
-                set="google"
-                theme="auto"
-                onClick={(emoji) => {
-                  handleOnChange('emoji')({ target: { value: emoji.colons } })
-                  onCloseEmoji()
-                }}
-              />
-            </Box>
-          ) : null}
-          {!isOpenEmoji ? (
-            <>
-              <Input
-                placeholder="people separated by ,"
-                onChange={handleOnChange('people')}
-                value={state.people}
-              />
-              <Input placeholder="tags separated by ," onChange={handleOnChange('tags')} value={state.tags} />
-              <Textarea
-                placeholder="notes in markdown"
-                onChange={handleOnChange('notes')}
-                value={state.notes}
-              />
-              <Textarea
-                placeholder="next_steps"
-                onChange={handleOnChange('next_steps')}
-                value={state.next_steps}
-              />
-              <Textarea placeholder="doubts" onChange={handleOnChange('doubts')} value={state.doubts} />
-              <Button onClick={handleForm}>Create</Button>
-            </>
-          ) : null}
+        <ModalBody display="flex" flexDir="column" gap={2}>
+          <Textarea
+            onKeyDown={onKeyDown}
+            height="calc(100vh - 100px)"
+            border="0"
+            _focus={{ boxShadow: 'none' }}
+            fontFamily="monospace"
+            fontSize="32px"
+            defaultValue={initialNote}
+            placeholder="notes in markdown"
+            // @ts-ignore
+            ref={textRef}
+          />
         </ModalBody>
       </ModalContent>
     </Modal>
