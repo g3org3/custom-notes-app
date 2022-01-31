@@ -116,7 +116,6 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
               <Input placeholder="tags separated by ," onChange={handleOnChange('tags')} value={state.tags} />
               <Textarea
                 placeholder="notes in markdown"
-                minHeight="md"
                 onChange={handleOnChange('notes')}
                 value={state.notes}
               />
