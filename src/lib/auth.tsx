@@ -11,7 +11,7 @@ import { DateTime } from 'luxon'
 import React, { useState, useContext, createContext, useEffect } from 'react'
 
 import { auth, dbOnDisconnect, dbSet } from 'config/firebase'
-import { getFingerPrint } from 'services/fingerprint'
+import { getFingerPrint } from 'lib/fingerprint'
 
 interface AuthContextProps {
   initialLoading: boolean
@@ -20,16 +20,15 @@ interface AuthContextProps {
   login: (email: string, password: string) => void
   logout: () => void
   loginWithGoogle: () => void
-  setSessionId: (id: string) => void
 }
-const initialContext = {
+
+const initialContext: AuthContextProps = {
   initialLoading: false,
   currentUser: null,
   signup: () => {},
   login: () => {},
   logout: () => {},
   loginWithGoogle: () => {},
-  setSessionId: () => {},
 }
 const AuthContext = createContext<AuthContextProps>(initialContext)
 
@@ -44,7 +43,7 @@ interface Props {
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
-  const [sessionId, setSessionId] = useState<string | null>(null)
+  const { fingerprintId } = getFingerPrint()
 
   const signup = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password)
@@ -61,7 +60,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const logout = () => {
     if (currentUser) {
-      const { fingerprintId } = getFingerPrint()
       dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'updatedAt', DateTime.now().toISO())
       dbSet(`auth/${currentUser.uid}/${fingerprintId}`, 'connected', false)
     }
@@ -70,11 +68,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   }
 
   useEffect(() => {
-    if (!currentUser || !sessionId) return
-
-    dbOnDisconnect(`auth/${currentUser.uid}/${sessionId}/connected`)
+    if (!currentUser) return
+    dbOnDisconnect(`auth/${currentUser.uid}/${fingerprintId}/connected`)
     // eslint-disable-next-line
-  }, [sessionId])
+  }, [currentUser])
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -88,7 +85,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const value: AuthContextProps = {
     initialLoading: loading,
     currentUser,
-    setSessionId,
     signup,
     login,
     logout,

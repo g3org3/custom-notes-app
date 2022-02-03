@@ -2,9 +2,9 @@ import { Badge, Button, Flex, Heading, Table, Tbody, Td, Thead, Tr } from '@chak
 import { DateTime } from 'luxon'
 import { FC, useEffect, useState } from 'react'
 
-import { useAuth } from 'config/auth'
 import { dbOnValue, dbSet } from 'config/firebase'
-import { FingerPrint, getFingerPrint, IpInfo } from 'services/fingerprint'
+import { useAuth } from 'lib/auth'
+import { FingerPrint, getFingerPrint, IpInfo } from 'lib/fingerprint'
 
 interface Props {
   default?: boolean
@@ -60,7 +60,7 @@ const AuthLog: FC<Props> = (props) => {
         </Thead>
         <Tbody>
           {auths.map((auth) => (
-            <Tr>
+            <Tr key={auth.fingerprintId}>
               <Td>{auth.ip}</Td>
               <Td>
                 <Badge colorScheme={auth.connected ? 'green' : 'red'}>
@@ -68,8 +68,8 @@ const AuthLog: FC<Props> = (props) => {
                 </Badge>
               </Td>
               <Td>{auth.ipdata?.country}</Td>
-              <Td>{auth.fingerprint.browserName}</Td>
-              <Td>{auth.fingerprint.osName}</Td>
+              <Td>{auth.fingerprint?.browserName}</Td>
+              <Td>{auth.fingerprint?.osName}</Td>
               <Td>{DateTime.fromISO(auth.updatedAt).toRelative()}</Td>
               <Td>{DateTime.fromISO(auth.createdAt).toRelative()}</Td>
               <Td>

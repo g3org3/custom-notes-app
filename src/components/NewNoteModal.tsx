@@ -1,18 +1,22 @@
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, Textarea } from '@chakra-ui/react'
-import { useNavigate } from '@reach/router'
-import yaml from 'js-yaml'
-import { DateTime } from 'luxon'
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  Textarea,
+  ModalCloseButton,
+  ModalFooter,
+  Button,
+} from '@chakra-ui/react'
 import { FC, useEffect, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { useDispatch } from 'react-redux'
-import { v4 as uuidv4 } from 'uuid'
-
-import { actions, NoteDBType } from 'modules/Note'
-import { inboundMapper } from 'services/notes'
 
 interface Props {
   isOpen: boolean
   onClose: () => void
+  onSave: (rawValue: string) => void
+  defaultValue?: string
 }
 
 const initialNote = `subject: meeting
@@ -22,9 +26,7 @@ tags: []
 notes: |-
   # hello`
 
-const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+const NewNoteModal: FC<Props> = ({ isOpen, onClose, onSave, defaultValue }) => {
   const textRef = useRef<HTMLTextAreaElement>()
 
   const onKeyDown = (e: any) => {
@@ -45,21 +47,7 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
   const saveNote = () => {
     if (!textRef.current) return
     const rawNote = textRef.current.value
-    const ynote = yaml.load(rawNote)
-    // @ts-ignore
-    let note: NoteDBType = {
-      id: uuidv4(),
-      emoji: 'memo',
-      date: DateTime.now(),
-    }
-    if (typeof ynote === 'string') {
-      note.notes = ynote
-    } else {
-      note = { ...inboundMapper(ynote), ...note }
-    }
-    dispatch(actions.add({ note }))
-    onClose()
-    navigate('/notes')
+    onSave(rawNote)
   }
 
   useHotkeys('ctrl+return', saveNote, { enableOnTags: ['TEXTAREA'] })
@@ -79,20 +67,26 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose }) => {
       <ModalOverlay zIndex="2" />
       <ModalContent>
         <ModalHeader>New Note</ModalHeader>
+        <ModalCloseButton />
         <ModalBody display="flex" flexDir="column" gap={2}>
           <Textarea
             onKeyDown={onKeyDown}
-            height="calc(100vh - 100px)"
+            height="calc(100vh - 150px)"
             border="0"
             _focus={{ boxShadow: 'none' }}
             fontFamily="monospace"
-            fontSize="32px"
-            defaultValue={initialNote}
+            fontSize="28px"
+            defaultValue={defaultValue || initialNote}
             placeholder="notes in markdown"
             // @ts-ignore
             ref={textRef}
           />
         </ModalBody>
+        <ModalFooter>
+          <Button onClick={saveNote} variant="ghost">
+            Save
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   )

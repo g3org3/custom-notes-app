@@ -28,7 +28,7 @@ const outboundMapper = (n: NoteDBType) => ({
   next_steps: n.next_steps || undefined,
 })
 
-export const notesToYaml = (notes: Array<NoteDBType> | null): string => {
+export const notesToYaml = (notes: Array<NoteDBType> | null | NoteDBType): string => {
   if (!notes) return ''
 
   const options = {
@@ -47,9 +47,11 @@ export const notesToYaml = (notes: Array<NoteDBType> | null): string => {
     // },
   }
 
-  const text = yaml.dump(notes.map(outboundMapper), options)
+  if (notes instanceof Array) {
+    return yaml.dump(notes.map(outboundMapper), options)
+  }
 
-  return text
+  return yaml.dump(outboundMapper(notes), options)
 }
 
 export const isLineDone = (line?: string): boolean => {

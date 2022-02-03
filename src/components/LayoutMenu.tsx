@@ -43,6 +43,7 @@ const LayoutMenu: FC<Props> = (props) => {
     onClickReset,
     userDisplayName,
   } = props
+
   const dividerColor = useColorModeValue('gray.200', 'gray.700')
 
   return (

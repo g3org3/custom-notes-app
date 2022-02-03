@@ -1,6 +1,6 @@
 import { enableMapSet } from 'immer'
 
-import note from './Note'
+import note from 'modules/Note'
 
 enableMapSet()
 

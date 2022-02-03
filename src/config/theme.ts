@@ -9,7 +9,8 @@ const components = {
         color: mode('black', 'white')(props),
       },
       _focus: {
-        boxShadow: 'md',
+        boxShadow: 'none',
+        textDecoration: 'underline',
       },
     }),
   },

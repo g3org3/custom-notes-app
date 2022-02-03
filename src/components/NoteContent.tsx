@@ -12,7 +12,7 @@ interface Props {
 const NoteContent: FC<Props> = ({ notes }) => {
   const [isMarkdown, setIsMarkdown] = useState(true)
   const theme = useColorModeValue(atomOneLight, atomOneDark)
-  const backgroundDate = useColorModeValue('gray.200', 'gray.700')
+  const backgroundDate = useColorModeValue('gray.100', 'gray.700')
 
   if (!notes) return null
 
@@ -40,6 +40,7 @@ const NoteContent: FC<Props> = ({ notes }) => {
         overflow="auto"
         height={{ base: 'unset', md: 'calc(100vh - 290px)' }}
         border="1px"
+        padding={4}
         borderColor={backgroundDate}
       >
         {isMarkdown ? (

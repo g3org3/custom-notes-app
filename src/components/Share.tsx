@@ -4,8 +4,8 @@ import { FC, useRef } from 'react'
 import { FiShare2 } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
 
-import { useAuth } from 'config/auth'
 import { dbPush } from 'config/firebase'
+import { useAuth } from 'lib/auth'
 import { selectors } from 'modules/Note'
 
 interface Props {

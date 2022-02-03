@@ -6,9 +6,9 @@ import { FC, useEffect } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 
 import GenQrCode from 'components/GenQrCode'
-import { useAuth } from 'config/auth'
 import { dbSet } from 'config/firebase'
-import { getFingerPrint, getIpInfo } from 'services/fingerprint'
+import { useAuth } from 'lib/auth'
+import { getFingerPrint, getIpInfo } from 'lib/fingerprint'
 
 interface Props {
   path?: string
@@ -18,7 +18,7 @@ const Login: FC<Props> = (props) => {
   const btnBackground = useColorModeValue('gray.200', 'blue.800')
   const toast = useToast()
   const navigate = useNavigate()
-  const { currentUser, loginWithGoogle, setSessionId } = useAuth()
+  const { currentUser, loginWithGoogle } = useAuth()
 
   useEffect(() => {
     const fn = async () => {
@@ -42,7 +42,6 @@ const Login: FC<Props> = (props) => {
         updatedAt: DateTime.now().toISO(),
       }
       dbSet(`auth/${currentUser.uid}`, fingerprintId, payload)
-      setSessionId(fingerprintId)
 
       navigate('/')
     }

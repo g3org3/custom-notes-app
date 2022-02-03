@@ -1,4 +1,17 @@
-import { Flex, Box, Text, Table, Thead, Th, Tbody, Tr, Td, Link, useColorModeValue } from '@chakra-ui/react'
+import {
+  Flex,
+  Box,
+  Text,
+  Table,
+  Thead,
+  Th,
+  Tbody,
+  Tr,
+  Td,
+  Link,
+  useColorModeValue,
+  useBreakpointValue,
+} from '@chakra-ui/react'
 import { Link as ReachLink } from '@reach/router'
 import { Emoji } from 'emoji-mart'
 import { FC } from 'react'
@@ -19,6 +32,7 @@ const DesktopTable: FC<Props> = (props) => {
   const tagBackground = useColorModeValue('blue.50', 'blue.900')
   const nsBackground = useColorModeValue('red.100', 'red.900')
   const completedBackround = useColorModeValue('green.100', 'green.900')
+  const screen = useBreakpointValue({ base: 0, md: 1, lg: 2, xl: 3, '2xl': 4 }) || 1
   let notes = useSelector(selectors.selectNotesWithSearch)
   if (props.notes) {
     notes = props.notes
@@ -34,10 +48,10 @@ const DesktopTable: FC<Props> = (props) => {
         <Tr>
           <Th minWidth="150px">Date</Th>
           <Th>Subject</Th>
-          <Th>People</Th>
-          <Th>Tags</Th>
-          <Th>Next Steps</Th>
-          <Th>Doubts</Th>
+          {screen > 2 && <Th>People</Th>}
+          {screen > 2 && <Th>Tags</Th>}
+          {screen > 1 && <Th>Next Steps</Th>}
+          {screen > 2 && <Th>Doubts</Th>}
         </Tr>
       </Thead>
       <Tbody>
@@ -56,58 +70,68 @@ const DesktopTable: FC<Props> = (props) => {
                 <Text>{note.subject}</Text>
               </Link>
             </Td>
-            <Td maxWidth="300px">{note.people?.join(', ')}</Td>
-            <Td maxWidth="300px">
-              <Flex gap={2} wrap="wrap">
-                {note.tags?.map((tag) => (
+            {screen > 2 && <Td maxWidth="300px">{note.people?.join(', ')}</Td>}
+            {screen > 2 && (
+              <Td maxWidth="300px">
+                <Flex gap={2} wrap="wrap">
+                  {note.tags?.map((tag) => (
+                    <Box
+                      key={tag}
+                      display="inline-block"
+                      bg={tagBackground}
+                      color="blue.400"
+                      pl={2}
+                      pr={2}
+                      borderRadius="full"
+                    >
+                      {tag}
+                    </Box>
+                  ))}
+                </Flex>
+              </Td>
+            )}
+            {screen > 1 && (
+              <Td>
+                <ShowIf value={!completedList(note.next_steps)}>
                   <Box
-                    key={tag}
-                    display="inline-block"
-                    bg={tagBackground}
-                    color="blue.400"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    bg={
+                      completedList(note.next_steps) || countDone(note.next_steps) === '' ? '' : nsBackground
+                    }
+                    color={
+                      completedList(note.next_steps) || countDone(note.next_steps) === '' ? '' : 'red.500'
+                    }
+                  >
+                    {countDone(note.next_steps)}
+                  </Box>
+                </ShowIf>
+                <ShowIf value={completedList(note.next_steps)}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    bg={completedBackround}
+                    color={completedColor}
                     pl={2}
                     pr={2}
-                    borderRadius="full"
                   >
-                    {tag}
+                    completed
                   </Box>
-                ))}
-              </Flex>
-            </Td>
-            <Td>
-              <ShowIf value={!completedList(note.next_steps)}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  bg={completedList(note.next_steps) || countDone(note.next_steps) === '' ? '' : nsBackground}
-                  color={completedList(note.next_steps) || countDone(note.next_steps) === '' ? '' : 'red.500'}
-                >
-                  {countDone(note.next_steps)}
-                </Box>
-              </ShowIf>
-              <ShowIf value={completedList(note.next_steps)}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  bg={completedBackround}
-                  color={completedColor}
-                  pl={2}
-                  pr={2}
-                >
-                  completed
-                </Box>
-              </ShowIf>
-            </Td>
-            <Td>
-              <ShowIf value={!completedList(note.doubts)}>{countDone(note.doubts)}</ShowIf>
-              <ShowIf value={completedList(note.doubts)}>
-                <Box display="inline-block" bg={completedBackround} color={completedColor} pl={2} pr={2}>
-                  completed
-                </Box>
-              </ShowIf>
-            </Td>
+                </ShowIf>
+              </Td>
+            )}
+            {screen > 2 && (
+              <Td>
+                <ShowIf value={!completedList(note.doubts)}>{countDone(note.doubts)}</ShowIf>
+                <ShowIf value={completedList(note.doubts)}>
+                  <Box display="inline-block" bg={completedBackround} color={completedColor} pl={2} pr={2}>
+                    completed
+                  </Box>
+                </ShowIf>
+              </Td>
+            )}
           </Tr>
         ))}
       </Tbody>

@@ -1,14 +1,15 @@
-import { useToast } from '@chakra-ui/react'
+import { useDisclosure, useToast } from '@chakra-ui/react'
 import { useNavigate } from '@reach/router'
 import yaml from 'js-yaml'
 import { FC, useCallback } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useDispatch, useSelector } from 'react-redux'
 
+import NewNoteModal from 'components/NewNoteModal'
 import NoteView from 'components/NoteView'
 import { actions, NoteDBType, selectors } from 'modules/Note'
 import { readFileContent } from 'services/file'
-import { inboundMapper } from 'services/notes'
+import { inboundMapper, notesToYaml } from 'services/notes'
 
 interface Props {
   default?: boolean
@@ -22,8 +23,14 @@ const NoteId: FC<Props> = (props) => {
   const toast = useToast()
   const isThereAnyNotes = useSelector(selectors.selectIsThereAnyNotes)
   const note = useSelector(selectors.selectNoteById(props.noteId))
+  const noteYaml = notesToYaml(note)
   const fileHandler = useSelector(selectors.selectFileHandler)
+  const { onOpen, isOpen, onClose } = useDisclosure()
 
+  useHotkeys('e', (e) => {
+    e.preventDefault()
+    onOpen()
+  })
   useHotkeys('esc', () => void navigate('/notes'), [navigate])
   useHotkeys(
     'r',
@@ -84,7 +91,27 @@ const NoteId: FC<Props> = (props) => {
     )
   }
 
-  return <NoteView note={note} onClickDoubt={onClickDoubt} onClickNextStep={onClickNextStep} />
+  const saveNote = (rawNote: string) => {
+    const ynote = yaml.load(rawNote)
+    // @ts-ignore
+    let _note: NoteDBType = {
+      ...note,
+    }
+    if (typeof ynote === 'string') {
+      _note.notes = ynote
+    } else {
+      _note = inboundMapper(ynote)
+    }
+    dispatch(actions.replaceNote(_note))
+    onClose()
+  }
+
+  return (
+    <>
+      <NewNoteModal onSave={saveNote} isOpen={isOpen} onClose={onClose} defaultValue={noteYaml} />
+      <NoteView note={note} onClickDoubt={onClickDoubt} onClickNextStep={onClickNextStep} />
+    </>
+  )
 }
 
 export default NoteId

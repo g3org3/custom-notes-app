@@ -4,8 +4,8 @@ import QRCode from 'qrcode.react'
 import { FC, useEffect, useState } from 'react'
 import * as uuid from 'uuid'
 
-import { useAuth } from 'config/auth'
 import { dbOnValue, dbRemove, dbSet } from 'config/firebase'
+import { useAuth } from 'lib/auth'
 
 interface Props {
   //

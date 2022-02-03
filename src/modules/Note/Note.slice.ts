@@ -2,9 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { v4 as uuidv4 } from 'uuid'
 
+import { FileSystemFileHandle } from 'services/file'
 import { searchNotes, toggleNextStepDone, toggleDoubtDone, completedList } from 'services/notes'
-
-export interface FileHandler {}
 
 export interface NoteType {
   id: string | null
@@ -26,7 +25,7 @@ export interface State {
   byId: Map<string, NoteDBType> | null
   search: string | null
   filteredIds: Array<string>
-  fileHandler: FileHandler | null
+  fileHandler: FileSystemFileHandle | null
   fileName: string | null
   fileId: string | null
   isFilterNotFinished: boolean
@@ -98,7 +97,10 @@ export default createSlice({
       state.fileName = action.payload.fileName
       state.fileId = action.payload.id || null
     },
-    setFileHandler: (state: State, action: { type: string; payload: { fileHandler: FileHandler } }) => {
+    setFileHandler: (
+      state: State,
+      action: { type: string; payload: { fileHandler: FileSystemFileHandle } }
+    ) => {
       state.fileHandler = action.payload.fileHandler
     },
     setSearch: (state: State, action: { type: string; payload: { search: string | null } }): void => {
@@ -135,6 +137,10 @@ export default createSlice({
         .filter((note) => note.next_steps)
         .filter((note) => !completedList(note.next_steps))
         .map((note) => note.id)
+    },
+    replaceNote: (state: State, action: { type: string; payload: NoteDBType }) => {
+      const note = action.payload
+      state.byId?.set(note.id, note)
     },
     replaceNotes: (
       state: State,

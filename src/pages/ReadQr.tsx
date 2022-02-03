@@ -4,8 +4,8 @@ import QRScan from 'qrscan'
 import { FC, useEffect, useState } from 'react'
 import { ImQrcode } from 'react-icons/im'
 
-import { useAuth } from 'config/auth'
 import { dbSet } from 'config/firebase'
+import { useAuth } from 'lib/auth'
 
 interface Props {
   default?: boolean

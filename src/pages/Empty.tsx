@@ -23,10 +23,10 @@ import { useDispatch } from 'react-redux'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-import { useAuth } from 'config/auth'
 import { dbOnValue } from 'config/firebase'
+import { useAuth } from 'lib/auth'
 import { actions, NoteDBType } from 'modules/Note'
-import { getFileName, openAndChooseFile } from 'services/file'
+import { openAndChooseFile } from 'services/file'
 import { inboundMapper } from 'services/notes'
 import { exampleNotesYaml } from 'services/yaml.example'
 
@@ -103,14 +103,14 @@ const Empty: FC<Props> = () => {
       e.preventDefault()
       // @ts-ignore
       openAndChooseFile()
-        .then(({ fileHandler, content }) => {
+        .then(({ fileHandle, content }) => {
           // @ts-ignore
           const result = yaml.loadAll(content)
           if (result instanceof Array) {
             const notes: Array<NoteDBType> = result.flat().map(inboundMapper)
-            const fileName = getFileName(fileHandler)
+            const fileName = fileHandle.name
             dispatch(actions.setFileName({ fileName }))
-            dispatch(actions.setFileHandler({ fileHandler }))
+            dispatch(actions.setFileHandler({ fileHandler: fileHandle }))
             dispatch(actions.replaceNotes({ notes }))
             toast({ title: 'Notes Loaded', status: 'success' })
             navigate('/notes')

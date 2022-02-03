@@ -3,6 +3,7 @@ import { isIOS } from 'react-device-detect'
 
 import Layout from 'components/Layout'
 import { MenuOption } from 'components/LayoutMenu'
+import PrivateRoute from 'lib/PrivateRoute'
 import AuthLog from 'pages/AuthLog'
 import Empty from 'pages/Empty'
 import Export from 'pages/Export'
@@ -15,7 +16,7 @@ import Shared from 'pages/Shared'
 const menuOptions: Array<MenuOption> = [
   { path: '/notes', label: 'Notes', emoji: ':notebook:' },
   { path: '/export', label: 'Export', emoji: ':package:' },
-  { path: '/shared', label: 'Shared', emoji: ':satellite:' },
+  // { path: '/shared', label: 'Shared', emoji: ':satellite:' },
   { path: '/auth-log', label: 'Login Log', emoji: ':customs:' },
 ]
 
@@ -27,12 +28,15 @@ const Routes = () => {
   return (
     <Router>
       <Layout title="Notes" by="Jorge Adolfo" homeUrl="/notes" menuOptions={menuOptions} path="/">
+        <PrivateRoute path="/shared">
+          <Shared path="/" />
+        </PrivateRoute>
         <Home path="/notes" />
-        <Shared path="/shared" />
         <ReadQr path="/read-qr" />
         <AuthLog path="/auth-log" />
         <NoteId path="/notes/:noteId" />
         <Export path="/export" />
+
         <Login path="/login" />
         <Empty default />
       </Layout>

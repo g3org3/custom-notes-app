@@ -11,7 +11,9 @@
           {"pattern": "services/**", "group": "internal"},
           {"pattern": "modules/**", "group": "internal"},
           {"pattern": "config/**", "group": "internal"},
-          {"pattern": "pages/**", "group": "internal"}
+          {"pattern": "pages/**", "group": "internal"},
+          {"pattern": "hooks/**", "group": "internal"},
+          {"pattern": "lib/**", "group": "internal"}
         ],
         "pathGroupsExcludedImportTypes": ["internal"],
         "groups": [["builtin", "external"], "internal", ["parent", "sibling", "index"]],
