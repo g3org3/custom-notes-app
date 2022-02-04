@@ -25,11 +25,16 @@ const NoteId: FC<Props> = (props) => {
   const note = useSelector(selectors.selectNoteById(props.noteId))
   const noteYaml = notesToYaml(note)
   const fileHandler = useSelector(selectors.selectFileHandler)
-  const { onOpen, isOpen, onClose } = useDisclosure()
+  const newNoteModal = useDisclosure()
+  const newContentModal = useDisclosure()
 
   useHotkeys('e', (e) => {
     e.preventDefault()
-    onOpen()
+    newContentModal.onOpen()
+  })
+  useHotkeys('w', (e) => {
+    e.preventDefault()
+    newNoteModal.onOpen()
   })
   useHotkeys('esc', () => void navigate('/notes'), [navigate])
   useHotkeys(
@@ -93,22 +98,32 @@ const NoteId: FC<Props> = (props) => {
 
   const saveNote = (rawNote: string) => {
     const ynote = yaml.load(rawNote)
-    // @ts-ignore
-    let _note: NoteDBType = {
-      ...note,
-    }
-    if (typeof ynote === 'string') {
-      _note.notes = ynote
-    } else {
-      _note = inboundMapper(ynote)
-    }
+    const _note = inboundMapper(ynote)
     dispatch(actions.replaceNote(_note))
-    onClose()
+    newNoteModal.onClose()
+  }
+
+  const saveNoteNotes = (rawString: string) => {
+    dispatch(actions.replaceNote({ ...note, notes: rawString }))
+    newContentModal.onClose()
   }
 
   return (
     <>
-      <NewNoteModal onSave={saveNote} isOpen={isOpen} onClose={onClose} defaultValue={noteYaml} />
+      <NewNoteModal
+        title={note.subject}
+        onSave={saveNote}
+        isOpen={newNoteModal.isOpen}
+        onClose={newNoteModal.onClose}
+        defaultValue={noteYaml}
+      />
+      <NewNoteModal
+        title={note.subject}
+        onSave={saveNoteNotes}
+        isOpen={newContentModal.isOpen}
+        onClose={newContentModal.onClose}
+        defaultValue={note.notes || ''}
+      />
       <NoteView note={note} onClickDoubt={onClickDoubt} onClickNextStep={onClickNextStep} />
     </>
   )

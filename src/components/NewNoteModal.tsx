@@ -13,6 +13,7 @@ import { FC, useEffect, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 interface Props {
+  title?: string | null
   isOpen: boolean
   onClose: () => void
   onSave: (rawValue: string) => void
@@ -26,7 +27,7 @@ tags: []
 notes: |-
   # hello`
 
-const NewNoteModal: FC<Props> = ({ isOpen, onClose, onSave, defaultValue }) => {
+const NewNoteModal: FC<Props> = ({ isOpen, title, onClose, onSave, defaultValue }) => {
   const textRef = useRef<HTMLTextAreaElement>()
 
   const onKeyDown = (e: any) => {
@@ -66,7 +67,7 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose, onSave, defaultValue }) => {
     <Modal isOpen={isOpen} onClose={onClose} size="full">
       <ModalOverlay zIndex="2" />
       <ModalContent>
-        <ModalHeader>New Note</ModalHeader>
+        <ModalHeader>{title || 'New Note'}</ModalHeader>
         <ModalCloseButton />
         <ModalBody display="flex" flexDir="column" gap={2}>
           <Textarea
@@ -75,7 +76,7 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose, onSave, defaultValue }) => {
             border="0"
             _focus={{ boxShadow: 'none' }}
             fontFamily="monospace"
-            fontSize="28px"
+            fontSize="20px"
             defaultValue={defaultValue || initialNote}
             placeholder="notes in markdown"
             // @ts-ignore
@@ -84,7 +85,7 @@ const NewNoteModal: FC<Props> = ({ isOpen, onClose, onSave, defaultValue }) => {
         </ModalBody>
         <ModalFooter>
           <Button onClick={saveNote} variant="ghost">
-            Save
+            {title ? 'Update' : 'Save'}
           </Button>
         </ModalFooter>
       </ModalContent>
