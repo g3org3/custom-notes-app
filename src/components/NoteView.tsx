@@ -23,7 +23,7 @@ import { NoteDBType } from 'modules/Note'
 import { dateToPretty, dateToPrettyTime } from 'services/date'
 
 import FilterBar from './FilterBar'
-import { nav } from './Layout'
+import { fullHeight } from './Layout'
 
 interface Props {
   note: NoteDBType
@@ -39,10 +39,20 @@ const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt,
   const [isDesktop] = useMediaQuery('(min-width: 768px)')
 
   return (
-    <Flex height={`calc(100vh - ${nav.h + nav.py.md + nav.py.md}px)`} overflow="auto">
+    <Flex height={fullHeight} overflow="auto">
       {isDesktop ? <FilterBar isCompacted /> : null}
       <Flex direction="column">
-        <Flex alignItems="center" mb={4} borderBottom="1px" borderColor="gray.400">
+        <Flex
+          backgroundColor={useColorModeValue('whiteAlpha.400', 'blackAlpha.400')}
+          backdropFilter="blur(4px)"
+          alignItems="center"
+          mb={4}
+          borderBottom="1px"
+          borderColor="gray.400"
+          position="sticky"
+          top="0"
+          left="0"
+        >
           <Link as={ReachLink} to="/notes" onClick={onClickHome}>
             <Icon as={FiHome} fontSize={30} />
           </Link>
@@ -56,15 +66,18 @@ const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt,
             {note.subject}
           </Heading>
         </Flex>
-        <Flex direction={{ base: 'column', md: 'row' }} gap={{ base: 0, md: 10 }}>
+        <Flex
+          direction={{ base: 'column', md: 'row' }}
+          alignItems={{ base: 'unset', md: 'flex-start' }}
+          gap={{ base: 0, md: 10 }}
+        >
           <Flex
             direction="column"
             alignItems="flex-start"
-            height={{ base: 'unset', md: 'calc(100vh - 98px)' }}
             width={{ base: 'unset', md: '300px' }}
-            top="0px"
-            left="0px"
             position={{ base: 'relative', md: 'sticky' }}
+            top={{ base: 'unset', md: '66.19px' }}
+            lef={{ base: 'unset', md: '0' }}
           >
             <Box display="flex" alignItems="center" mt={2} mb={2}>
               <ShowIf value={!!note.date}>

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 
 import DesktopTable from 'components/DesktopTable'
 import FilterBar from 'components/FilterBar'
-import { nav } from 'components/Layout'
+import { fullHeight } from 'components/Layout'
 import MobileTable from 'components/MobileTable'
 import { useSecuredCtx } from 'lib/PrivateRoute'
 import { selectFileHandler, selectFileName, selectIsThereAnyNotes, selectSearch } from 'modules/Note'
@@ -37,16 +37,7 @@ const Home: FC<Props> = () => {
   return (
     <>
       <Flex direction="row-reverse">
-        <Box
-          display="flex"
-          flexDirection="column"
-          flex={1}
-          height={{
-            base: `calc(100vh - ${nav.h + nav.py.base + nav.py.base}px)`,
-            md: `calc(100vh - ${nav.h + nav.py.md + nav.py.md}px)`,
-          }}
-          overflow="auto"
-        >
+        <Box display="flex" flexDirection="column" flex={1} height={fullHeight} overflow="auto">
           <Heading
             as="h2"
             position="sticky"

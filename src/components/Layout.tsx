@@ -38,6 +38,14 @@ const bodyPadding = {
   base: `${nav.h + body.py.base}px ${body.px.base}px ${body.py.base}px`,
   md: `${nav.h + body.py.md}px ${body.px.md}px ${body.py.md}px`,
 }
+export const fullHeight = {
+  base: `calc(100vh - ${nav.h + body.py.base * 2}px)`,
+  md: `calc(100vh - ${nav.h + body.py.md * 2}px)`,
+}
+export const fullWidth = {
+  base: `calc(100vh - ${body.px.base * 2}px)`,
+  md: `calc(100vh - ${body.px.md * 2}px)`,
+}
 
 const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) => {
   const navigate = useNavigate()

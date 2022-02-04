@@ -4,7 +4,7 @@ import { FC, memo, useCallback } from 'react'
 import { FiMinusSquare, FiFolder, FiLink } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { nav } from 'components/Layout'
+import { fullHeight } from 'components/Layout'
 import { actions, selectors } from 'modules/Note'
 
 interface Props {
@@ -29,8 +29,11 @@ const FilterBar: FC<Props> = ({ isCompacted }) => {
       direction="column"
       mr={4}
       gap={4}
-      height={`calc(100vh - ${nav.h + nav.py.md + nav.py.md}px)`}
+      height={fullHeight}
       overflow="auto"
+      position="sticky"
+      top="0"
+      left="0"
     >
       <Flex bg={bg} zIndex="4" direction="column" gap={4} position="sticky" top="0" boxShadow="sm">
         <Button

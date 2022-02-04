@@ -5,6 +5,8 @@ import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/esm/sty
 
 import Markdown from 'components/Markdown'
 
+import { fullWidth } from './Layout'
+
 interface Props {
   notes: string | null
 }
@@ -13,12 +15,22 @@ const NoteContent: FC<Props> = ({ notes }) => {
   const [isMarkdown, setIsMarkdown] = useState(true)
   const theme = useColorModeValue(atomOneLight, atomOneDark)
   const backgroundDate = useColorModeValue('gray.100', 'gray.700')
+  const bgSubtitle = useColorModeValue('whiteAlpha.400', 'blackAlpha.400')
 
   if (!notes) return null
 
   return (
     <Flex direction="column" gap={2}>
-      <Flex direction="row" alignItems="center" gap={2}>
+      <Flex
+        direction="row"
+        bg={bgSubtitle}
+        backdropFilter="blur(4px)"
+        alignItems="center"
+        gap={2}
+        position={{ base: 'unset', md: 'sticky' }}
+        top={{ base: 'unset', md: '49.19px' }}
+        left={{ base: 'unset', md: '0' }}
+      >
         <Heading as="h3" size="md">
           Notes
         </Heading>
@@ -35,10 +47,8 @@ const NoteContent: FC<Props> = ({ notes }) => {
         </Text>
       </Flex>
       <Box
-        width={{ base: 'calc(100vw - 20px)', md: 'unset' }}
+        width={{ base: fullWidth.base, md: 'unset' }}
         flex={{ base: 'unset', md: 'unset' }}
-        overflow="auto"
-        height={{ base: 'unset', md: 'calc(100vh - 290px)' }}
         border="1px"
         padding={4}
         borderColor={backgroundDate}
