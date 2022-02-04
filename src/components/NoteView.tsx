@@ -43,7 +43,7 @@ const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt,
       {isDesktop ? <FilterBar isCompacted /> : null}
       <Flex direction="column">
         <Flex
-          backgroundColor={useColorModeValue('whiteAlpha.400', 'blackAlpha.400')}
+          bg="rgba(0,0,0,0)"
           backdropFilter="blur(4px)"
           alignItems="center"
           mb={4}

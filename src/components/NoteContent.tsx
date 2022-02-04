@@ -15,7 +15,6 @@ const NoteContent: FC<Props> = ({ notes }) => {
   const [isMarkdown, setIsMarkdown] = useState(true)
   const theme = useColorModeValue(atomOneLight, atomOneDark)
   const backgroundDate = useColorModeValue('gray.100', 'gray.700')
-  const bgSubtitle = useColorModeValue('whiteAlpha.400', 'blackAlpha.400')
 
   if (!notes) return null
 
@@ -23,7 +22,7 @@ const NoteContent: FC<Props> = ({ notes }) => {
     <Flex direction="column" gap={2}>
       <Flex
         direction="row"
-        bg={bgSubtitle}
+        bg="rgba(0,0,0,0)"
         backdropFilter="blur(4px)"
         alignItems="center"
         gap={2}
