@@ -26,6 +26,7 @@ const NoteContent: FC<Props> = ({ notes }) => {
         backdropFilter="blur(4px)"
         alignItems="center"
         gap={2}
+        mt={{ base: 4, md: 0 }}
         position={{ base: 'unset', md: 'sticky' }}
         top={{ base: 'unset', md: '66.19px' }}
         left={{ base: 'unset', md: '0' }}
@@ -48,6 +49,7 @@ const NoteContent: FC<Props> = ({ notes }) => {
       <Box
         width={{ base: fullWidth.base, md: 'unset' }}
         flex={{ base: 'unset', md: 'unset' }}
+        overflow="auto"
         border="1px"
         padding={4}
         borderColor={backgroundDate}

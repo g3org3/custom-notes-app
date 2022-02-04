@@ -50,6 +50,7 @@ const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt,
           borderBottom="1px"
           borderColor="gray.400"
           position="sticky"
+          zIndex="3"
           top="0"
           left="0"
         >
@@ -57,12 +58,8 @@ const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt,
             <Icon as={FiHome} fontSize={30} />
           </Link>
           <Icon as={BsChevronRight} color="gray.300" fontSize={30} />
-          <Heading as="h2">
-            {note.emoji ? (
-              <Box display="inline-block" mr="8px">
-                <Emoji set="google" emoji={note.emoji} size={40} />
-              </Box>
-            ) : null}
+          <Heading as="h2" gap={2} display="flex">
+            {note.emoji ? <Emoji set="google" emoji={note.emoji} size={40} /> : null}
             {note.subject}
           </Heading>
         </Flex>

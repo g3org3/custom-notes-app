@@ -43,8 +43,8 @@ export const fullHeight = {
   md: `calc(100vh - ${nav.h + body.py.md * 2}px)`,
 }
 export const fullWidth = {
-  base: `calc(100vh - ${body.px.base * 2}px)`,
-  md: `calc(100vh - ${body.px.md * 2}px)`,
+  base: `calc(100vw - ${body.px.base * 2}px)`,
+  md: `calc(100vw - ${body.px.md * 2}px)`,
 }
 
 const Layout: React.FC<Props> = ({ homeUrl, children, title, by, menuOptions }) => {
