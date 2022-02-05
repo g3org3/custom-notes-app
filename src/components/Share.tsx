@@ -1,4 +1,4 @@
-import { Button, Flex, Code, Input, InputGroup, InputRightAddon } from '@chakra-ui/react'
+import { Button, Flex, Input, InputGroup, InputRightAddon } from '@chakra-ui/react'
 import base64 from 'base-64'
 import { FC, useRef } from 'react'
 import { FiShare2 } from 'react-icons/fi'
