@@ -43,8 +43,9 @@ const Home: FC<Props> = () => {
             position="sticky"
             zIndex="2"
             top="0"
+            py={{ md: 4 }}
             alignItems="center"
-            bg={useColorModeValue('whiteAlpha.500', 'blackAlpha.100')}
+            bg="rgba(0,0,0,0)"
             backdropFilter="blur(2px)"
             gap={2}
             display="flex"

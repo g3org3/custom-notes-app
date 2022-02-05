@@ -28,7 +28,8 @@ const NoteContent: FC<Props> = ({ notes }) => {
         gap={2}
         mt={{ base: 4, md: 0 }}
         position={{ base: 'unset', md: 'sticky' }}
-        top={{ base: 'unset', md: '66.19px' }}
+        top={{ base: 'unset', md: '59.19px' }}
+        pt={{ md: 3 }}
         left={{ base: 'unset', md: '0' }}
       >
         <Heading as="h3" size="md">

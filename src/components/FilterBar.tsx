@@ -33,6 +33,7 @@ const FilterBar: FC<Props> = ({ isCompacted }) => {
       height={fullHeight}
       overflow="auto"
       position="sticky"
+      pt={{ md: 4 }}
       top="0"
       left="0"
     >

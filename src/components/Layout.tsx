@@ -32,7 +32,7 @@ const navPadding = {
 }
 export const body = {
   px: { base: nav.px.base, md: nav.px.md },
-  py: { base: nav.px.base, md: nav.py.md },
+  py: { base: nav.px.base, md: 0 },
 }
 const bodyPadding = {
   base: `${nav.h + body.py.base}px ${body.px.base}px ${body.py.base}px`,

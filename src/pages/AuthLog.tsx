@@ -43,7 +43,7 @@ const AuthLog: FC<Props> = (props) => {
   }, [currentUser])
 
   return (
-    <Flex direction="column">
+    <Flex direction="column" p={4}>
       <Heading>Login audit log</Heading>
       <Table size="sm">
         <Thead>

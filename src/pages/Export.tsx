@@ -1,5 +1,4 @@
 import {
-  Box,
   Heading,
   Text,
   useToast,
@@ -10,7 +9,7 @@ import {
   useClipboard,
 } from '@chakra-ui/react'
 import { useNavigate } from '@reach/router'
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { FiCopy } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
 import SyntaxHighlighter from 'react-syntax-highlighter'
@@ -26,11 +25,12 @@ interface Props {
 
 const Empty: FC<Props> = () => {
   const navigate = useNavigate()
+  const [generate, setGenerate] = useState(false)
   const isThereAnyNotes = useSelector(selectIsThereAnyNotes)
   const theme = useColorModeValue(atomOneLight, atomOneDark)
   const notes = useSelector(selectNotes)
   const toast = useToast()
-  const notesInYaml = notesToYaml(notes)
+  const notesInYaml = generate ? notesToYaml(notes) : ''
   const { hasCopied, onCopy } = useClipboard(notesInYaml)
 
   useEffect(() => {
@@ -47,12 +47,16 @@ const Empty: FC<Props> = () => {
   }, [toast, onCopy])
 
   return (
-    <Box>
+    <Flex p={4} direction="column">
       <Heading as="h2">
         <span> 📦 </span> Export
       </Heading>
-      <br />
-      <Flex mb={4} alignItems="flex-end">
+      <Flex mt={4}>
+        <Button onClick={() => setGenerate(true)} colorScheme="green">
+          Generate Yaml
+        </Button>
+      </Flex>
+      <Flex mb={4} alignItems="flex-end" width="60vw">
         <Text>Yaml output from all your notes</Text>
         <Spacer />
         <Button leftIcon={<FiCopy />} size="sm" onClick={handleOnClick}>
@@ -61,7 +65,7 @@ const Empty: FC<Props> = () => {
       </Flex>
       <SyntaxHighlighter
         customStyle={{
-          width: '90vw',
+          width: '60vw',
           height: '50vh',
           overflow: 'auto',
           fontSize: '14px',
@@ -73,7 +77,7 @@ const Empty: FC<Props> = () => {
       >
         {notesInYaml}
       </SyntaxHighlighter>
-    </Box>
+    </Flex>
   )
 }
 
