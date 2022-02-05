@@ -1,4 +1,4 @@
-import { Text, Flex, Link, useColorModeValue, Spacer, Code, Badge, Image } from '@chakra-ui/react'
+import { Text, Flex, Link, useColorModeValue, Spacer, Badge } from '@chakra-ui/react'
 import { Link as ReachLink } from '@reach/router'
 import { Emoji } from 'emoji-mart'
 import { FC, memo } from 'react'
