@@ -1,14 +1,4 @@
-import {
-  Box,
-  Heading,
-  useColorModeValue,
-  Text,
-  Flex,
-  Icon,
-  Link,
-  Avatar,
-  useMediaQuery,
-} from '@chakra-ui/react'
+import { Heading, Flex, Icon, Link, useMediaQuery } from '@chakra-ui/react'
 import { Link as ReachLink } from '@reach/router'
 import { Emoji } from 'emoji-mart'
 import { FC } from 'react'
@@ -17,13 +7,12 @@ import { FiHome } from 'react-icons/fi'
 
 import CheckList from 'components/CheckList'
 import NoteContent from 'components/NoteContent'
-import Share from 'components/Share'
 import ShowIf from 'components/Show'
 import { NoteDBType } from 'modules/Note'
-import { dateToPretty, dateToPrettyTime } from 'services/date'
 
 import FilterBar from './FilterBar'
 import { fullHeight } from './Layout'
+import NoteViewMeta from './NoteViewMeta'
 
 interface Props {
   note: NoteDBType
@@ -34,8 +23,6 @@ interface Props {
 }
 
 const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt, readOnly }) => {
-  const tagBackground = useColorModeValue('blue.100', 'blue.900')
-  const backgroundDate = useColorModeValue('gray.200', 'gray.700')
   const [isDesktop] = useMediaQuery('(min-width: 768px)')
 
   return (
@@ -47,8 +34,6 @@ const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt,
           backdropFilter="blur(4px)"
           alignItems="center"
           mb={4}
-          borderBottom="1px"
-          borderColor="gray.400"
           position="sticky"
           zIndex="3"
           top="0"
@@ -68,71 +53,8 @@ const NoteView: FC<Props> = ({ onClickHome, note, onClickNextStep, onClickDoubt,
           alignItems={{ base: 'unset', md: 'flex-start' }}
           gap={{ base: 0, md: 10 }}
         >
-          <Flex
-            direction="column"
-            alignItems="flex-start"
-            width={{ base: 'unset', md: '300px' }}
-            position={{ base: 'relative', md: 'sticky' }}
-            top={{ base: 'unset', md: '66.19px' }}
-            lef={{ base: 'unset', md: '0' }}
-          >
-            <Box display="flex" alignItems="center" mt={2} mb={2}>
-              <ShowIf value={!!note.date}>
-                <Flex gap={4}>
-                  <Text display="flex" padding="0 10px" bg={backgroundDate} title={note.date?.toISO()}>
-                    {dateToPretty(note.date)}
-                  </Text>
-                  <Text display="flex" padding="0 10px" bg={backgroundDate} title={note.date?.toISO()}>
-                    {dateToPrettyTime(note.date)}
-                  </Text>
-                </Flex>
-              </ShowIf>
-            </Box>
-
-            <ShowIf value={!!note.tags}>
-              <Flex direction="column" gap={1} mt={3}>
-                <b>Tags:</b>
-                <Box display="inline-flex" gap={2}>
-                  {note.tags?.map((name) => (
-                    <Text
-                      key={name}
-                      textTransform="capitalize"
-                      display="inline-block"
-                      bg={tagBackground}
-                      color="blue.500"
-                      padding="0 10px"
-                      borderRadius="full"
-                      fontSize="xs"
-                    >
-                      {name}
-                    </Text>
-                  ))}
-                </Box>
-              </Flex>
-            </ShowIf>
-
-            <ShowIf value={!!note.people && note.people.length > 0}>
-              <Box display="flex" flexDirection="column" mt={4}>
-                <b>Attendees:</b>
-                <Flex direction="column" gap={2}>
-                  {note.people?.map((person) => (
-                    <Flex alignItems="center" gap={1}>
-                      <Avatar name={person} size="sm" />
-                      <Text textTransform="capitalize"> {person}</Text>
-                    </Flex>
-                  ))}
-                </Flex>
-              </Box>
-            </ShowIf>
-
-            {!readOnly && (
-              <Flex gap={2} mt={4}>
-                <Share noteId={note.id} />
-              </Flex>
-            )}
-          </Flex>
-
-          <Flex direction={{ base: 'column', md: 'row' }} alignItems="flex-start">
+          <Flex direction={{ base: 'column', md: 'row' }} alignItems="flex-start" gap={4}>
+            <NoteViewMeta isReadOnly={readOnly} note={note} />
             <NoteContent notes={note.notes} />
             <Flex direction="column" ml={10}>
               <ShowIf value={!!note.doubts}>

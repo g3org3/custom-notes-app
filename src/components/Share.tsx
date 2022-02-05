@@ -1,4 +1,4 @@
-import { Button, Icon, Input } from '@chakra-ui/react'
+import { Button, Flex, Icon, Input, InputGroup, InputRightAddon } from '@chakra-ui/react'
 import base64 from 'base-64'
 import { FC, useRef } from 'react'
 import { FiShare2 } from 'react-icons/fi'
@@ -30,13 +30,20 @@ const Share: FC<Props> = (props) => {
   }
 
   return (
-    <>
-      {/* @ts-ignore */}
-      <Input ref={ref} placeholder="Email to share with" />
-      <Button px={4} onClick={onClickShare} colorScheme="teal" leftIcon={<Icon as={FiShare2} />}>
-        Share
-      </Button>
-    </>
+    <Flex direction="column">
+      <form>
+        <InputGroup>
+          {/* @ts-ignore */}
+          <Input ref={ref} placeholder="Share to this email" />
+          <InputRightAddon cursor="pointer" onClick={onClickShare}>
+            <FiShare2 />
+          </InputRightAddon>
+        </InputGroup>
+        <Button type="submit" display="none">
+          Share
+        </Button>
+      </form>
+    </Flex>
   )
 }
 

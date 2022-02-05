@@ -29,6 +29,7 @@ const FilterBar: FC<Props> = ({ isCompacted }) => {
       direction="column"
       mr={4}
       gap={4}
+      shrink="0"
       height={fullHeight}
       overflow="auto"
       position="sticky"
