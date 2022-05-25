@@ -21,7 +21,7 @@ const menuOptions: Array<MenuOption> = [
 ]
 
 const Routes = () => {
-  if (isIOS && menuOptions.length === 4) {
+  if (isIOS && menuOptions.length === 3) {
     menuOptions.push({ path: '/read-qr', label: 'Login with QR', emoji: ':camera:' })
   }
 
